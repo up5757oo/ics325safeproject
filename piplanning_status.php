@@ -9,7 +9,6 @@
 
   ?>
 
-  <img src="images/work_in_progress.jpg" height = "100" width = "100"/>
   <h3> Status </h3>
  
   <?php include("./art.php"); ?>

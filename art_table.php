@@ -66,14 +66,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $teamlist  = $teams;		// split teamlist into arraylist called diff_team_names
     $diff_team_names =  explode(",", $teamlist);
   
-    if($generate_button==='JS Generate'){
+  if($generate_button==='JS Generate'){
   
   echo "<script>
-  //removes existing table
-  $('#table_load').remove();
-  teamList = \"".$teams."\";
-  teamList_array = teamList.split(\", \");
-  baseURL = \"".$url."\";
   
   /**
   * Updates arrays to repoplate table
