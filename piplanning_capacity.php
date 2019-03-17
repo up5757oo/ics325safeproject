@@ -260,12 +260,14 @@ echo $pi_id_menu;
 
 </tr><br><br>
 
-<td><input
+<!--<td><input
 type="submit"
 id="js_button"
 name="generate_button"
 class="button"
-value="JS Generate"></td>
+value="JS Generate"></td> -->
+
+<td><input type="submit" id="php_button" name="generate_button" class="button" value="PHP Generate"></td>
 
 </form>
 
