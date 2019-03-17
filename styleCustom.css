@@ -1,26 +1,34 @@
 
 select{
-  width: 150px;
+    width: 150px;   
 }
 
 th{
     background-color: navy;
     color: white;
     width: 1000px;
-  }
-  
-  table {
+}
+
+table {
     border-collapse: collapse;
     width: 100%;
-  }
-  
-  th, td {
+}
+
+th, td {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-  }
+}
 
-  h3{
+h3{
     background-color: navy;
     color: white;
-    }
+}
+
+.button{
+    border-radius: 8px;
+    padding: 8px 28px;
+    background-color: green;
+    color: white;
+    font-size: 15px;
+}
