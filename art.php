@@ -14,48 +14,13 @@ for($i = 0; $i < $x; $i++){
 //initializes remaining variables
 $pi_id="";
 $art="";
+$at = '';
 $generate_button='New';
 
-//Checks for ART Cookie, if it is not available it will update the cookie with a default value
-$artCookie = $_COOKIE['artCookie'];
-if( $artCookie== null){
-  //checks the preference table for a Default ART
-  $art_default_query = "SELECT value FROM preferences WHERE name='DEFAULT_ART' ORDER BY value LIMIT 1";
-  $art_default_results = mysqli_query($db, $art_default_query);
-  if ($art_default_results->num_rows > 0) {
-    while($art_default = $art_default_results->fetch_assoc()) {
-      setcookie("artCookie", $art_default["value"]);
-    }//end while
-  }//end preference search if
-  else {
-    //if a Default ART was not found, it checks the first value for the ART
-    $art_default_query = "SELECT DISTINCT parent_name FROM trains_and_teams where type = 'AT' ORDER BY parent_name LIMIT 1";
-    $art_default_results = mysqli_query($db, $art_default_query);
-    //starts loop to check the results and update the cookie if results are returned
-    if ($art_default_results->num_rows > 0) {
-      while($art_default = $art_default_results->fetch_assoc()) {
-        setcookie("artCookie", $art_default["parent_name"]);
-      }//end while
-    }//end preference search if
-  }
-} //end cookie check
-
-//adds the cookie to the art selected variable
-$art_select = $_COOKIE['artCookie'];
-
-//uses json file to build ART select menu. Updates selected default with the Cookie value
-$art_file = file_get_contents("dataFiles/art_cache.json");
-$art_json = json_decode($art_file, true);
-$x=count($art_json);
-for($i = 0; $i < $x; $i++){
-  $art_item = $art_json[$i]['parent_name'];
-  //checks if the ART should selected
-  if($art_item===$art_select){
-    $art = $art.'<option value="'.$art_item.'" selected>'.$art_item.'</option>';
-  } else{
-    $art = $art.'<option value="'.$art_item.'">'.$art_item.'</option>';
-  }
-}
+//Uses setArtCookie function defined in db_connection.php to check for artCookie. It will set the Cookie if it is not found
+setArtCookie();
+//Uses buildArtMenu function defined in db_connection.php to set the art variable with the HTML for the ART select menu
+$art = buildArtMenu();
 
 //uses PI ID json file to build program increment table with the current program intrement id identified through a sql query
 $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
@@ -120,6 +85,15 @@ form for submitting data that will be prepopulated with data from the variables
                 ">
                 <option value="">-- Select --</option>
                 <?php echo $art; ?>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Teams Menu (AT):</td>
+            <td>
+                <select id="at" name="at">
+                <option value="">-- Select --</option>
+                <?php echo $at; ?>
               </select>
             </td>
           </tr>
