@@ -9,8 +9,17 @@
 
   ?>
 
+  <style>
+  h3{
+    background-color: navy;
+    color: white;
+
+  }
+
+  </style>
+
   <h3> Status </h3>
- 
+
   <?php include("./art.php"); ?>
   <?php include("./art_table.php"); ?>
   <?php include("./footer.php"); ?>
