@@ -1,3 +1,15 @@
+
+<style>
+
+th{
+  background-color: navy;
+  color: white;
+  width: 1000px;
+  border: 1px solid black;
+}
+
+</style>
+
 <?php 
 $url=$base_url_out;
 $teamlist  = urldecode($_COOKIE['teamCookie']);		// split teamCookie into arraylist called diff_team_names
