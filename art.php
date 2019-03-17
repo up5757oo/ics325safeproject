@@ -2,7 +2,7 @@
 $page_title = 'Agile Release Trains';
 //include(PAGES_PATH . '/header.php');
 
-include("./db_connection.php");
+require_once("./db_connection.php");
 
 //pull BASE_URL from json file
 $url_file = file_get_contents("dataFiles/url_cache.json");
@@ -16,7 +16,6 @@ $pi_id="";
 $art="";
 $at = '';
 $generate_button='New';
-
 //Uses setArtCookie function defined in db_connection.php to check for artCookie. It will set the Cookie if it is not found
 setArtCookie();
 //Uses buildArtMenu function defined in db_connection.php to set the art variable with the HTML for the ART select menu
