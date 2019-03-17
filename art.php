@@ -80,6 +80,8 @@ for($i = 0; $i < $x; $i++){
 $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
 ?>
 
+
+
 <!--
 form for submitting data that will be prepopulated with data from the variables
 -->
@@ -134,7 +136,7 @@ form for submitting data that will be prepopulated with data from the variables
           <td></td>
         </tr>
       </table>
-    </form>
+    </form><br><br>
     <?php $db->close(); ?>
 <script>
   //assigning the artCookie to a variable
