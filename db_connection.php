@@ -148,7 +148,7 @@ function buildTeamMenu(){
             $at_menu_results = mysqli_query($db, $at_query);
             if ($at_menu_results->num_rows > 0) {
                 while($at_item = $at_menu_results->fetch_assoc()) {
-                    $at_menu = $at_menu.'<option value="'.$at_item.'">'.$at_item.'</option>';
+                    $at_menu = $at_menu.'<option value="'.printf($at_item['team_name']).'">'.printf($at_item['team_name']).'</option>';
                 }//end while
             }//end if 
         } return $at_menu;
