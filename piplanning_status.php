@@ -9,7 +9,8 @@
 
   ?>
 
-  <img src="images/work_in_progress.jpg" height = "100" width = "100"/>
+  <link rel="stylesheet" type="text/css" href="styleCustom.css">
+
   <h3> Status </h3>
  
   <?php include("./art.php"); ?>

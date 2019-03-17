@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="styleCustom.css">
+
 <?php
 $page_title = 'Agile Release Trains';
 //include(PAGES_PATH . '/header.php');
@@ -134,7 +136,7 @@ form for submitting data that will be prepopulated with data from the variables
           <td></td>
         </tr>
       </table>
-    </form>
+    </form><br>
     <?php $db->close(); ?>
 <script>
   //assigning the artCookie to a variable

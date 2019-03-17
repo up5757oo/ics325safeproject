@@ -1,0 +1,26 @@
+
+select{
+  width: 150px;
+}
+
+th{
+    background-color: navy;
+    color: white;
+    width: 1000px;
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  h3{
+    background-color: navy;
+    color: white;
+    }

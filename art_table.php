@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="styleCustom.css">
+
 <?php 
 $url=$base_url_out;
 $teamlist  = urldecode($_COOKIE['teamCookie']);		// split teamCookie into arraylist called diff_team_names
@@ -69,11 +71,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     if($generate_button==='JS Generate'){
   
   echo "<script>
-  //removes existing table
-  $('#table_load').remove();
-  teamList = \"".$teams."\";
-  teamList_array = teamList.split(\", \");
-  baseURL = \"".$url."\";
+
   
   /**
   * Updates arrays to repoplate table
