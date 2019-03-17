@@ -120,7 +120,7 @@ function buildArtMenu(){
 //function for build PI table
 function buildPi_idMenu(){
     $pi_id = "";
-    //initializes the selected ART variable
+    //initializes the selected PI_ID variable
     $pi_id_select = "";
     //uses json file to build PI_ID select menu.
     $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
