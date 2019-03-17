@@ -117,6 +117,24 @@ function buildArtMenu(){
     } return $art;
 };
 
+//function for build PI table
+function buildPi_idMenu(){
+    $pi_id = "";
+    //initializes the selected ART variable
+    $pi_id_select = "";
+    //uses json file to build PI_ID select menu.
+    $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
+    $pi_id_json = json_decode($pi_id_file, true);
+    $x= count($pi_id_json);
+    for($i = 0; $i < $x; $i++){
+        $pi_id_item = $pi_id_json[$i]['parent_name'];
+        //checks if the PI_ID was selected and get selection
+        if($pi_id_item===$pi_id_select){
+            $pi_id = $pi_id.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
+        }//end if
+    } return $pi_id;
+}
+
 function buildTeamMenu(){
     //initializes variables
     $artCookie = '';
