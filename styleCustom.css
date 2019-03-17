@@ -1,21 +1,21 @@
 
 select{
-    width: 150px;   
+    width: 250px;  
 }
 
 th{
     background-color: navy;
     color: white;
-    width: 1000px;
+    
 }
 
 table {
     border-collapse: collapse;
-    width: 100%;
+    
 }
 
 th, td {
-    padding: 8px;
+    padding: 4px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
@@ -27,7 +27,7 @@ h3{
 
 .button{
     border-radius: 8px;
-    padding: 8px 28px;
+    padding: 8px 8px;
     background-color: green;
     color: white;
     font-size: 15px;
