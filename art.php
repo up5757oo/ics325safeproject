@@ -21,6 +21,7 @@ $generate_button='New';
 setArtCookie();
 //Uses buildArtMenu function defined in db_connection.php to set the art variable with the HTML for the ART select menu
 $art = buildArtMenu();
+$at = buildTeamMenu();
 
 //uses PI ID json file to build program increment table with the current program intrement id identified through a sql query
 $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");

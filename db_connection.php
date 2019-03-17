@@ -120,17 +120,19 @@ function buildArtMenu(){
 function buildTeamMenu(){
     //initializes variables
     $artCookie = '';
-    $at = '';
+    $at_menu = '';
+    $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+    $db->set_charset("utf8");
     //checks for the artCookie before proceeding
         if(isset($_COOKIE['artCookie'])){
             $artCookie = $_COOKIE['artCookie'];
-            $at_query = "SELECT team_name FROM cadence where parent_name='".$artCookie."' order by team_name";
-            $at_menu_results = mysqli_query($db, $pi_id_now_query);
+            $at_query = "SELECT DISTINCT team_name FROM trains_and_teams where type = 'AT' and parent_name='".$artCookie."' order by team_name";
+            $at_menu_results = mysqli_query($db, $at_query);
             if ($at_menu_results->num_rows > 0) {
-                while($at_menu = $at_menu_results->fetch_assoc()) {
-                    $at = $at.$at_menu;
+                while($at_item = $at_menu_results->fetch_assoc()) {
+                    $at_menu = $at_menu.'<option value="'.$at_item.'">'.$at_item.'</option>';
                 }//end while
             }//end if 
-        } return $at;
+        } return $at_menu;
     };
 ?>
