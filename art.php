@@ -93,15 +93,6 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
           </tr>
           <tr>
-            <td>Teams Menu (AT):</td>
-            <td>
-                <select id="at" name="at">
-                <option value="">-- Select --</option>
-                <?php echo $at; ?>
-              </select>
-            </td>
-          </tr>
-          <tr>
             <td>Names of Teams:</td>
             <td><input type="text" id="teams" size=100 name="teams" readonly="readonly" value="">
           </td>

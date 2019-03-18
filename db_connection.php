@@ -162,4 +162,80 @@ function buildTeamMenu(){
             }//end if 
         } return $at_menu;
     };
+
+    function buildEmployeeTable($selected_team,$duration,$overhead_percentage){
+        echo '      <table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+        width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+        <thead>
+        <tr id="capacity-table-first-row">
+        <th id="capacity-table-td">Last Name</th>
+         <th id="capacity-table-td">First Name</th>
+         <th id="capacity-table-td">Role</th>
+         <th id="capacity-table-td">% Velocity Available</th>
+         <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
+         <th id="capacity-table-td">Story Points</th>
+         </tr>
+         </thead>
+         <tbody>';
+         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+         $db->set_charset("utf8");       
+         $sql = "SELECT last_name, first_name, employee_name, role FROM `membership`
+                JOIN `employees` on (membership.polarion_id = employees.number)
+                WHERE team_name='".$selected_team."';";
+        
+        $result = $db->query($sql);
+        if ($result->num_rows > 0) {
+            // output data of each
+            $rownum = 0;
+            while ($row = $result->fetch_assoc()) {
+                if ($row["role"] == "Scrum Master (SM)") {
+                    $velocityType = "SCRUM_MASTER_ALLOCATION";
+            } else if ($row["role"] == "Product Owner (PO)") {
+                $velocityType = "PRODUCT_OWNER_ALLOCATION";
+            } else  {
+                $velocityType = "AGILE_TEAM_MEMBER_ALLOCATION";
+            }
+            $sql2 = "SELECT * FROM `preferences` WHERE name='".$velocityType."';";
+            $result2 = $db->query($sql2);
+            if ($result2->num_rows > 0) {
+                $row2 = $result2->fetch_assoc();
+            }
+            if (isset($teamcapacity[$rownum]) && !isset($_POST['restore']) && isset($_POST['submit0'])){
+                $storypts = $teamcapacity[$rownum];
+            }else{
+                $storypts = round(($duration-0)*((100-$overhead_percentage)/100)*($row2["value"]/100));
+            }
+            $valueForJS = $row2["value"];
+            if (isset($daysoff[$rownum]) && !isset($_POST['restore'])  && isset($_POST['submit0'])){
+                $doff = $daysoff[$rownum];
+            } else {
+                $doff = 0;
+            }
+            if (isset($velocity[$rownum]) && !isset($_POST['restore']) && isset($_POST['submit0'])){
+                $vel = $velocity[$rownum];
+            } else {
+                $vel = $row2["value"];
+            }
+            echo
+                "<tr>
+                    <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
+                    <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
+                    <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
+                    <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin' class='capacity-text-input' type='text' name='velocity[]' value='" . $vel . "' submit='autoLoad();' /> %</td>
+                    <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2' class='capacity-text-input' type='text' name='daysoff[]' value='".$doff."' submit='autoLoad();' /></td>
+                    <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story' class='capacity-text-input' type='text' name='storypoints[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                    <input type='hidden' name='rownum[]' value='".$rownum."'/>
+                </tr>";
+                $rownum++;
+            }
+        } else {
+            echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
+            print "NO TEAM MEMBERS ASSIGNED TO TEAM \"".$selected_team."\"";
+            echo "</td></tr>";
+        }
+        echo '</tbody>
+        <tfoot>
+        </tfoot>
+        </table>';
+    };
 ?>
