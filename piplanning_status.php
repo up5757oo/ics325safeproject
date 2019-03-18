@@ -1,7 +1,7 @@
 <?php
 
   $nav_selected = "PIPLANNING";
-  $left_buttons = "YES"; 
+  $left_buttons = "YES";
   $left_selected = "STATUS";
 
   include("./nav.php");
@@ -9,14 +9,7 @@
 
   ?>
 
-  <style>
-  h3{
-    background-color: navy;
-    color: white;
-
-  }
-
-  </style>
+  <link rel="stylesheet" type="text/css" href="styleCustom.css">
 
   <h3> Status </h3>
 

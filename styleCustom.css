@@ -1,0 +1,34 @@
+
+select{
+    width: 250px;  
+}
+
+th{
+    background-color: navy;
+    color: white;
+    
+}
+
+table {
+    border-collapse: collapse;
+    
+}
+
+th, td {
+    padding: 4px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+h3{
+    background-color: navy;
+    color: white;
+}
+
+.button{
+    border-radius: 8px;
+    padding: 8px 8px;
+    background-color: green;
+    color: white;
+    font-size: 15px;
+}
