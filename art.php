@@ -22,7 +22,6 @@ $generate_button='New';
 setArtCookie();
 //Uses buildArtMenu function defined in db_connection.php to set the art variable with the HTML for the ART select menu
 $art = buildArtMenu();
-$at = buildTeamMenu();
 
 //uses PI ID json file to build program increment table with the current program intrement id identified through a sql query
 $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
@@ -46,68 +45,58 @@ for($i = 0; $i < $x; $i++){
 };
 $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
 ?>
-
-
-
 <!--
 form for submitting data that will be prepopulated with data from the variables
 -->
 <form  method="POST" id="PI_form" name="PI_form">
-    <table id="form_table" class="container">
-        <tr>
-            <td>
-                <!--Base URL:-->
-            </td>
-            <td>
-                <input type="hidden" id="baseUrl" name="baseUrl" readonly="readonly" value="<?php
-          echo $base_url_out;
-          ?>">
-            </td>
-        </tr>
-        <tr>
-            <td>Program Increment ID:</td>
-            <td>
-                <select id="PI_ID" name="pi_id">
-                    <?php
-
-          echo $pi_id_menu;
-
-          ?>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Agile Release Train (ART):</td>
-            <td>
-                <select id="art" name="art" onchange="
-                //sets art select to selected value
-                var art_select = this.value;
-                //sets the selected value as the cookie
-                document.cookie = escape('artCookie') + '=' + escape(art_select) ;
-                //updates the teams list
-                getTeams(art_select);
-                ">
-                <option value="">-- Select --</option>
-                <?php echo $art; ?>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>Names of Teams:</td>
-            <td><input type="text" id="teams" size=100 name="teams" readonly="readonly" value="">
-          </td>
-        </tr>
-        <tr>
-          <td><input type="submit" id="js_button" name="generate_button" class="button" value="JS Generate"></td>
-          <td><input type="submit" id="php_button" name="generate_button" class="button" value="PHP Generate"></td>
-          <td></td>
-        </tr>
-      </table>
-    </form><br><br>
-    <?php $db->close(); ?>
+  <table id="form_table" class="container">
+    <tr>
+      <td>
+        <!--Base URL:--> </td>
+        <td>
+          <input type="hidden" id="baseUrl" name="baseUrl" readonly="readonly" value="<?php echo $base_url_out; ?>">
+        </td>
+      </tr>
+      <tr>
+        <td>Program Increment ID:</td>
+        <td>
+          <select id="PI_ID" name="pi_id">
+            <?php echo $pi_id_menu; ?>
+          </select>
+        </td>
+      </tr>
+      <tr>
+         <td>Agile Release Train (ART):</td>
+         <td>
+           <select id="art" name="art" onchange="
+           //sets art select to selected value
+           var art_select = this.value;
+           //sets the selected value as the cookie
+           document.cookie = escape('artCookie') + '=' + escape(art_select) ;
+           //updates the teams list
+           getTeams(art_select);
+           ">
+           <option value="">-- Select --</option>
+           <?php echo $art; ?>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Names of Teams:</td>
+        <td><input type="text" id="teams" size=100 name="teams" readonly="readonly" value="">
+      </td>
+    </tr>
+    <tr>
+      <td><input type="submit" id="js_button" name="generate_button" class="button" value="JS Generate"></td>
+      <td><input type="submit" id="php_button" name="generate_button" class="button" value="PHP Generate"></td>
+      <td></td>
+    </tr>
+  </table>
+</form><br>
+<?php $db->close(); ?>
 <script>
   //assigning the artCookie to a variable
-  var artCookie = getCookie('artCookie');
+  var artCookie = getCookie('artCookie'); 
   //running the getTeams when the window is loaded using the cookie
   $( window ).on( "load", getTeams(artCookie) );
   function getTeams(art_select){

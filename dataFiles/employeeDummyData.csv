@@ -1,0 +1,9 @@
+﻿number,last_name,first_name,status,exempt,work_city,work_ctry,cost_center,cost_center_manager,managers_first_name,managers_last_name,admin_name,email_address,level_3_mgr_last_name,level_3_mgr_first_name,primary_project,secondary_project,org,managers_number,lvl_3_mgr_number
+1,Thielen,Adam,full_time,TRUE,Mankato,US,5540112345,Zygi Wilf,Mike,Zimmer,NULL,NULL,Zimmer,Mike,SAFe,Capacity Calculator,VIK,6515554422,6515554422
+2,Cousins,Kirk,full_time,TRUE,Minneapolis,US,5540112345,Zygi Wilf,Mike,Zimmer,NULL,NULL,Zimmer,Mike,SAFe,Capacity Calculator,VIK,6515554422,6515554422
+3,Barr,Anthony,full_time,TRUE,Bloominton,US,5540112345,Zygi Wilf,Mike,Zimmer,NULL,NULL,Zimmer,Mike,SAFe,Capacity Calculator,VIK,6515554422,6515554422
+4,Smith,Harrison,full_time,TRUE,Bloominton,US,5540112345,Zygi Wilf,Mike,Zimmer,NULL,NULL,Zimmer,Mike,SAFe,Capacity Calculator,VIK,6515554422,6515554422
+5,Beebe,Chad,part_time,FALSE,Bloominton,US,5540112345,Zygi Wilf,Mike,Zimmer,NULL,NULL,Zimmer,Mike,SAFe,Capacity Calculator,VIK,6515554422,6515554422
+6,Cooke,Dalvin,part_time,FALSE,Mankato,US,5540112345,Zygi Wilf,Mike,Zimmer,NULL,NULL,Zimmer,Mike,SAFe,Capacity Calculator,VIK,6515554422,6515554422
+7,Diggs,Stefon,part_time,FALSE,Minneapolis,US,5540112345,Zygi Wilf,Mike,Zimmer,NULL,NULL,Zimmer,Mike,SAFe,Capacity Calculator,VIK,6515554422,6515554422
+8,Elflein,Pat,part_time,FALSE,Minneapolis,US,5540112345,Zygi Wilf,Mike,Zimmer,NULL,NULL,Zimmer,Mike,SAFe,Capacity Calculator,VIK,6515554422,6515554422

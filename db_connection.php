@@ -91,8 +91,6 @@ function setArtCookie(){
           }//end preference search if
         }
       } //end cookie check
-      
-      //adds the cookie to the art selected variable
 };
 
 function buildArtMenu(){
@@ -237,5 +235,6 @@ function buildTeamMenu(){
         <tfoot>
         </tfoot>
         </table>';
+        
     };
 ?>

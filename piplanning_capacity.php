@@ -1,20 +1,14 @@
 <?php
-
 $nav_selected = "PIPLANNING";
 $left_buttons = "YES";
 $left_selected = "CAPACITY";
-
 include("./nav.php");
 global $db;
 ?>
-
 <link rel="stylesheet" type="text/css" href="styleCustom.css">
-
 <h3>Capacity Calculator</h3>
-
 <?php
 $page_title = 'Capacity Calculator<';
-
 include("./db_connection.php");
 
 //pull BASE_URL from json file
@@ -56,9 +50,6 @@ for($i = 0; $i < $x; $i++){
     $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
   }
 };
-$pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
-
-
 $sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$pi_id_select."';";
 $result5 = $db->query($sql5);
 if ($result5->num_rows > 0) {
@@ -78,55 +69,56 @@ form for submitting data that will be prepopulated with data from the variables
 -->
   <form  method="POST" id="PI_form" name="PI_form">
     <table id="form_table" class="container">
-    <tr>
-      <td>
-      <!--Base URL:-->
-      </td>
-      <td>
-      <input type="hidden" id="baseUrl" name="baseUrl" readonly="readonly" value="<?php
-      echo $base_url_out;
-      ?>">
-      </td>
-    </tr>
-    <tr>
-      <td>Agile Release Train:</td>
-      <td>
-      <select id="art" name="art" onchange="
-      //sets art select to selected value
-      var art_select = this.value;
-      //sets the selected value as the cookie
-      document.cookie = escape('artCookie') + '=' + escape(art_select) ;
-      //updates the teams list
-      getTeams(art_select);
-      ">
-      <option value="">-- Select --</option>
-      <?php echo $art; ?>
-      </select>
+      <tr>
+        <td></td>
+        <td>
+          <input type="hidden" id="baseUrl" name="baseUrl" readonly="readonly" value="<?php echo $base_url_out; ?>">
+        </td>
+      </tr>
+      <tr>
+        <td>Agile Release Train:</td>
+        <td>
+          <select id="art" name="art" onchange="
+          //sets art select to selected value
+          var art_select = this.value;
+          //sets the selected value as the cookie
+          document.cookie = escape('artCookie') + '=' + escape(art_select) ;
+          //updates the teams list
+          getTeams(art_select);
+          ">
+          <option value="">-- Select --</option>
+          <?php echo $art; ?>
+        </select>
       </td>
     </tr>
     <tr>
       <td>Agile Team:</td>
       <td>
-      <select id="teams"></select>
-      </td>
-      </tr>
-      <td>Program Increment (PI):</td>
-      <td>
-      <select id="PI_ID" name="pi_id">
-      <?php
-      echo $pi_id_menu;
-      ?>
-      </select>
+        <select id="teams" onchange="
+      //sets team_select to selected value
+      var team_select = this.value;
+      //sets the selected value as the cookie
+      document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);"></select>
       </td>
     </tr>
-    <tr>
-      <td><!--input type="submit" id="js_button" name="generate_button" class="button" value="JS Generate"--></td>
-      <td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
-      <td></td>
-    </tr>
-    </table>
-  </form><br>
-    <?php //$db->close(); ?>
+    <td>Program Increment (PI):</td>
+    <td>
+      <select id="PI_ID" name="pi_id" onchange="
+      //sets pi_select to selected value
+      var pi_select = this.value;
+      //sets the selected value as the cookie
+      document.cookie = escape('piCookie') + '=' + escape(pi_select) ;">
+      <?php echo $pi_id_menu; ?>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
+  <td></td>
+</tr>
+</table>
+</form><br>
+
 <script>
   //assigning the artCookie to a variable
   var artCookie = getCookie('artCookie');
@@ -181,10 +173,24 @@ form for submitting data that will be prepopulated with data from the variables
 <form method="post" action="#" id="maincap">
 
 <?php
+if(isset($_COOKIE['piCookie'])){
+$pi_id = $_COOKIE['piCookie'];
+} else {
+$pi_id=$pi_id_select;
+};
+$selected_team='805 Agile Team';
+/*
+if(isset($_COOKIE['teamSelectCookie'])){
+  $selected_team = $_COOKIE['teamSelectCookie'];
+  } else {
+    $selected_team='Team TBD';
+  };
+  */
+$pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
 $count_piid = count($pi_id_array);
 for($i = 0; $i < $count_piid; $i++){
 echo '<h3>Iteration # '.$pi_id_array[$i].'</h3>';
-buildEmployeeTable('805 Agile Team',$duration,$overhead_percentage);
+buildEmployeeTable($selected_team,$duration,$overhead_percentage);
 };
 
 //$result->close();
@@ -246,8 +252,8 @@ buildEmployeeTable('805 Agile Team',$duration,$overhead_percentage);
           var tcap = parseInt(capdiff) + parseInt(totalcap_old);
           document.getElementsByName("totalcap")[0].innerHTML = tcap;
         }
-
-
-    </script>
-
-<?php include("./footer.php"); ?>
+        </script>
+        <?php  
+        //$db->close(); 
+        include("./footer.php"); 
+        ?>
