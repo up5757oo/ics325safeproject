@@ -115,15 +115,15 @@ function buildArtMenu(){
     } return $art;
 };
 
-//function for build PI table
+//function for building PI Menu
 function buildPi_idMenu(){
     //initializes variables
     $pi_id_select = "";
     $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
     $pi_id_json = json_decode($pi_id_file, true);
+    $x=count($pi_id_json);
     $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
     $db->set_charset("utf8");
-    $x=count($pi_id_json);
     $pi_id_now_query = "SELECT PI_id FROM cadence where DATE(NOW()) between start_date and end_date + 2";
     $pi_id_select_results = mysqli_query($db, $pi_id_now_query);
     if ($pi_id_select_results->num_rows > 0) {

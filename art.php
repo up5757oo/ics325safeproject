@@ -23,6 +23,8 @@ setArtCookie();
 //Uses buildArtMenu function defined in db_connection.php to set the art variable with the HTML for the ART select menu
 $art = buildArtMenu();
 
+// $pi_id = buildPI_idMenu(); -- from db_connection.php
+
 //uses PI ID json file to build program increment table with the current program intrement id identified through a sql query
 $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
 $pi_id_json = json_decode($pi_id_file, true);
@@ -43,6 +45,7 @@ for($i = 0; $i < $x; $i++){
     $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
   }
 };
+
 $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
 ?>
 <!--
