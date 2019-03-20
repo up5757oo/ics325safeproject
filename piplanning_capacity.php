@@ -41,6 +41,8 @@ if ($pi_id_select_results->num_rows > 0) {
     $pi_id_select = $pi_id_now["PI_id"];
   }//end while
 }//end if
+//$pi_id_select=piSelectNow();
+$pi_id_menu = buildPi_idMenu($pi_id_select);
 $pi_id_menu='';
 for($i = 0; $i < $x; $i++){
   $pi_id_item = $pi_id_json[$i]['PI_id'];
@@ -50,6 +52,7 @@ for($i = 0; $i < $x; $i++){
     $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
   }
 };
+
 $sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$pi_id_select."';";
 $result5 = $db->query($sql5);
 if ($result5->num_rows > 0) {

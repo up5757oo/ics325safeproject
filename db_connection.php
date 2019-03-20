@@ -114,16 +114,11 @@ function buildArtMenu(){
         }
     } return $art;
 };
-
-//function for build PI table
-function buildPi_idMenu(){
-    //initializes variables
+//finds the PI within today's date
+function piSelectNow(){
     $pi_id_select = "";
-    $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
-    $pi_id_json = json_decode($pi_id_file, true);
     $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
     $db->set_charset("utf8");
-    $x=count($pi_id_json);
     $pi_id_now_query = "SELECT PI_id FROM cadence where DATE(NOW()) between start_date and end_date + 2";
     $pi_id_select_results = mysqli_query($db, $pi_id_now_query);
     if ($pi_id_select_results->num_rows > 0) {
@@ -131,14 +126,26 @@ function buildPi_idMenu(){
             $pi_id_select = $pi_id_now["PI_id"];
         }//end while
     }//end if
+    return $pi_id_select;
+};
+//function for build PI table
+function buildPi_idMenu($pi_id_select){
+    echo '<script>console.log("'.$pi_id_select.'")</script>';
+    //initializes variables
+    $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
+    $pi_id_json = json_decode($pi_id_file, true);
+    $x=count($pi_id_json);
     $pi_id_menu='';
     for($i = 0; $i < $x; $i++){
         $pi_id_item = $pi_id_json[$i]['PI_id'];
         if($pi_id_item===$pi_id_select){
             $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'" selected>'.$pi_id_item.'</option>';
+            echo '<script>console.log("'.$pi_id_menu.'")</script>';
         } else{
             $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
+            echo '<script>console.log("'.$pi_id_menu.'")</script>';
         } return $pi_id_menu;
+        echo '<script>console.log("'.$pi_id_menu.'")</script>';
     }
 };
 
