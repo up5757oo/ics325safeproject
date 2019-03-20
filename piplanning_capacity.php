@@ -92,6 +92,7 @@ form for submitting data that will be prepopulated with data from the variables
       document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);"></select>
       </td>
     </tr>
+    <tr>
     <td>Program Increment (PI):</td>
     <td>
       <select id="PI_ID" name="pi_id" onchange="
