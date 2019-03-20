@@ -18,6 +18,7 @@ $pi_id="";
 $art="";
 $at = '';
 $generate_button='New';
+$pi_id_select=piSelectNow();
 
 //Function from db_connection that checks for ART Cookie, if it is not available it will update the cookie with a default value
 setArtCookie();
