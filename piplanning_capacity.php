@@ -25,6 +25,7 @@ $art="";
 $pi_id_menu='';
 $pi_id_select='';
 $duration = '';
+$overhead_percentage = '';
 
 //Function from db_connection that checks for ART Cookie, if it is not available it will update the cookie with a default value
 setArtCookie();
@@ -47,12 +48,8 @@ if(isset($_COOKIE['piCookie'])){
 //Function for assigning the duration variable
 $duration = getDuration($pi_id_select);
 
-$sql6 = "SELECT * FROM `preferences` WHERE name='OVERHEAD_PERCENTAGE';";
-$result6 = $db->query($sql6);
-if ($result6->num_rows > 0) {
-    $row6 = $result6->fetch_assoc();
-    $overhead_percentage = $row6["value"];
-}
+//Function for assigning the overhead percentage
+$overhead_percentage = getOverheadPercentage();
 ?>
 
 <!--
@@ -112,14 +109,14 @@ form for submitting data that will be prepopulated with data from the variables
 </form><br>
 
 <script>
-  //assigning the artCookie to a variable
-  var artCookie = getCookie('artCookie');
-  //running the getTeams when the window is loaded using the cookie
-  $( window ).on( "load", getTeams(artCookie) );
-  function getTeams(art_select){
-    //gets values from JSON file
-    $.getJSON('dataFiles/at_cache.json', function(data){
-      //initializes an array to story the avilable teams
+//assigning the artCookie to a variable
+var artCookie = getCookie('artCookie');
+//running the getTeams when the window is loaded using the cookie
+$( window ).on( "load", getTeams(artCookie) );
+function getTeams(art_select){
+  //gets values from JSON file
+  $.getJSON('dataFiles/at_cache.json', function(data){
+    //initializes an array to story the avilable teams
       var at_list = [];
       //for loop for adding team names to teams_list
       var x=data.length;
@@ -134,11 +131,11 @@ form for submitting data that will be prepopulated with data from the variables
         select.options.length = 0;
         for(index in at_list) {
           select.options[select.options.length] = new Option(at_list[index], index);
-
         }
       };
     });
   };
+
   //function for capturing the cookie
   function getCookie(cookieName) {
     var name = cookieName + "=";
@@ -155,26 +152,22 @@ form for submitting data that will be prepopulated with data from the variables
     }
     return "";
   };
-</script>
-<form method="post" action="#" id="maincap">
-
-<?php
-
-
-//Defaulting the selected team, this will need to be updated once the table have additional values available
-$selected_team='805 Agile Team';
-
-//settting up the pi id array for the Iteration # display
-$pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
+  </script>
+  
+  <form method="post" action="#" id="maincap">
+  <?php
+  //Defaulting the selected team, this will need to be updated once the table have additional values available
+  $selected_team='805 Agile Team';
+  //settting up the pi id array for the Iteration # display
+  $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
   $count_piid = count($pi_id_array);
   //Loop for displaying the series of Employee table
   for($i = 0; $i < $count_piid; $i++){
     echo '<h4>Iteration # '.$pi_id_array[$i].'</h4>';
     buildEmployeeTable($selected_team,$duration,$overhead_percentage);
   };
-
-//$result->close();
-?>
+  //$result->close();
+  ?>
 <!--Buttons for future Iteration
 <input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
 <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
@@ -198,6 +191,5 @@ $(document).ready(function () {
 });
 </script>
 <?php 
-//$db->close(); 
 include("./footer.php"); 
 ?>
