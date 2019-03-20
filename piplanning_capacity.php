@@ -5,6 +5,7 @@ $left_selected = "CAPACITY";
 include("./nav.php");
 global $db;
 ?>
+<!--Customer Bears style sheet-->
 <link rel="stylesheet" type="text/css" href="styleCustom.css">
 <h3>Capacity Calculator</h3>
 <?php
@@ -21,47 +22,34 @@ for($i = 0; $i < $x; $i++){
 //initializes remaining variables
 $pi_id="";
 $art="";
-$generate_button='New';
 $pi_id_menu='';
+$pi_id_select='';
+$duration = '';
+$overhead_percentage = '';
 
 //Function from db_connection that checks for ART Cookie, if it is not available it will update the cookie with a default value
 setArtCookie();
+$art_select = $_COOKIE['artCookie'];
 
 //Function that uses json file to build ART select menu. Updates selected default with the Cookie value
-$art = buildArtMenu();
+$art = buildArtMenu($art_select);
 
-//uses PI ID json file to build program increment table with the current program intrement id identified through a sql query
-$pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
-$pi_id_json = json_decode($pi_id_file, true);
-$x=count($pi_id_json);
-$pi_id_now_query = "SELECT PI_id FROM cadence where DATE(NOW()) between start_date and end_date + 2";
-$pi_id_select_results = mysqli_query($db, $pi_id_now_query);
-if ($pi_id_select_results->num_rows > 0) {
-  while($pi_id_now = $pi_id_select_results->fetch_assoc()) {
-    $pi_id_select = $pi_id_now["PI_id"];
-  }//end while
-}//end if
-$pi_id_menu='';
-for($i = 0; $i < $x; $i++){
-  $pi_id_item = $pi_id_json[$i]['PI_id'];
-  if($pi_id_item===$pi_id_select){
-    $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'" selected>'.$pi_id_item.'</option>';
-  } else{
-    $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
-  }
+//uses the pi Select Now function to identify the PI ID within the current date and adds it to the pi id select variable for the default
+$pi_id_select = piSelectNow();
+
+//capturing the pi id cookie to use for the array and build the menu list
+if(isset($_COOKIE['piCookie'])){
+  $pi_id = $_COOKIE['piCookie'];
+  $pi_id_menu = buildPi_idMenu($pi_id);
+} else {
+  $pi_id=$pi_id_select;
+  $pi_id_menu = buildPi_idMenu($pi_id);
 };
-$sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$pi_id_select."';";
-$result5 = $db->query($sql5);
-if ($result5->num_rows > 0) {
-    $row5 = $result5->fetch_assoc();
-    $duration = $row5["duration"];
-}
-$sql6 = "SELECT * FROM `preferences` WHERE name='OVERHEAD_PERCENTAGE';";
-$result6 = $db->query($sql6);
-if ($result6->num_rows > 0) {
-    $row6 = $result6->fetch_assoc();
-    $overhead_percentage = $row6["value"];
-}
+//Function for assigning the duration variable
+$duration = getDuration($pi_id_select);
+
+//Function for assigning the overhead percentage
+$overhead_percentage = getOverheadPercentage();
 ?>
 
 <!--
@@ -102,6 +90,7 @@ form for submitting data that will be prepopulated with data from the variables
       </select>
       </td>
     </tr>
+    <tr>
     <td>Program Increment (PI):</td>
     <td>
       <select id="PI_ID" name="pi_id" onchange="
@@ -121,14 +110,14 @@ form for submitting data that will be prepopulated with data from the variables
 </form><br>
 
 <script>
-  //assigning the artCookie to a variable
-  var artCookie = getCookie('artCookie');
-  //running the getTeams when the window is loaded using the cookie
-  $( window ).on( "load", getTeams(artCookie) );
-  function getTeams(art_select){
-    //gets values from JSON file
-    $.getJSON('dataFiles/at_cache.json', function(data){
-      //initializes an array to story the avilable teams
+//assigning the artCookie to a variable
+var artCookie = getCookie('artCookie');
+//running the getTeams when the window is loaded using the cookie
+$( window ).on( "load", getTeams(artCookie) );
+function getTeams(art_select){
+  //gets values from JSON file
+  $.getJSON('dataFiles/at_cache.json', function(data){
+    //initializes an array to story the avilable teams
       var at_list = [];
       //for loop for adding team names to teams_list
       var x=data.length;
@@ -143,13 +132,11 @@ form for submitting data that will be prepopulated with data from the variables
         select.options.length = 0;
         for(index in at_list) {
           select.options[select.options.length] = new Option(at_list[index], index);
-
         }
-        //sets teams as a cookie
-        //document.cookie = escape('teamCookie') + '=' + escape(at_list) ;
       };
     });
   };
+
   //function for capturing the cookie
   function getCookie(cookieName) {
     var name = cookieName + "=";
@@ -167,29 +154,11 @@ form for submitting data that will be prepopulated with data from the variables
     return "";
   };
   </script>
-
-<!-- TABLE GENERATION STUFF - FOR LATER -->
-
-
-<form method="post" action="#" id="maincap">
-
-<?php
-//capturing the pi id cookie to use for the array
-if(isset($_COOKIE['piCookie'])){
-  $pi_id = $_COOKIE['piCookie'];
-} else {
-  $pi_id=$pi_id_select;
-};
-//Defaulting the selected team, this will need to be updated once the table have additional values available
-$selected_team='805 Agile Team';
-  /* Code for capturing the selected team that will need to be used later
-  if(isset($_COOKIE['teamSelectCookie'])){
-  $selected_team = $_COOKIE['teamSelectCookie'];
-  } else {
-    $selected_team='Team TBD';
-  };
-  */
-
+  
+  <form method="post" action="#" id="maincap">
+  <?php
+  //Defaulting the selected team, this will need to be updated once the table have additional values available
+  $selected_team='805 Agile Team';
   //settting up the pi id array for the Iteration # display
   $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
   $count_piid = count($pi_id_array);
@@ -198,15 +167,15 @@ $selected_team='805 Agile Team';
     echo '<h4>Iteration # '.$pi_id_array[$i].'</h4>';
     buildEmployeeTable($selected_team,$duration,$overhead_percentage);
   };
-
-//$result->close();
-?>
-
+  //$result->close();
+  ?>
+<!--Buttons for future Iteration
 <input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
 <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
 <input type="submit" id="capacity-button-blue" name="showNext" value="Show Next iteration_id">
-<input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>">
-<input type="hidden" name="current-sequence" value="<?php echo $sequence; ?>">
+<input type="hidden" name="current-team-selected" value="<?php //echo $selected_team; ?>">
+<input type="hidden" name="current-sequence" value="<?php //echo $sequence; ?>">
+-->
 </form>
 </td>
 </tr>
@@ -221,34 +190,7 @@ $(document).ready(function () {
     infoCallback: false
   });
 });
-
-function autoForm() {
-  document.getElementById('maincap').submit();
-}
-function autoLoad() {
-  var velocity = $("input[name='velocity[]']")
-  .map(function(){return $(this).val();}).get();
-  var daysoff = $("input[name='daysoff[]']")
-  .map(function(){return $(this).val();}).get();
-  var rownum = $("input[name='rownum[]']")
-  .map(function(){return $(this).val();}).get();
-  var overhead = "<?php echo $overhead_percentage ?>";
-  var duration = "<?php echo $duration ?>";
-  var value = "<?php echo $valueForJS ?>";
-  var totalcap_old = "<?php echo $totalcapacity ?>";
-  var icap = 0;
-  for (var i in rownum) {
-    var storypts = Math.round( ( duration - daysoff[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity[i] / 100 ) );
-    $("input[name='storypoints[]']").eq(i).val(storypts);
-    icap += storypts;
-  }
-  document.getElementsByName("icap")[0].innerHTML = icap;
-  var capdiff = icap - icap_old;
-  var tcap = parseInt(capdiff) + parseInt(totalcap_old);
-  document.getElementsByName("totalcap")[0].innerHTML = tcap;
-}
 </script>
 <?php 
-//$db->close(); 
 include("./footer.php"); 
 ?>

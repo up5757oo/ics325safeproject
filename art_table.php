@@ -4,7 +4,17 @@
 $url=$base_url_out;
 $teamlist  = urldecode($_COOKIE['teamCookie']);		// split teamCookie into arraylist called diff_team_names
 $diff_team_names =  explode(",", $teamlist);
-$pi_id = $pi_id_select;
+//checks for the PI ID in the request and the cookie to set the variable. If they are not available it is set to null
+if(isset($_REQUEST['pi_id'])){
+  $pi_id = $_REQUEST['pi_id'];
+}
+elseif(isset($_COOKIE['piCookie'])){
+  $pi_id=$_COOKIE['piCookie'];
+} 
+else {
+  $pi_id = '';
+};
+
 //Creates table headings
 echo "<table id='table_load'><tr><thead class=\"table_head\"><tr>
               <th>No.</th>

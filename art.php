@@ -18,32 +18,21 @@ $pi_id="";
 $art="";
 $at = '';
 $generate_button='New';
-//Uses setArtCookie function defined in db_connection.php to check for artCookie. It will set the Cookie if it is not found
+
+//Function from db_connection that checks for ART Cookie, if it is not available it will update the cookie with a default value
 setArtCookie();
-//Uses buildArtMenu function defined in db_connection.php to set the art variable with the HTML for the ART select menu
-$art = buildArtMenu();
+$art_select = $_COOKIE['artCookie'];
 
-// $pi_id = buildPI_idMenu(); -- from db_connection.php
+//Function that uses json file to build ART select menu. Updates selected default with the Cookie value
+$art = buildArtMenu($art_select);
 
-//uses PI ID json file to build program increment table with the current program intrement id identified through a sql query
-$pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
-$pi_id_json = json_decode($pi_id_file, true);
-$x=count($pi_id_json);
-$pi_id_now_query = "SELECT PI_id FROM cadence where DATE(NOW()) between start_date and end_date + 2";
-$pi_id_select_results = mysqli_query($db, $pi_id_now_query);
-if ($pi_id_select_results->num_rows > 0) {
-  while($pi_id_now = $pi_id_select_results->fetch_assoc()) {
-    $pi_id_select = $pi_id_now["PI_id"];
-  }//end while
-}//end if
-$pi_id_menu='';
-for($i = 0; $i < $x; $i++){
-  $pi_id_item = $pi_id_json[$i]['PI_id'];
-  if($pi_id_item===$pi_id_select){
-    $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'" selected>'.$pi_id_item.'</option>';
-  } else{
-    $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
-  }
+//capturing the pi id cookie to use for the array and build the menu list
+if(isset($_COOKIE['piCookie'])){
+  $pi_id = $_COOKIE['piCookie'];
+  $pi_id_menu = buildPi_idMenu($pi_id);
+} else {
+  $pi_id=$pi_id_select;
+  $pi_id_menu = buildPi_idMenu($pi_id);
 };
 
 $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
@@ -63,9 +52,13 @@ form for submitting data that will be prepopulated with data from the variables
       <tr>
         <td>Program Increment ID:</td>
         <td>
-          <select id="PI_ID" name="pi_id">
-            <?php echo $pi_id_menu; ?>
-          </select>
+        <select id="PI_ID" name="pi_id" onchange="
+        //sets pi_select to selected value
+        var pi_select = this.value;
+        //sets the selected value as the cookie
+        document.cookie = escape('piCookie') + '=' + escape(pi_select) ;">
+        <?php echo $pi_id_menu; ?>
+        </select>
         </td>
       </tr>
       <tr>
