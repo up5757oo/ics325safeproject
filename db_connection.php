@@ -8,7 +8,7 @@
  DEFINE('DATABASE_DATABASE', 'ics325safedb');
  DEFINE('DATABASE_USER', 'root');
  DEFINE('DATABASE_PASSWORD', '');
-
+ global $db;
  $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
  $db->set_charset("utf8");
  $hour = 3600;
@@ -93,13 +93,9 @@ function setArtCookie(){
       } //end cookie check
 };
 
-function buildArtMenu(){
+function buildArtMenu($art_select){
     //initializes the art variable
     $art="";
-    //initializes the selected ART variable
-    $art_select = "";
-    //sets the selected ART with the Cookie
-    $art_select = $_COOKIE['artCookie'];
     //uses json file to build ART select menu. Updates selected default with the Cookie value
     $art_file = file_get_contents("dataFiles/art_cache.json");
     $art_json = json_decode($art_file, true);
@@ -140,15 +136,14 @@ function buildPi_idMenu($pi_id_select){
         $pi_id_item = $pi_id_json[$i]['PI_id'];
         if($pi_id_item===$pi_id_select){
             $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'" selected>'.$pi_id_item.'</option>';
-            echo '<script>console.log("'.$pi_id_menu.'")</script>';
         } else{
             $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
-            echo '<script>console.log("'.$pi_id_menu.'")</script>';
-        } return $pi_id_menu;
-        echo '<script>console.log("'.$pi_id_menu.'")</script>';
+        } 
     }
+    return $pi_id_menu;
 };
 
+//function for building the Team Menu
 function buildTeamMenu(){
     //initializes variables
     $artCookie = '';
@@ -210,7 +205,9 @@ function buildTeamMenu(){
             }else{
                 $storypts = round(($duration-0)*((100-$overhead_percentage)/100)*($row2["value"]/100));
             }
+            //returning the value for JS variable for the autoLoad Javascript function
             $valueForJS = $row2["value"];
+            
             if (isset($daysoff[$rownum]) && !isset($_POST['restore'])  && isset($_POST['submit0'])){
                 $doff = $daysoff[$rownum];
             } else {
@@ -243,5 +240,17 @@ function buildTeamMenu(){
         </tfoot>
         </table>';
         
+        
+    };
+    function getDuration($pi_id_select){
+        $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+        $db->set_charset("utf8");  
+        $sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$pi_id_select."';";
+        $result5 = $db->query($sql5);
+        if ($result5->num_rows > 0) {
+            $row5 = $result5->fetch_assoc();
+            $duration = $row5["duration"];
+        }
+        return $duration;
     };
 ?>

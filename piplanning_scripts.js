@@ -1,39 +1,31 @@
-$(function (){
-    'use strict';
-    
-    function getTeams(art_select){
-        //gets values from JSON file
-        $.getJSON('dataFiles/at_cache.json', function(data){
-          //initializes an array to story the avilable teams
-          var at_list = [];
-          //for loop for adding team names to teams_list
-          var x=data.length;
-          for(var i=0; i < x ; i++){
-            var parent = data[i].parent_name;
-            if(parent == art_select){
-              at_list.push(data[i].team_name);
-            }
-            //updates teams with the calculated list
-            console.log(at_list);
-            //sets teams as a cookie
-            document.cookie = escape('teamCookie') + '=' + escape(at_list) ;
-          };
-        });
-      };
-      //function for capturing the cookie
-      function getCookie(cookieName) {
-        var name = cookieName + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(';');
-        for(var i = 0; i <ca.length; i++) {
-          var c = ca[i];
-          while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-          }
-          if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-          }
-        }
-        return "";
-      };
+$(function () {
+  
+  'use strict';
+  function autoForm() {
+    document.getElementById('maincap').submit();
+  }
+  
+  function autoLoad(overhead,duration,value,totalcap_old) {
+    var overhead = "";
+    var duration = "";
+    var value = "";
+    var totalcap_old = "";
+    var velocity = $("input[name='velocity[]']")
+
+    .map(function(){return $(this).val();}).get();
+    var daysoff = $("input[name='daysoff[]']")
+    .map(function(){return $(this).val();}).get();
+    var rownum = $("input[name='rownum[]']")
+    .map(function(){return $(this).val();}).get();
+    var icap = 0;
+    for (var i in rownum) {
+      var storypts = Math.round( ( duration - daysoff[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity[i] / 100 ) );
+      $("input[name='storypoints[]']").eq(i).val(storypts);
+      icap += storypts;
+    }
+    document.getElementsByName("icap")[0].innerHTML = icap;
+    var capdiff = icap - icap_old;
+    var tcap = parseInt(capdiff) + parseInt(totalcap_old);
+    document.getElementsByName("totalcap")[0].innerHTML = tcap;
+  }
 });
