@@ -59,7 +59,6 @@ if(isset($_COOKIE['piCookie'])){
 
   <?php
     //Create array place holder for col1 & col2
-    include("./db_connection.php");
     $col1= ['1'];
     $col2= ['2'];
     $header_name = 'col1Name';
