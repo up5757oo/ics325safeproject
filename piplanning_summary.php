@@ -6,7 +6,6 @@
 
   include("./nav.php");
   include("./db_connection.php");
-  include("./piplanning_capacity.php");
   global $db;
 
   ?>
