@@ -47,8 +47,6 @@ if(isset($_COOKIE['piCookie'])){
 </tr>
 
 <!-- END PI_STUFF -->
-  <img src="images/work_in_progress.jpg" height = "100" width = "100"/>
-  <h3> Capacity Summary </h3>
   <br> * What is the capacity of each ART in the past Program Increment (PI)?
   <br> * How is the trend looking?
   <br> * What is the total capacity of all ARTs at each PI?
