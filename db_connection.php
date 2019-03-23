@@ -281,6 +281,7 @@ function buildTeamMenu(){
 
             <tbody>';
             $x=count($col1);
+                $row = '';
                 for($i = 0; $i < $x; $i++){
                 $row = $row.'<tr><td>'.$col1[$i].'</td><td>'.$col2[$i].'<td></tr>';
             };

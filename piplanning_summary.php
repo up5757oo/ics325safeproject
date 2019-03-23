@@ -19,5 +19,15 @@
   <br>
   <br> A datatable showing these numbers will be presented here.
   
+  <?php 
+    //Create array place holder for col1 & col2
+    include("./db_connection.php");
+    $col1= ['1'];
+    $col2= ['2'];
+    $header_name = 'col1Name';
+    buildSummaryTable($header_name,$col1,$col2);
+  ?>
+
+
 
 <?php include("./footer.php"); ?>
