@@ -1,6 +1,6 @@
 <?php
 /**
-*   Database connection PHP Page
+*   Database connection PHP Page testing
 *   Bears
  */
 
