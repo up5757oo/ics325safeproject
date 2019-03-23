@@ -86,7 +86,8 @@ form for submitting data that will be prepopulated with data from the variables
       //sets team_select to selected value
       var team_select = this.value;
       //sets the selected value as the cookie
-      document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);"></select>
+      document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);">
+      </select>
       </td>
     </tr>
     <tr>
