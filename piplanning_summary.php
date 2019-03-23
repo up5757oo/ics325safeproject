@@ -15,7 +15,6 @@
 
 <!--  _______________________________________________________________________ -->
   
-
   <h3> Bear's Capacity Summary </h3>
   <?php
 
@@ -58,6 +57,5 @@ if(isset($_COOKIE['piCookie'])){
   <br> * What is the capacity of the entire org (all ARTS) in the current PI and each of 6 Is?
   <br>
   <br> A datatable showing these numbers will be presented here.
-  
 
 <?php include("./footer.php"); ?>
