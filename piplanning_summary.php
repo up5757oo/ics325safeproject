@@ -49,7 +49,7 @@ if(isset($_COOKIE['piCookie'])){
       var pi_select = this.value;
       //sets the selected value as the cookie
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
-      <?php buildARTTable($pi_id);?>">
+        ">
       <?php echo $pi_id_menu; ?>
     </select>
   </td>
@@ -57,11 +57,10 @@ if(isset($_COOKIE['piCookie'])){
 
 <!-- END PI_STUFF -->
 
-<?php include("./footer.php"); ?>
   <?php
-
-buildARTTable($pi_id);
-buildTeamTable($pi_id, 'ART-500');
+  buildARTTable($pi_id);
+  buildTeamTable($pi_id, 'ART-501');
+  include("./footer.php");
 
   ?>
   
