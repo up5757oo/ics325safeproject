@@ -287,4 +287,62 @@ function buildTeamMenu(){
             };
             echo '</tbody> </table>';
         };
+        
+        function buildARTTable($pi_id){
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");  
+            $sql = "SELECT DISTINCT cap.program_increment, art.parent_name, sum(cap.total) as total
+            FROM capacity cap, trains_and_teams art 
+            WHERE art.team_id = cap.team_id  
+            AND program_increment='".$pi_id."'
+            GROUP BY cap.program_increment, art.parent_name
+            ORDER BY cap.program_increment, art.parent_name";
+            $result = $db->query($sql);
+       
+           echo "<table class='floatLeft'>";
+           echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Release Trains</th>";
+           echo "<tr>";
+           echo "<th>Agile Release Train</th>";
+           echo "<th>Total Capacity for PI (Story Points)</th>";
+           if ($result->num_rows > 0) {
+             // output data of each row
+             while($row = $result->fetch_assoc()) {
+                 echo '<tr>';
+                   echo '<td>',$row["parent_name"],'</td>';
+                   echo '<td>',$row["total"],'</td>';
+                 echo '</tr>';
+             }
+           } 
+       
+           echo "</table>";
+        };
+        function buildTeamTable($pi_id, $parent_name){
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");  
+            $sql = "SELECT DISTINCT cap.program_increment, art.team_name, sum(cap.total) as total
+            FROM capacity cap, trains_and_teams art 
+            WHERE art.team_id = cap.team_id  
+            AND art.parent_name ='".$parent_name."'
+            AND program_increment='".$pi_id."'
+            GROUP BY cap.program_increment, art.team_name
+            ORDER BY cap.program_increment, art.team_name";
+           $result = $db->query($sql);
+           echo "<table class='floatRight'>";
+           echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Team</th>";
+           echo "<tr>";
+           echo "<th>Agile Team</th>";
+           echo "<th>Total Capacity for PI (Story Points)</th>";
+           if ($result->num_rows > 0) {
+             // output data of each row
+             while($row = $result->fetch_assoc()) {
+                 echo '<tr>';
+                   echo '<td>',$row["team_name"],'</td>';
+                   echo '<td>',$row["total"],'</td>';
+                 echo '</tr>';
+             }
+           } 
+
+           echo "</table>";
+
+        };
 ?>
