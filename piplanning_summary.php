@@ -48,7 +48,8 @@ if(isset($_COOKIE['piCookie'])){
       //sets pi_select to selected value
       var pi_select = this.value;
       //sets the selected value as the cookie
-      document.cookie = escape('piCookie') + '=' + escape(pi_select) ;">
+      document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+      <?php buildARTTable($pi_id);?>">
       <?php echo $pi_id_menu; ?>
     </select>
   </td>
@@ -58,55 +59,9 @@ if(isset($_COOKIE['piCookie'])){
 
 <?php include("./footer.php"); ?>
   <?php
-    $sql = "SELECT DISTINCT cap.program_increment, art.parent_name, sum(cap.total) as total
-     FROM capacity cap, trains_and_teams art 
-     WHERE art.team_id = cap.team_id  
-     AND program_increment='".$pi_id."'
-     GROUP BY cap.program_increment, art.parent_name
-     ORDER BY cap.program_increment, art.parent_name";
-    $result = $db->query($sql);
 
-    echo "<table class='floatLeft'>";
-    echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Release Trains</th>";
-    echo "<tr>";
-    echo "<th>Agile Release Train</th>";
-    echo "<th>Total Capacity for PI (Story Points)</th>";
-    if ($result->num_rows > 0) {
-      // output data of each row
-      while($row = $result->fetch_assoc()) {
-          echo '<tr>';
-            echo '<td>',$row["parent_name"],'</td>';
-            echo '<td>',$row["total"],'</td>';
-          echo '</tr>';
-      }
-    } 
+buildARTTable($pi_id);
+buildTeamTable($pi_id, 'ART-500');
 
-    echo "</table>";
-
-    $sql = "SELECT DISTINCT cap.program_increment, art.team_name, sum(cap.total) as total
-     FROM capacity cap, trains_and_teams art 
-     WHERE art.team_id = cap.team_id  
-     AND art.parent_name = 'ART-500'
-     AND program_increment='".$pi_id."'
-     GROUP BY cap.program_increment, art.team_name
-     ORDER BY cap.program_increment, art.team_name";
-    $result = $db->query($sql);
-
-    echo "<table class='floatRight'>";
-    echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Team</th>";
-    echo "<tr>";
-    echo "<th>Agile Team</th>";
-    echo "<th>Total Capacity for PI (Story Points)</th>";
-    if ($result->num_rows > 0) {
-      // output data of each row
-      while($row = $result->fetch_assoc()) {
-          echo '<tr>';
-            echo '<td>',$row["team_name"],'</td>';
-            echo '<td>',$row["total"],'</td>';
-          echo '</tr>';
-      }
-    } 
-
-    echo "</table>";
   ?>
   
