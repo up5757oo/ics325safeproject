@@ -58,9 +58,8 @@ if(isset($_COOKIE['piCookie'])){
 
 <?php include("./footer.php"); ?>
 
-
   <?php
-    $sql = "SELECT DISTINCT parent_name FROM trains_and_teams WHERE type='AT'";
+    $sql = "SELECT DISTINCT parent_name FROM trains_and_teams WHERE type='AT' ORDER BY parent_name";
     $result = $db->query($sql);
 
     echo "<table class='floatLeft'>";
@@ -75,16 +74,37 @@ if(isset($_COOKIE['piCookie'])){
           echo '<tr>';
           foreach($row as $key=>$value) {
             echo '<td>',$row["parent_name"],'</td>';
+            echo '<td>filler</td>';
           }
           echo '</tr>';
       }
     } 
+
     echo "</table>";
   ?>
 
-
 <?php
-    $sql = "SELECT DISTINCT team_name FROM trains_and_teams WHERE type='AT'";
+    $topArtQuery = "SELECT DISTINCT parent_name 
+    FROM trains_and_teams 
+    WHERE type='AT' 
+    ORDER BY parent_name 
+    LIMIT 1";
+
+    $topArtValue = $db->query($topArtQuery);
+
+    if ($topArtValue->num_rows > 0) {
+      while($row = $topArtValue->fetch_assoc()) {
+          foreach($row as $key=>$value) {
+            $topArtOutput = $row["parent_name"];
+          }
+      }
+    } 
+
+    $sql = "SELECT DISTINCT team_name
+    FROM trains_and_teams
+    WHERE parent_name='".$topArtOutput."'
+    ORDER BY team_name";
+
     $result = $db->query($sql);
 
     echo "<table class='floatRight'>";
@@ -98,10 +118,14 @@ if(isset($_COOKIE['piCookie'])){
       while($row = $result->fetch_assoc()) {
           echo '<tr>';
           foreach($row as $key=>$value) {
-            echo '<td>',$row["team_name"],'</td>';
+            echo '<td>'.$row["team_name"].'</td>';
+            echo '<td>filler</td>';
+
           }
           echo '</tr>';
+          
       }
+      
     } 
     echo "</table>";
   ?>
