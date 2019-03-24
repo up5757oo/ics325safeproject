@@ -47,6 +47,7 @@ if(isset($_COOKIE['piCookie'])){
       var pi_select = this.value;
       //sets the selected value as the cookie
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+      location.reload();
         ">
       <?php echo $pi_id_menu; ?>
     </select>
