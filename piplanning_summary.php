@@ -1,3 +1,10 @@
+<style>
+
+.floatLeft { width: 48%; float: left; }
+.floatRight {width: 48%; float: right; }
+
+</style>
+
 <?php
 
   $nav_selected = "PIPLANNING";
@@ -49,22 +56,52 @@ if(isset($_COOKIE['piCookie'])){
 
 <!-- END PI_STUFF -->
 
+<?php include("./footer.php"); ?>
 
-  <br> * What is the capacity of each ART in the current PI (PI?)
-  <br> * What is the cpacity of each TEAM in the current PI (PI)?
-  <br> * What is capacity in each Iteration (I)?
-  <br> * What is the capacity of the entire org (all ARTS) in the current PI and each of 6 Is?
-  <br>
-  <br> A datatable showing these numbers will be presented here.
 
   <?php
-    //Create array place holder for col1 & col2
-    $col1= ['1'];
-    $col2= ['2'];
-    $header_name = 'col1Name';
-    buildSummaryTable($header_name,$col1,$col2);
+    $sql = "SELECT DISTINCT parent_name FROM trains_and_teams WHERE type='AT'";
+    $result = $db->query($sql);
+
+    echo "<table class='floatLeft'>";
+    echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Release Trains</th>";
+    echo "<tr>";
+    echo "<th>Agile Release Train</th>";
+    echo "<th>Total Capacity for PI (Story Points)</th>";
+
+    if ($result->num_rows > 0) {
+      // output data of each row
+      while($row = $result->fetch_assoc()) {
+          echo '<tr>';
+          foreach($row as $key=>$value) {
+            echo '<td>',$row["parent_name"],'</td>';
+          }
+          echo '</tr>';
+      }
+    } 
+    echo "</table>";
   ?>
 
 
+<?php
+    $sql = "SELECT DISTINCT team_name FROM trains_and_teams WHERE type='AT'";
+    $result = $db->query($sql);
 
-<?php include("./footer.php"); ?>
+    echo "<table class='floatRight'>";
+    echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Teams</th>";
+    echo "<tr>";
+    echo "<th>Agile Train</th>";
+    echo "<th>Total Capacity for PI (Story Points)</th>";
+
+    if ($result->num_rows > 0) {
+      // output data of each row
+      while($row = $result->fetch_assoc()) {
+          echo '<tr>';
+          foreach($row as $key=>$value) {
+            echo '<td>',$row["team_name"],'</td>';
+          }
+          echo '</tr>';
+      }
+    } 
+    echo "</table>";
+  ?>
