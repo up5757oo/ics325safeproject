@@ -308,6 +308,7 @@ function buildTeamMenu(){
              // output data of each row
              while($row = $result->fetch_assoc()) {
                  echo '<tr>';
+                 //add link to refresh team table with new data when the link is clicked
                    echo '<td>',$row["parent_name"],'</td>';
                    echo '<td>',$row["total"],'</td>';
                  echo '</tr>';
@@ -316,8 +317,9 @@ function buildTeamMenu(){
        
            echo "</table>";
 
+           //add logic default ART team
            buildTeamTable($pi_id, 'ART-501');
-
+          
         };
         
         function buildTeamTable($pi_id, $parent_name){
@@ -347,6 +349,36 @@ function buildTeamMenu(){
            } 
 
            echo "</table>";
+
+        };
+
+        function buildARTChart($pi_id){
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");  
+            $sql = "SELECT DISTINCT cap.program_increment, art.parent_name, sum(cap.total) as total
+            FROM capacity cap, trains_and_teams art 
+            WHERE art.team_id = cap.team_id  
+            AND program_increment='".$pi_id."'
+            GROUP BY cap.program_increment, art.parent_name
+            ORDER BY cap.program_increment, art.parent_name";
+            $result = $db->query($sql);
+
+
+           buildTeamChart($pi_id, 'ART-501');
+        };
+
+        function buildTeamTable($pi_id, $parent_name){
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");  
+            $sql = "SELECT DISTINCT cap.program_increment, art.team_name, sum(cap.total) as total
+            FROM capacity cap, trains_and_teams art 
+            WHERE art.team_id = cap.team_id  
+            AND art.parent_name ='".$parent_name."'
+            AND program_increment='".$pi_id."'
+            GROUP BY cap.program_increment, art.team_name
+            ORDER BY cap.program_increment, art.team_name";
+           $result = $db->query($sql);
+           
 
         };
 ?>
