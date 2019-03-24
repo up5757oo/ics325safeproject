@@ -1,10 +1,20 @@
 <link rel="stylesheet" type="text/css" href="styleCustom.css">
 
-<?php 
+<?php
 $url=$base_url_out;
 $teamlist  = urldecode($_COOKIE['teamCookie']);		// split teamCookie into arraylist called diff_team_names
 $diff_team_names =  explode(",", $teamlist);
-$pi_id = $pi_id_select;
+//checks for the PI ID in the request and the cookie to set the variable. If they are not available it is set to null
+if(isset($_REQUEST['pi_id'])){
+  $pi_id = $_REQUEST['pi_id'];
+}
+elseif(isset($_COOKIE['piCookie'])){
+  $pi_id=$_COOKIE['piCookie'];
+} 
+else {
+  $pi_id = '';
+};
+
 //Creates table headings
 echo "<table id='table_load'><tr><thead class=\"table_head\"><tr>
               <th>No.</th>
@@ -58,28 +68,28 @@ foreach ($diff_team_names as $value){
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
   //removes initial table
-    
+
     $generate_button=$_POST['generate_button'];
     $url=$base_url_out;
     $pi_id = $_REQUEST['pi_id'];
     $art = $_REQUEST['art'];
     $teams= $_REQUEST['teams'];
-  
+
     $teamlist  = $teams;		// split teamlist into arraylist called diff_team_names
     $diff_team_names =  explode(",", $teamlist);
-  
-    if($generate_button==='JS Generate'){
-  
+
+  if($generate_button==='JS Generate'){
+
   echo "<script>
 
-  
+
   /**
   * Updates arrays to repoplate table
   */
-  
+
   teamList_array = teamList.split(\",\");
   ID_iteration_array = [\"".$pi_id . "-1\", \"".$pi_id . "-2\", \"".$pi_id . "-3\", \"".$pi_id . "-4\", \"".$pi_id . "-5\", \"".$pi_id . "-6\", \"".$pi_id . "-IP\"];
-  
+
   /**
   * Runs the functions that will generate the tables
   */
@@ -104,7 +114,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   var th6 = document.createElement('th');
   var th_no = document.createElement('th');
   var th_name = document.createElement('th');
-  
+
   //setting the table header variables
   th_no.appendChild(document.createTextNode('No.'));
   th_name.appendChild(document.createTextNode('Team Name'));
@@ -115,7 +125,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   th4.appendChild(document.createTextNode(ID_iteration_array[4]));
   th5.appendChild(document.createTextNode(ID_iteration_array[5]));
   th6.appendChild(document.createTextNode(ID_iteration_array[6]));
-  
+
   //starting the table
   table_head.appendChild(th_no);
   table_head.appendChild(th_name);
@@ -127,7 +137,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   table_head.appendChild(th5);
   table_head.appendChild(th6);
   table.appendChild(table_head);
-  
+
   /*
   * begins the loop that creates the table rows for each of the teams
   */
@@ -135,16 +145,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     row_id = r + 1;
     c = 0;
     table_link = '';
-  
+
         var row = document.createElement('tr');
         var data_1 = document.createElement('td');
         var data_2 = document.createElement('td');
-  
+
         data_1.appendChild(document.createTextNode(row_id));
         data_2.appendChild(document.createTextNode(teamList_array[r]));
         row.appendChild(data_1);
         row.appendChild(data_2);
-  
+
         for (c = 0; c < ID_iteration_array.length; c++) {
             var data_3 = document.createElement('td');
             var a = document.createElement('a');
@@ -158,16 +168,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             data_3.appendChild(a);
             a.appendChild(document.createTextNode(ID_iteration_array[c]));
             row.appendChild(data_3);
-  
+
     }
     table_body.appendChild(row);
   }
   table.appendChild(table_body);
   document.body.appendChild(table);
     </script>";
-  
+
     }
-  
+
   if($generate_button==='PHP Generate'){
     //removes existing table
     echo "<script>$('#table_load').remove();</script>";
@@ -188,14 +198,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       </tr>
     </thead>
    <tbody class=\"table_body\">";
-  
+
     $increment_pID = 1;					// Vars for incrementing the loop
     $list_num = 1;						// Lists each table number in order
-  
-  
+
+
   ?>
   <?php	//creates the rest of the table, by rows of each team name
-  
+
     foreach ($diff_team_names as $value){
       $team_specific = $value;
       echo "<tr>";
@@ -205,16 +215,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       echo"<td>";
       echo($team_specific);
       echo"</td>";
-  
+
       // creates the URL with the variables
       for($x=1; $x<7; $x++){
         $gen_URL = $url . "?id=" .$pi_id . "-" . $increment_pID . "_" . urlencode($team_specific);
         echo "<td>";
         echo "<a href=$gen_URL title=$gen_URL>".$pi_id. "-" . $increment_pID ."</a>" ; // make gen_URL into an href
         echo "</td>";
-  
+
           $increment_pID ++;	//increment the arraylist and get the next team name & create row
-  
+
       // specific to ending of - ID
         if($increment_pID == 7){
           $gen_URL = $url . "?id=". $pi_id . "-" . "IP" . "_" . urlencode($team_specific);
@@ -231,5 +241,5 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     }
   }
   }
-  
+
 ?>
