@@ -1,3 +1,10 @@
+<style>
+
+.floatLeft { width: 48%; float: left; }
+.floatRight {width: 48%; float: right; }
+
+</style>
+
 <?php
 
   $nav_selected = "PIPLANNING";
@@ -49,22 +56,57 @@ if(isset($_COOKIE['piCookie'])){
 
 <!-- END PI_STUFF -->
 
-
-  <br> * What is the capacity of each ART in the current PI (PI?)
-  <br> * What is the cpacity of each TEAM in the current PI (PI)?
-  <br> * What is capacity in each Iteration (I)?
-  <br> * What is the capacity of the entire org (all ARTS) in the current PI and each of 6 Is?
-  <br>
-  <br> A datatable showing these numbers will be presented here.
-
-  <?php
-    //Create array place holder for col1 & col2
-    $col1= ['1'];
-    $col2= ['2'];
-    $header_name = 'col1Name';
-    buildSummaryTable($header_name,$col1,$col2);
-  ?>
-
-
-
 <?php include("./footer.php"); ?>
+  <?php
+    $sql = "SELECT DISTINCT cap.program_increment, art.parent_name, sum(cap.total) as total
+     FROM capacity cap, trains_and_teams art 
+     WHERE art.team_id = cap.team_id  
+     AND program_increment='".$pi_id."'
+     GROUP BY cap.program_increment, art.parent_name
+     ORDER BY cap.program_increment, art.parent_name";
+    $result = $db->query($sql);
+
+    echo "<table class='floatLeft'>";
+    echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Release Trains</th>";
+    echo "<tr>";
+    echo "<th>Agile Release Train</th>";
+    echo "<th>Total Capacity for PI (Story Points)</th>";
+    if ($result->num_rows > 0) {
+      // output data of each row
+      while($row = $result->fetch_assoc()) {
+          echo '<tr>';
+            echo '<td>',$row["parent_name"],'</td>';
+            echo '<td>',$row["total"],'</td>';
+          echo '</tr>';
+      }
+    } 
+
+    echo "</table>";
+
+    $sql = "SELECT DISTINCT cap.program_increment, art.team_name, sum(cap.total) as total
+     FROM capacity cap, trains_and_teams art 
+     WHERE art.team_id = cap.team_id  
+     AND art.parent_name = 'ART-500'
+     AND program_increment='".$pi_id."'
+     GROUP BY cap.program_increment, art.team_name
+     ORDER BY cap.program_increment, art.team_name";
+    $result = $db->query($sql);
+
+    echo "<table class='floatRight'>";
+    echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Team</th>";
+    echo "<tr>";
+    echo "<th>Agile Team</th>";
+    echo "<th>Total Capacity for PI (Story Points)</th>";
+    if ($result->num_rows > 0) {
+      // output data of each row
+      while($row = $result->fetch_assoc()) {
+          echo '<tr>';
+            echo '<td>',$row["team_name"],'</td>';
+            echo '<td>',$row["total"],'</td>';
+          echo '</tr>';
+      }
+    } 
+
+    echo "</table>";
+  ?>
+  
