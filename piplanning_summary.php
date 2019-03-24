@@ -1,7 +1,7 @@
 <?php
 
   $nav_selected = "PIPLANNING";
-  $left_buttons = "YES"; 
+  $left_buttons = "YES";
   $left_selected = "SUMMARY";
 
   include("./nav.php");
@@ -13,7 +13,7 @@
   <link rel="stylesheet" type="text/css" href="styleCustom.css">
 
 <!--  _______________________________________________________________________ -->
-  
+
   <h3> Bear's Capacity Summary </h3>
   <?php
 
@@ -56,5 +56,15 @@ if(isset($_COOKIE['piCookie'])){
   <br> * What is the capacity of the entire org (all ARTS) in the current PI and each of 6 Is?
   <br>
   <br> A datatable showing these numbers will be presented here.
+
+  <?php
+    //Create array place holder for col1 & col2
+    $col1= ['1'];
+    $col2= ['2'];
+    $header_name = 'col1Name';
+    buildSummaryTable($header_name,$col1,$col2);
+  ?>
+
+
 
 <?php include("./footer.php"); ?>

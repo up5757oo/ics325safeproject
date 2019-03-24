@@ -1,6 +1,6 @@
 <?php
 /**
-*   Database connection PHP Page testing
+*   Database connection PHP Page
 *   Bears
  */
 
@@ -266,5 +266,25 @@ function buildTeamMenu(){
                 $overhead_percentage = $row6["value"];
             }
             return $overhead_percentage;
+        };
+  
+
+        function buildSummaryTable($header_name,$col1,$col2){
+            echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+            width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+            <thead>
+               <tr id="capacity-table-first-row">
+               <th id="capacity-table-td">'.$header_name.'</th>
+               <th id="capacity-table-td">Total Capacity for PI (Story Points)</th>
+               </tr>
+            </thead>
+
+            <tbody>';
+            $x=count($col1);
+                $row = '';
+                for($i = 0; $i < $x; $i++){
+                $row = $row.'<tr><td>'.$col1[$i].'</td><td>'.$col2[$i].'<td></tr>';
+            };
+            echo '</tbody> </table>';
         };
 ?>
