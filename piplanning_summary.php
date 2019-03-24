@@ -1,8 +1,6 @@
 <style>
-
-.floatLeft { width: 48%; float: left; }
-.floatRight {width: 48%; float: right; }
-
+  .floatLeft { width: 48%; float: left; }
+  .floatRight {width: 48%; float: right; }
 </style>
 
 <?php
@@ -63,4 +61,3 @@ if(isset($_COOKIE['piCookie'])){
   include("./footer.php");
 
   ?>
-  
