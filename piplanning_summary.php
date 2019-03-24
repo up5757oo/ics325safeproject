@@ -113,19 +113,18 @@ if(isset($_COOKIE['piCookie'])){
     echo "<th>Agile Train</th>";
     echo "<th>Total Capacity for PI (Story Points)</th>";
 
-    if ($result->num_rows > 0) {
+    if ($result->num_rows > 0)
+     {
       // output data of each row
       while($row = $result->fetch_assoc()) {
           echo '<tr>';
           foreach($row as $key=>$value) {
             echo '<td>'.$row["team_name"].'</td>';
             echo '<td>filler</td>';
-
           }
           echo '</tr>';
-          
       }
-      
     } 
     echo "</table>";
   ?>
+  
