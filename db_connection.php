@@ -315,7 +315,11 @@ function buildTeamMenu(){
            } 
        
            echo "</table>";
+
+           buildTeamTable($pi_id, 'ART-501');
+
         };
+        
         function buildTeamTable($pi_id, $parent_name){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");  

@@ -58,7 +58,7 @@ if(isset($_COOKIE['piCookie'])){
 
   <?php
   buildARTTable($pi_id);
-  buildTeamTable($pi_id, 'ART-501');
+
   include("./footer.php");
 
   ?>
