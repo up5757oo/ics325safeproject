@@ -1,8 +1,6 @@
 <style>
-
-.floatLeft { width: 48%; float: left; }
-.floatRight {width: 48%; float: right; }
-
+  .floatLeft { width: 48%; float: left; }
+  .floatRight {width: 48%; float: right; }
 </style>
 
 <?php
@@ -58,12 +56,13 @@ if(isset($_COOKIE['piCookie'])){
 
 <?php include("./footer.php"); ?>
   <?php
-    $sql = "SELECT DISTINCT cap.program_increment, art.parent_name, sum(cap.total) as total
-     FROM capacity cap, trains_and_teams art 
-     WHERE art.team_id = cap.team_id  
-     AND program_increment='".$pi_id."'
-     GROUP BY cap.program_increment, art.parent_name
-     ORDER BY cap.program_increment, art.parent_name";
+
+    //Agile Release Trains Table
+    $sql = "SELECT DISTINCT parent_name
+    FROM trains_and_teams
+    WHERE type='AT'
+    ORDER BY parent_name";
+
     $result = $db->query($sql);
 
     echo "<table class='floatLeft'>";
@@ -75,34 +74,74 @@ if(isset($_COOKIE['piCookie'])){
       // output data of each row
       while($row = $result->fetch_assoc()) {
           echo '<tr>';
-            echo '<td>',$row["parent_name"],'</td>';
-            echo '<td>',$row["total"],'</td>';
+          foreach($row as $key=>$value) {
+            echo '<td>'.$row["parent_name"].'</td>';
+          }
+
+          $sql2 = "SELECT SUM(total)
+          FROM capacity
+          WHERE (team_name='Agile Team 1000 1' OR team_name ='Agile Team 1000 6') AND program_increment='".$pi_id."'";
+          $result2 = $db->query($sql2);
+
+          while($row2 = $result2->fetch_assoc()) {
+              foreach($row2 as $key=>$value) {
+                echo '<td>'.$row2["SUM(total)"].'</td>';
+              }
+            }
+
           echo '</tr>';
       }
     } 
-
     echo "</table>";
 
-    $sql = "SELECT DISTINCT cap.program_increment, art.team_name, sum(cap.total) as total
-     FROM capacity cap, trains_and_teams art 
-     WHERE art.team_id = cap.team_id  
-     AND art.parent_name = 'ART-500'
-     AND program_increment='".$pi_id."'
-     GROUP BY cap.program_increment, art.team_name
-     ORDER BY cap.program_increment, art.team_name";
-    $result = $db->query($sql);
+      //Agile Teams Table
+      $topArtQuery = "SELECT DISTINCT parent_name 
+      FROM trains_and_teams 
+      WHERE type='AT' 
+      ORDER BY parent_name 
+      LIMIT 1";
+
+      $topArtValue = $db->query($topArtQuery);
+
+      if ($topArtValue->num_rows > 0) {
+        while($row = $topArtValue->fetch_assoc()) {
+            foreach($row as $key=>$value) {
+              $topArtOutput = $row["parent_name"];
+            }
+        }
+      } 
+
+      $sql = "SELECT DISTINCT team_name
+      FROM trains_and_teams
+      WHERE parent_name='".$topArtOutput."'
+      ORDER BY team_name";
+      $result = $db->query($sql);
 
     echo "<table class='floatRight'>";
     echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Team</th>";
     echo "<tr>";
     echo "<th>Agile Team</th>";
     echo "<th>Total Capacity for PI (Story Points)</th>";
-    if ($result->num_rows > 0) {
+
+    if ($result->num_rows > 0){
       // output data of each row
       while($row = $result->fetch_assoc()) {
           echo '<tr>';
-            echo '<td>',$row["team_name"],'</td>';
-            echo '<td>',$row["total"],'</td>';
+          foreach($row as $key=>$value) {
+            echo '<td>'.$row["team_name"].'</td>';
+          }
+          
+          $sql2 = "SELECT SUM(total)
+          FROM capacity
+          WHERE team_name ='".$row["team_name"]."' AND program_increment='".$pi_id."'";
+          $result2 = $db->query($sql2);
+
+      while($row2 = $result2->fetch_assoc()) {
+          foreach($row2 as $key=>$value) {
+            echo '<td>'.$row2["SUM(total)"].'</td>';
+          }
+          
+        }
           echo '</tr>';
       }
     } 
