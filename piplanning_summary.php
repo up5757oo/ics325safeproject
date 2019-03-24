@@ -59,6 +59,7 @@ if(isset($_COOKIE['piCookie'])){
 <?php include("./footer.php"); ?>
 
   <?php
+    //Agile Release Trains Table
     $sql = "SELECT DISTINCT parent_name FROM trains_and_teams WHERE type='AT' ORDER BY parent_name";
     $result = $db->query($sql);
 
@@ -74,16 +75,16 @@ if(isset($_COOKIE['piCookie'])){
           echo '<tr>';
           foreach($row as $key=>$value) {
             echo '<td>',$row["parent_name"],'</td>';
-            echo '<td>filler</td>';
+
           }
           echo '</tr>';
       }
     } 
-
     echo "</table>";
   ?>
 
 <?php
+    //Agile Teams Table
     $topArtQuery = "SELECT DISTINCT parent_name 
     FROM trains_and_teams 
     WHERE type='AT' 
@@ -106,8 +107,6 @@ if(isset($_COOKIE['piCookie'])){
     ORDER BY team_name";
     $result = $db->query($sql);
 
-
-
     echo "<table class='floatRight'>";
     echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Teams</th>";
     echo "<tr>";
@@ -123,7 +122,7 @@ if(isset($_COOKIE['piCookie'])){
             echo '<td>'.$row["team_name"].'</td>';
           }
 
-          $sql2 = "SELECT  total
+          $sql2 = "SELECT total
           FROM capacity
           WHERE team_name ='".$row["team_name"]."' AND program_increment='".$pi_id."'
           LIMIT 1";
