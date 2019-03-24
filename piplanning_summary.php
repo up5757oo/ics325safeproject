@@ -104,8 +104,9 @@ if(isset($_COOKIE['piCookie'])){
     FROM trains_and_teams
     WHERE parent_name='".$topArtOutput."'
     ORDER BY team_name";
-
     $result = $db->query($sql);
+
+
 
     echo "<table class='floatRight'>";
     echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Teams</th>";
@@ -120,11 +121,24 @@ if(isset($_COOKIE['piCookie'])){
           echo '<tr>';
           foreach($row as $key=>$value) {
             echo '<td>'.$row["team_name"].'</td>';
-            echo '<td>filler</td>';
           }
+
+          $sql2 = "SELECT  total
+          FROM capacity
+          WHERE team_name ='".$row["team_name"]."' AND program_increment='".$pi_id."'
+          LIMIT 1";
+          $result2 = $db->query($sql2);
+
+      while($row2 = $result2->fetch_assoc()) {
+          foreach($row2 as $key=>$value) {
+            echo '<td>'.$row2["total"].'</td>';
+          }
+          
+        }
           echo '</tr>';
       }
     } 
+  
     echo "</table>";
   ?>
   
