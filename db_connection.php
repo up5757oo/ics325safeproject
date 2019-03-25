@@ -1,3 +1,7 @@
+
+<link rel="stylesheet" type="text/css" href="styleCustom.css">
+<script type="text/javascript" src="piplanning_scripts.js"></script>
+
 <?php
 /**
 *   Database connection PHP Page
@@ -297,8 +301,12 @@ function buildTeamMenu(){
             AND program_increment='".$pi_id."'
             GROUP BY cap.program_increment, art.parent_name
             ORDER BY cap.program_increment, art.parent_name";
+            
             $result = $db->query($sql);
-       
+
+            
+
+
            echo "<table class='floatLeft'>";
            echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Release Trains</th>";
            echo "<tr>";
@@ -308,46 +316,32 @@ function buildTeamMenu(){
              // output data of each row
              while($row = $result->fetch_assoc()) {
                  echo '<tr>';
-                 //add link to refresh team table with new data when the link is clicked
-                   echo '<td>',$row["parent_name"],'</td>';
-                   echo '<td>',$row["total"],'</td>';
-                 echo '</tr>';
+                   echo '<td><a href="#" id="testID">'.$row["parent_name"].'</a></td>';
+                   echo '<td>'.$row["total"].'</td>';
+                 echo '</tr>'; 
              }
-           }; 
+           } 
 
-           $sql2 = "SELECT DISTINCT cap.program_increment, sum(cap.total) as final_total
-           FROM capacity cap, trains_and_teams art 
-           WHERE art.team_id = cap.team_id  
-           AND program_increment='".$pi_id."'
-           GROUP BY cap.program_increment
-           ORDER BY cap.program_increment, art.parent_name, art.team_name";
-           $result2 = $db->query($sql2);
-           $final_total ='';
-           if ($result2->num_rows > 0) {
-               while($row = $result2->fetch_assoc()) {
-               $final_total = $row["final_total"];
-               }
+           echo "</table>";
+
+           //Returns first alphabetical ART
+           $topArtQuery = "SELECT DISTINCT parent_name 
+           FROM trains_and_teams 
+           WHERE type='AT' 
+           ORDER BY parent_name 
+           LIMIT 1";
+           $topArtValue = $db->query($topArtQuery);
+           if ($topArtValue->num_rows > 0) {
+             while($row = $topArtValue->fetch_assoc()) {
+                 foreach($row as $key=>$value) {
+                   $topArtOutput = $row["parent_name"];
+                 }
              }
+           } 
 
-             echo "<td>Final Total of ".$pi_id."</td><td>".$final_total."</td></table>";
-
-           //logic default ART team
-           $sql3= "SELECT DISTINCT art.parent_name
-            FROM capacity cap, trains_and_teams art 
-            WHERE art.team_id = cap.team_id  
-            AND program_increment='".$pi_id."'
-            ORDER BY cap.program_increment, art.parent_name, art.team_name
-            LIMIT 1";
-            $result3 = $db->query($sql3);
-            $art_default='';
-            if ($result3->num_rows > 0) {
-                while($row = $result3->fetch_assoc()) {
-                $art_default = $row["parent_name"];
-                }
-              }
-           buildTeamTable($pi_id, $art_default);
+           buildTeamTable($pi_id, $topArtOutput);
         };
-        
+
         function buildTeamTable($pi_id, $parent_name){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");  
