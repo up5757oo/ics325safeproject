@@ -382,8 +382,11 @@ function buildTeamMenu(){
                $final_total = $row["final_total"];
                }
              }
+             if($final_total > 0){
+                echo "<td>Final Total of ".$parent_name." in ".$pi_id."</td><td>".$final_total."</td></table>";
+             }
 
-             echo "<td>Final Total of ".$parent_name." in ".$pi_id."</td><td>".$final_total."</td></table>";
+             
 
         };
 
