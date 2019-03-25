@@ -320,39 +320,26 @@ function buildTeamMenu(){
                    echo '<td>'.$row["total"].'</td>';
                  echo '</tr>';
              }
-           };
+           }
 
-           $sql2 = "SELECT DISTINCT cap.program_increment, sum(cap.total) as final_total
-           FROM capacity cap, trains_and_teams art
-           WHERE art.team_id = cap.team_id
-           AND program_increment='".$pi_id."'
-           GROUP BY cap.program_increment
-           ORDER BY cap.program_increment, art.parent_name, art.team_name";
-           $result2 = $db->query($sql2);
-           $final_total ='';
-           if ($result2->num_rows > 0) {
-               while($row = $result2->fetch_assoc()) {
-               $final_total = $row["final_total"];
-               }
+           echo "</table>";
+
+           //Returns first alphabetical ART
+           $topArtQuery = "SELECT DISTINCT parent_name
+           FROM trains_and_teams
+           WHERE type='AT'
+           ORDER BY parent_name
+           LIMIT 1";
+           $topArtValue = $db->query($topArtQuery);
+           if ($topArtValue->num_rows > 0) {
+             while($row = $topArtValue->fetch_assoc()) {
+                 foreach($row as $key=>$value) {
+                   $topArtOutput = $row["parent_name"];
+                 }
              }
+           }
 
-             echo "<td>Final Total of ".$pi_id."</td><td>".$final_total."</td></table>";
-
-           //logic default ART team
-           $sql3= "SELECT DISTINCT art.parent_name
-            FROM capacity cap, trains_and_teams art
-            WHERE art.team_id = cap.team_id
-            AND program_increment='".$pi_id."'
-            ORDER BY cap.program_increment, art.parent_name, art.team_name
-            LIMIT 1";
-            $result3 = $db->query($sql3);
-            $art_default='';
-            if ($result3->num_rows > 0) {
-                while($row = $result3->fetch_assoc()) {
-                $art_default = $row["parent_name"];
-                }
-              }
-           buildTeamTable($pi_id, $art_default);
+           buildTeamTable($pi_id, $topArtOutput);
         };
 
         function buildTeamTable($pi_id, $parent_name){
