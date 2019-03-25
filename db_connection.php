@@ -340,7 +340,6 @@ function buildTeamMenu(){
            } 
 
            buildTeamTable($pi_id, $topArtOutput);
-
         };
 
         function buildTeamTable($pi_id, $parent_name){
@@ -369,7 +368,22 @@ function buildTeamMenu(){
              }
            } 
 
-           echo "</table>";
+           $sql2 = "SELECT DISTINCT cap.program_increment, sum(cap.total) as final_total
+           FROM capacity cap, trains_and_teams art 
+           WHERE art.team_id = cap.team_id  
+           AND art.parent_name ='".$parent_name."'
+           AND program_increment='".$pi_id."'
+           GROUP BY cap.program_increment
+           ORDER BY cap.program_increment, art.team_name;";
+           $result2 = $db->query($sql2);
+           $final_total ='';
+           if ($result2->num_rows > 0) {
+               while($row = $result2->fetch_assoc()) {
+               $final_total = $row["final_total"];
+               }
+             }
+
+             echo "<td>Final Total of ".$parent_name." in ".$pi_id."</td><td>".$final_total."</td></table>";
 
         };
 
