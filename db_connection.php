@@ -313,13 +313,25 @@ function buildTeamMenu(){
                    echo '<td>',$row["total"],'</td>';
                  echo '</tr>';
              }
-           } 
+           }; 
        
            echo "</table>";
 
-           //add logic default ART team
-           buildTeamTable($pi_id, 'ART-501');
-          
+           //logic default ART team
+           $sql2 = "SELECT DISTINCT art.parent_name
+            FROM capacity cap, trains_and_teams art 
+            WHERE art.team_id = cap.team_id  
+            AND program_increment='".$pi_id."'
+            ORDER BY cap.program_increment, art.parent_name, art.team_name
+            LIMIT 1";
+            $result2 = $db->query($sql2);
+            $art_default='';
+            if ($result2->num_rows > 0) {
+                while($row = $result2->fetch_assoc()) {
+                $art_default = $row["parent_name"];
+                }
+              }
+           buildTeamTable($pi_id, $art_default);
         };
         
         function buildTeamTable($pi_id, $parent_name){
