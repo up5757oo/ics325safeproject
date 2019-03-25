@@ -1,3 +1,7 @@
+
+<link rel="stylesheet" type="text/css" href="styleCustom.css">
+<script type="text/javascript" src="piplanning_scripts.js"></script>
+
 <?php
 /**
 *   Database connection PHP Page
@@ -297,8 +301,12 @@ function buildTeamMenu(){
             AND program_increment='".$pi_id."'
             GROUP BY cap.program_increment, art.parent_name
             ORDER BY cap.program_increment, art.parent_name";
+            
             $result = $db->query($sql);
-       
+
+            
+
+
            echo "<table class='floatLeft'>";
            echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Release Trains</th>";
            echo "<tr>";
@@ -308,20 +316,33 @@ function buildTeamMenu(){
              // output data of each row
              while($row = $result->fetch_assoc()) {
                  echo '<tr>';
-                 //add link to refresh team table with new data when the link is clicked
-                   echo '<td>',$row["parent_name"],'</td>';
-                   echo '<td>',$row["total"],'</td>';
-                 echo '</tr>';
+                   echo '<td><a href="#" id="testID">'.$row["parent_name"].'</a></td>';
+                   echo '<td>'.$row["total"].'</td>';
+                 echo '</tr>'; 
              }
            } 
-       
+
            echo "</table>";
 
-           //add logic default ART team
-           buildTeamTable($pi_id, 'ART-501');
-          
+           //Returns first alphabetical ART
+           $topArtQuery = "SELECT DISTINCT parent_name 
+           FROM trains_and_teams 
+           WHERE type='AT' 
+           ORDER BY parent_name 
+           LIMIT 1";
+           $topArtValue = $db->query($topArtQuery);
+           if ($topArtValue->num_rows > 0) {
+             while($row = $topArtValue->fetch_assoc()) {
+                 foreach($row as $key=>$value) {
+                   $topArtOutput = $row["parent_name"];
+                 }
+             }
+           } 
+
+           buildTeamTable($pi_id, $topArtOutput);
+
         };
-        
+
         function buildTeamTable($pi_id, $parent_name){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");  
