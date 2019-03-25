@@ -372,4 +372,34 @@ function buildTeamMenu(){
            echo "</table>";
 
         };
+
+        function buildARTChart($pi_id){
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");  
+            $sql = "SELECT DISTINCT cap.program_increment, art.parent_name, sum(cap.total) as total
+            FROM capacity cap, trains_and_teams art 
+            WHERE art.team_id = cap.team_id  
+            AND program_increment='".$pi_id."'
+            GROUP BY cap.program_increment, art.parent_name
+            ORDER BY cap.program_increment, art.parent_name";
+            $result = $db->query($sql);
+
+
+           buildTeamChart($pi_id, 'ART-501');
+        };
+
+        function buildTeamTable($pi_id, $parent_name){
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");  
+            $sql = "SELECT DISTINCT cap.program_increment, art.team_name, sum(cap.total) as total
+            FROM capacity cap, trains_and_teams art 
+            WHERE art.team_id = cap.team_id  
+            AND art.parent_name ='".$parent_name."'
+            AND program_increment='".$pi_id."'
+            GROUP BY cap.program_increment, art.team_name
+            ORDER BY cap.program_increment, art.team_name";
+           $result = $db->query($sql);
+           
+
+        };
 ?>
