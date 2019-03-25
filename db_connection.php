@@ -316,7 +316,7 @@ function buildTeamMenu(){
              // output data of each row
              while($row = $result->fetch_assoc()) {
                  echo '<tr>';
-                   echo '<td><a href="#" id="testID">'.$row["parent_name"].'</a></td>';
+                   echo '<td><a href="#" id="'.$row["parent_name"].'" onclick = "callTeamTable("'.$pi_id.'", "'.$row["parent_name"].'");">'.$row["parent_name"].'</a></td>';
                    echo '<td>'.$row["total"].'</td>';
                  echo '</tr>';
              }

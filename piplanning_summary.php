@@ -59,5 +59,20 @@ if(isset($_COOKIE['piCookie'])){
   <?php
   buildARTTable($pi_id);
   include("./footer.php");
-
   ?>
+  <script>
+    var pi_id ='';
+    var team = '';
+    function callTeamTable(pi_id, team) {
+      console.log(pi_id);
+      console.log(team);
+      document.cookie = escape('piidTableCookie') + '=' + escape(pi_id) ;
+      document.cookie = escape('teamTableCookie') + '=' + escape(team) ;
+      <?php 
+      $pi_id = $_COOKIE['piCookie'];
+      $parent_name = $_COOKIE['teamTableCookie'];
+      buildTeamTable($pi_id, $parent_name);
+      ?>
+      return null;
+    };
+</script>
