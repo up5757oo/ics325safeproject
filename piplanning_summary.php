@@ -1,7 +1,12 @@
+<style>
+  .floatLeft { width: 48%; float: left; }
+  .floatRight {width: 48%; float: right; }
+</style>
+
 <?php
 
   $nav_selected = "PIPLANNING";
-  $left_buttons = "YES"; 
+  $left_buttons = "YES";
   $left_selected = "SUMMARY";
 
   include("./nav.php");
@@ -11,9 +16,8 @@
   ?>
 
   <link rel="stylesheet" type="text/css" href="styleCustom.css">
-
 <!--  _______________________________________________________________________ -->
-  
+
   <h3> Bear's Capacity Summary </h3>
   <?php
 
@@ -41,7 +45,9 @@ if(isset($_COOKIE['piCookie'])){
       //sets pi_select to selected value
       var pi_select = this.value;
       //sets the selected value as the cookie
-      document.cookie = escape('piCookie') + '=' + escape(pi_select) ;">
+      document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+      location.reload();
+        ">
       <?php echo $pi_id_menu; ?>
     </select>
   </td>
@@ -49,12 +55,15 @@ if(isset($_COOKIE['piCookie'])){
 
 <!-- END PI_STUFF -->
 
+  <?php
+  buildARTTable($pi_id);
+  if(isset($_COOKIE['teamTableCookie'])){
+    $pi_id = $_COOKIE['piCookie'];
+    $team = $_COOKIE['teamTableCookie'];
+    buildTeamTable($pi_id, $team);
+  } else {
+    '';
+  };
 
-  <br> * What is the capacity of each ART in the current PI (PI?)
-  <br> * What is the cpacity of each TEAM in the current PI (PI)?
-  <br> * What is capacity in each Iteration (I)?
-  <br> * What is the capacity of the entire org (all ARTS) in the current PI and each of 6 Is?
-  <br>
-  <br> A datatable showing these numbers will be presented here.
-
-<?php include("./footer.php"); ?>
+  include("./footer.php");
+  ?>
