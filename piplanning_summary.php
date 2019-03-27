@@ -16,7 +16,6 @@
   ?>
 
   <link rel="stylesheet" type="text/css" href="styleCustom.css">
-
 <!--  _______________________________________________________________________ -->
 
   <h3> Bear's Capacity Summary </h3>
@@ -58,6 +57,13 @@ if(isset($_COOKIE['piCookie'])){
 
   <?php
   buildARTTable($pi_id);
-  include("./footer.php");
+  if(isset($_COOKIE['teamTableCookie'])){
+    $pi_id = $_COOKIE['piCookie'];
+    $team = $_COOKIE['teamTableCookie'];
+    buildTeamTable($pi_id, $team);
+  } else {
+    '';
+  };
 
+  include("./footer.php");
   ?>
