@@ -98,11 +98,20 @@ if(isset($_COOKIE['piCookie'])){
       };
 
       var chart = new google.visualization.PieChart(document.getElementById(\'artPieChart\'));
+      function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+        if (selectedItem) {
+          var art_update = data.getValue(selectedItem.row, 0);
+          document.cookie = escape(\'teamTableCookie\') + \'=\' + escape(art_update); 
+          location.reload();
+        }
+      }
 
+      google.visualization.events.addListener(chart, \'select\', selectHandler);
       chart.draw(data, options);
     }
-  </script>
-  ';
+    
+  </script>';
   
 //--------------------------------------------------------------------------------------
 
