@@ -14,6 +14,7 @@
   .floatRight {width: 48%; float: right; }
 </style>
 <link rel="stylesheet" type="text/css" href="styleCustom.css">
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <!--  _______________________________________________________________________ -->
   
   <h3> Bear's Capacity Trend Graph </h3>
@@ -50,14 +51,13 @@ if(isset($_COOKIE['piCookie'])){
     </select>
   </td>
 </tr>
+<tr>
+<td><div id="artPieChart" class="floatLeft" style="width: 500px; height: 500px;"><div></td>
+<td><div id="teamPieChart" class="floatRight" style="width: 500px; height: 500px;"><div></td>
+</tr>
 
-<!-- END PI_STUFF -->
-  <br> * What is the capacity of each ART in the past Program Increment (PI)?
-  <br> * How is the trend looking?
-  <br> * What is the total capacity of all ARTs at each PI?
-  <br> * We will show a comparison / trend and summary on this page.
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  
+</table>
+
   <?php
   buildARTChart($pi_id);
   if(isset($_COOKIE['teamTableCookie'])){
@@ -102,7 +102,7 @@ if(isset($_COOKIE['piCookie'])){
       chart.draw(data, options);
     }
   </script>
-  <div id="artPieChart" class="floatLeft" style="width: 900px; height: 500px;"><div>';
+  ';
   
 //--------------------------------------------------------------------------------------
 
@@ -176,7 +176,7 @@ function buildTeamChart($pi_id, $parent_name){
       chart2.draw(data2, options2);
     }
   </script>
-  <div id="teamPieChart" class="floatRight" style="width: 900px; height: 500px;"><div>';
+  ';
   
    //--------------------------------------------------------------
    $sql2 = "SELECT DISTINCT cap.program_increment, sum(cap.total) as final_total
@@ -194,7 +194,7 @@ function buildTeamChart($pi_id, $parent_name){
        }
      }
      if($final_total > 0){
-        echo "<td>Final Total of ".$parent_name." in ".$pi_id."</td><td>".$final_total."</td></table>";
+        echo '<div class= "floatRight">Final Total for '.$parent_name.' '.$pi_id.': '.$final_total.'</div>';
      }
 };
   ?>
