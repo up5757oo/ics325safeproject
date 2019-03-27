@@ -94,7 +94,8 @@ if(isset($_COOKIE['piCookie'])){
       };
       echo 'var data = google.visualization.arrayToDataTable(['.$artData.']);';
       echo 'var options = {
-        title: \'Agile Release Trains for '.$pi_id.'\'
+        title: \'Agile Release Trains for '.$pi_id.'\',
+        colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
 
       var chart = new google.visualization.PieChart(document.getElementById(\'artPieChart\'));
@@ -177,7 +178,8 @@ function buildTeamChart($pi_id, $parent_name){
       };
       echo 'var data2 = google.visualization.arrayToDataTable(['.$teamData.']);';
       echo 'var options2 = {
-        title: \'Agile Teams for '.$parent_name.' in '.$pi_id.'\'
+        title: \'Agile Teams for '.$parent_name.' in '.$pi_id.'\',
+        colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
 
       var chart2 = new google.visualization.PieChart(document.getElementById(\'teamPieChart\'));
