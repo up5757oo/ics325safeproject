@@ -16,42 +16,6 @@
   ?>
 
   <link rel="stylesheet" type="text/css" href="styleCustom.css">
-
-  <script>
-    function getCookie(cookieName) {
-    var name = cookieName + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  };
-
-    function callTeamTable(){
-      var piCookie = getCookie('piCookie'); 
-      var teamCookie = getCookie('teamTableCookie'); 
-
-      console.log(piCookie);
-      console.log(teamCookie);
-
-      
-      return "<?php if(isset($_COOKIE['piCookie'])){
-        if(isset($_COOKIE['teamTableCookie'])){
-          $pi_id = $_COOKIE['piCookie'];
-          $parent_name = $_COOKIE['teamTableCookie'];
-          buildTeamTable($pi_id, $parent_name);
-        };
-      };
-      ?>";
-    };
-</script>
 <!--  _______________________________________________________________________ -->
 
   <h3> Bear's Capacity Summary </h3>
@@ -100,8 +64,6 @@ if(isset($_COOKIE['piCookie'])){
   } else {
     '';
   };
-  ?>
-  <script>callTeamTable();</script>
-  <?php
+
   include("./footer.php");
   ?>
