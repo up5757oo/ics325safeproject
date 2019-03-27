@@ -351,8 +351,6 @@ function buildTeamMenu(){
                  }
              }
            }
-
-           //buildTeamTable($pi_id, $topArtOutput);
         };
 
         function buildTeamTable($pi_id, $parent_name){
@@ -398,9 +396,6 @@ function buildTeamMenu(){
              if($final_total > 0){
                 echo "<td>Final Total of ".$parent_name." in ".$pi_id."</td><td>".$final_total."</td></table>";
              }
-
-             
-
         };
 
 ?>
