@@ -180,7 +180,7 @@ function buildTeamChart($pi_id, $parent_name){
         title: \'Agile Teams for '.$parent_name.' in '.$pi_id.'\',
         colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
-
+      
       var chart2 = new google.visualization.ColumnChart(document.getElementById(\'teamPieChart\'));
 
       chart2.draw(data2, options2);
