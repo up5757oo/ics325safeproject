@@ -1,6 +1,7 @@
 
-<link rel="stylesheet" type="text/css" href="styleCustom.css">
+
 <script type="text/javascript" src="piplanning_scripts.js"></script>
+<link rel="stylesheet" type="text/css" href="styleCustom.css">
 
 <?php
 /**
@@ -333,7 +334,7 @@ function buildTeamMenu(){
                }
              }
              if($final_total > 0){
-                echo "<td>Final Total of ".$pi_id."</td><td>".$final_total."</td></table>";
+                echo "<td style='background-color:lightgrey; font-weight:bold;'>Final Total of ".$pi_id."</td><td style='background-color:lightgrey; font-weight:bold;'>".$final_total."</td></table>";
              }
 ;
 
@@ -373,8 +374,8 @@ function buildTeamMenu(){
              // output data of each row
              while($row = $result->fetch_assoc()) {
                  echo '<tr>';
-                   echo '<td>',$row["team_name"],'</td>';
-                   echo '<td>',$row["total"],'</td>';
+                   echo '<td id="test";>',$row["team_name"],'</td>';
+                   echo '<td id="test";>',$row["total"],'</td>';
                  echo '</tr>';
              }
            }
@@ -394,7 +395,7 @@ function buildTeamMenu(){
                }
              }
              if($final_total > 0){
-                echo "<td>Final Total of ".$parent_name." in ".$pi_id."</td><td>".$final_total."</td></table>";
+                echo "<td style='background-color:lightgrey; font-weight:bold;'>Final Total of ".$parent_name." in ".$pi_id."</td><td style='background-color:lightgrey; font-weight:bold;'>".$final_total."</td></table>";
              }
         };
 
