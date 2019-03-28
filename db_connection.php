@@ -1,3 +1,7 @@
+
+<link rel="stylesheet" type="text/css" href="styleCustom.css">
+<script type="text/javascript" src="piplanning_scripts.js"></script>
+
 <?php
 /**
 *   Database connection PHP Page
@@ -30,7 +34,7 @@
             file_put_contents('dataFiles/pi_id_cache.json', json_encode($rows));
         }
     };//ends pi id json update
-    
+
     //checks the timestamp is over 24 hours old for the art cache file before proceeding
     if (filemtime('dataFiles/art_cache.json') < time()-$day) {
         //places the art data into the cache file
@@ -108,7 +112,7 @@ function buildArtMenu($art_select){
         } else{
             $art = $art.'<option value="'.$art_item.'">'.$art_item.'</option>';
         }
-    } 
+    }
     return $art;
 };
 
@@ -140,7 +144,7 @@ function buildPi_idMenu($pi_id_select){
             $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'" selected>'.$pi_id_item.'</option>';
         } else{
             $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
-        } 
+        }
     }
     return $pi_id_menu;
 };
@@ -161,10 +165,10 @@ function buildTeamMenu(){
                 while($at_item = $at_menu_results->fetch_assoc()) {
                     $at_menu = $at_menu.'<option value="'.printf($at_item['team_name']).'">'.printf($at_item['team_name']).'</option>';
                 }//end while
-            }//end if 
+            }//end if
         } return $at_menu;
     };
-    
+
     //Function for creating a table of employee day
     function buildEmployeeTable($selected_team,$duration,$overhead_percentage){
          echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
@@ -181,11 +185,11 @@ function buildTeamMenu(){
          </thead>
          <tbody>';
          $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
-         $db->set_charset("utf8");   
+         $db->set_charset("utf8");
          $sql = "SELECT last_name, first_name, employee_name, role FROM `membership`
          JOIN `employees` on (membership.polarion_id = employees.number)
          WHERE team_name='".$selected_team."';";
-        
+
         $result = $db->query($sql);
 
         if ($result->num_rows > 0) {
@@ -211,7 +215,7 @@ function buildTeamMenu(){
                 }
                 //returning the value for JS variable for the autoLoad Javascript function
                 $valueForJS = $row2["value"];
-            
+
                 if (isset($daysoff[$rownum]) && !isset($_POST['restore'])  && isset($_POST['submit0'])){
                     $doff = $daysoff[$rownum];
                 } else {
@@ -245,7 +249,7 @@ function buildTeamMenu(){
         //function for returning the duration
         function getDuration($pi_id_select){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
-            $db->set_charset("utf8");  
+            $db->set_charset("utf8");
             $sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$pi_id_select."';";
             $result5 = $db->query($sql5);
             if ($result5->num_rows > 0) {
@@ -254,11 +258,11 @@ function buildTeamMenu(){
             }
             return $duration;
         };
-    
+
         //Function for returning the overhead percentage
         function getOverheadPercentage(){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
-            $db->set_charset("utf8");  
+            $db->set_charset("utf8");
             $sql6 = "SELECT * FROM `preferences` WHERE name='OVERHEAD_PERCENTAGE';";
             $result6 = $db->query($sql6);
             if ($result6->num_rows > 0) {
@@ -267,4 +271,131 @@ function buildTeamMenu(){
             }
             return $overhead_percentage;
         };
+
+
+        function buildSummaryTable($header_name,$col1,$col2){
+            echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+            width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+            <thead>
+               <tr id="capacity-table-first-row">
+               <th id="capacity-table-td">'.$header_name.'</th>
+               <th id="capacity-table-td">Total Capacity for PI (Story Points)</th>
+               </tr>
+            </thead>
+
+            <tbody>';
+            $x=count($col1);
+                $row = '';
+                for($i = 0; $i < $x; $i++){
+                $row = $row.'<tr><td>'.$col1[$i].'</td><td>'.$col2[$i].'<td></tr>';
+            };
+            echo '</tbody> </table>';
+        };
+
+        function buildARTTable($pi_id){
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");
+            $sql = "SELECT DISTINCT cap.program_increment, art.parent_name, sum(cap.total) as total
+            FROM capacity cap, trains_and_teams art
+            WHERE art.team_id = cap.team_id
+            AND program_increment='".$pi_id."'
+            GROUP BY cap.program_increment, art.parent_name
+            ORDER BY cap.program_increment, art.parent_name";
+
+            $result = $db->query($sql);
+
+            echo "<table class='floatLeft'>";
+           echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Release Trains</th>";
+           echo "<tr>";
+           echo "<th>Agile Release Train</th>";
+           echo "<th>Total Capacity for PI (Story Points)</th>";
+           if ($result->num_rows > 0) {
+             // output data of each row
+             while($row = $result->fetch_assoc()) {
+                 echo '<tr>';
+                   echo '<td><a href="#" id="'.$row["parent_name"].'" onclick = "document.cookie = escape(\'teamTableCookie\') + \'=\' + escape(\''.$row["parent_name"].'\'); location.reload();">'.$row["parent_name"].'</a></td>';
+                   echo '<td>'.$row["total"].'</td>';
+                 echo '</tr>';
+             }
+           }
+
+           $sql2 = "SELECT DISTINCT cap.program_increment, sum(cap.total) as final_total
+           FROM capacity cap, trains_and_teams art
+           WHERE art.team_id = cap.team_id
+           AND program_increment='".$pi_id."'
+           GROUP BY cap.program_increment
+           ORDER BY cap.program_increment, art.team_name;";
+           $result2 = $db->query($sql2);
+           $final_total ='';
+           if ($result2->num_rows > 0) {
+               while($row = $result2->fetch_assoc()) {
+               $final_total = $row["final_total"];
+               }
+             }
+             if($final_total > 0){
+                echo "<td>Final Total of ".$pi_id."</td><td>".$final_total."</td></table>";
+             }
+;
+
+           //Returns first alphabetical ART
+           $topArtQuery = "SELECT DISTINCT parent_name
+           FROM trains_and_teams
+           WHERE type='AT'
+           ORDER BY parent_name
+           LIMIT 1";
+           $topArtValue = $db->query($topArtQuery);
+           if ($topArtValue->num_rows > 0) {
+             while($row = $topArtValue->fetch_assoc()) {
+                 foreach($row as $key=>$value) {
+                    setcookie("teamTableCookie", $row["parent_name"]);
+                 }
+             }
+           }
+        };
+
+        function buildTeamTable($pi_id, $parent_name){
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");
+            $sql = "SELECT DISTINCT cap.program_increment, art.team_name, sum(cap.total) as total
+            FROM capacity cap, trains_and_teams art
+            WHERE art.team_id = cap.team_id
+            AND art.parent_name ='".$parent_name."'
+            AND program_increment='".$pi_id."'
+            GROUP BY cap.program_increment, art.team_name
+            ORDER BY cap.program_increment, art.team_name";
+           $result = $db->query($sql);
+           echo "<table class='floatRight'>";
+           echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Team</th>";
+           echo "<tr>";
+           echo "<th>Agile Team</th>";
+           echo "<th>Total Capacity for PI (Story Points)</th>";
+           if ($result->num_rows > 0) {
+             // output data of each row
+             while($row = $result->fetch_assoc()) {
+                 echo '<tr>';
+                   echo '<td>',$row["team_name"],'</td>';
+                   echo '<td>',$row["total"],'</td>';
+                 echo '</tr>';
+             }
+           }
+
+           $sql2 = "SELECT DISTINCT cap.program_increment, sum(cap.total) as final_total
+           FROM capacity cap, trains_and_teams art
+           WHERE art.team_id = cap.team_id
+           AND art.parent_name ='".$parent_name."'
+           AND program_increment='".$pi_id."'
+           GROUP BY cap.program_increment
+           ORDER BY cap.program_increment, art.team_name;";
+           $result2 = $db->query($sql2);
+           $final_total ='';
+           if ($result2->num_rows > 0) {
+               while($row = $result2->fetch_assoc()) {
+               $final_total = $row["final_total"];
+               }
+             }
+             if($final_total > 0){
+                echo "<td>Final Total of ".$parent_name." in ".$pi_id."</td><td>".$final_total."</td></table>";
+             }
+        };
+
 ?>
