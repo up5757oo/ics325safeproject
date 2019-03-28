@@ -98,7 +98,7 @@ if(isset($_COOKIE['piCookie'])){
         colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
 
-      var chart = new google.visualization.PieChart(document.getElementById(\'artPieChart\'));
+      var chart = new google.visualization.ColumnChart(document.getElementById(\'artPieChart\'));
       function selectHandler() {
         var selectedItem = chart.getSelection()[0];
         if (selectedItem) {
@@ -152,7 +152,6 @@ if(isset($_COOKIE['piCookie'])){
 
 
 //Function for building Team Chart
-
 function buildTeamChart($pi_id, $parent_name){
     $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
     $db->set_charset("utf8");
@@ -181,8 +180,8 @@ function buildTeamChart($pi_id, $parent_name){
         title: \'Agile Teams for '.$parent_name.' in '.$pi_id.'\',
         colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
-
-      var chart2 = new google.visualization.PieChart(document.getElementById(\'teamPieChart\'));
+      
+      var chart2 = new google.visualization.ColumnChart(document.getElementById(\'teamPieChart\'));
 
       chart2.draw(data2, options2);
     }
