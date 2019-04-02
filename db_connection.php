@@ -73,6 +73,7 @@
     };//ends url json update
 
 function setArtCookie(){
+    //this function will set a cookie and return the value so it can be applied to a variable
     if( !isset($_COOKIE['artCookie'])){
         //checks the preference table for a Default ART
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
@@ -82,6 +83,7 @@ function setArtCookie(){
         if ($art_default_results->num_rows > 0) {
             while($art_default = $art_default_results->fetch_assoc()) {
                 setcookie("artCookie", $art_default["value"]);
+                $artCookie = $art_default["value"];
             }//end while
         }//end preference search if
         else {
@@ -92,9 +94,10 @@ function setArtCookie(){
             if ($art_default_results->num_rows > 0) {
                 while($art_default = $art_default_results->fetch_assoc()) {
                     setcookie("artCookie", $art_default["parent_name"]);
+                    $artCookie = $art_default["parent_name"];
                 }//end while
             }//end preference search if
-        }
+        } return $artCookie;
     } //end cookie check
 };
 
