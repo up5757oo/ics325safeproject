@@ -30,6 +30,7 @@ if(isset($_COOKIE['piCookie'])){
   $pi_id_menu = buildPi_idMenu($pi_id);
 } else {
   $pi_id=$pi_id_select;
+  setcookie("piCookie", $pi_id_select);
   $pi_id_menu = buildPi_idMenu($pi_id);
 };
 
@@ -38,8 +39,7 @@ if(isset($_COOKIE['piCookie'])){
 <form  method="POST" id="PI_form" name="PI_form">
     <table id="form_table" class="container">
 <tr>
-    <td>Program Increment (PI):</td>
-    <td>
+    <td>Program Increment (PI):
       <select id="PI_ID" name="pi_id" onchange="
       //sets pi_select to selected value
       var pi_select = this.value;
@@ -52,21 +52,24 @@ if(isset($_COOKIE['piCookie'])){
   </td>
 </tr>
 <tr>
-<td><div id="artPieChart" class="floatLeft" style="width: 500px; height: 500px;"><div></td>
-<td><div id="teamPieChart" class="floatRight" style="width: 500px; height: 500px;"><div></td>
-</tr>
-
+<td><div id="artChart" style="width: 1000px; height: 500px;"><div></td></tr>
+<?php buildARTChart($pi_id); ?>
+<tr>
+<td><div id="teamPieChart" style="width: 1000px; height: 500px;"><div></td></tr>
+<?php 
+  if(!isset($_COOKIE['artCookie'])){
+    //established finds the value to use for the ART cookie
+    $team = setArtCookie();
+    buildTeamChart($pi_id, $team);
+  } else {
+    $team = $_COOKIE['artCookie'];
+    buildTeamChart($pi_id, $team);
+  };
+  ?>
 </table>
 
   <?php
-  buildARTChart($pi_id);
-  if(isset($_COOKIE['teamTableCookie'])){
-    $pi_id = $_COOKIE['piCookie'];
-    $team = $_COOKIE['teamTableCookie'];
-    buildTeamChart($pi_id, $team);
-  } else {
-    '';
-  };
+ 
 
   include("./footer.php");
 
@@ -98,12 +101,12 @@ if(isset($_COOKIE['piCookie'])){
         colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
 
-      var chart = new google.visualization.PieChart(document.getElementById(\'artPieChart\'));
+      var chart = new google.visualization.ColumnChart(document.getElementById(\'artChart\'));
       function selectHandler() {
         var selectedItem = chart.getSelection()[0];
         if (selectedItem) {
           var art_update = data.getValue(selectedItem.row, 0);
-          document.cookie = escape(\'teamTableCookie\') + \'=\' + escape(art_update); 
+          document.cookie = escape(\'artCookie\') + \'=\' + escape(art_update); 
           location.reload();
         }
       }
@@ -130,29 +133,13 @@ if(isset($_COOKIE['piCookie'])){
        }
      }
      if($final_total > 0){
-        echo '<div class= "floatLeft">Final Total for '.$pi_id.': '.$final_total.'</div>';
+        echo '<tr><td style=\'background-color:lightgrey; font-weight:bold;\'> <div>Final Total for '.$pi_id.': '.$final_total.'</div></td></tr>';
      }
 ;
-
-   //Returns first alphabetical ART
-   $topArtQuery = "SELECT DISTINCT parent_name
-   FROM trains_and_teams
-   WHERE type='AT'
-   ORDER BY parent_name
-   LIMIT 1";
-   $topArtValue = $db->query($topArtQuery);
-   if ($topArtValue->num_rows > 0) {
-     while($row = $topArtValue->fetch_assoc()) {
-         foreach($row as $key=>$value) {
-            setcookie("teamTableCookie", $row["parent_name"]);
-         }
-     }
-   }
 };
 
 
 //Function for building Team Chart
-
 function buildTeamChart($pi_id, $parent_name){
     $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
     $db->set_charset("utf8");
@@ -181,8 +168,8 @@ function buildTeamChart($pi_id, $parent_name){
         title: \'Agile Teams for '.$parent_name.' in '.$pi_id.'\',
         colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
-
-      var chart2 = new google.visualization.PieChart(document.getElementById(\'teamPieChart\'));
+      
+      var chart2 = new google.visualization.ColumnChart(document.getElementById(\'teamPieChart\'));
 
       chart2.draw(data2, options2);
     }
@@ -205,7 +192,7 @@ function buildTeamChart($pi_id, $parent_name){
        }
      }
      if($final_total > 0){
-        echo '<div class= "floatRight">Final Total for '.$parent_name.' '.$pi_id.': '.$final_total.'</div>';
+        echo '<tr><td style=\'background-color:lightgrey; font-weight:bold;\'> <div>Final Total for '.$parent_name.' '.$pi_id.': '.$final_total.'</div></td></tr>';
      }
 };
   ?>
