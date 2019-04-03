@@ -24,7 +24,6 @@
 //uses the pi Select Now function to identify the PI ID within the current date and adds it to the pi id select variable for the default
 $pi_id_select = piSelectNow();
 
-
 //capturing the pi id cookie to use for the array and BUILD the menu list
 if(isset($_COOKIE['piCookie'])){
   $pi_id = $_COOKIE['piCookie'];
@@ -40,8 +39,7 @@ if(isset($_COOKIE['piCookie'])){
 <form  method="POST" id="PI_form" name="PI_form">
     <table id="form_table" class="container">
 <tr>
-    <td>Program Increment (PI):</td>
-    <td>
+    <td>Program Increment (PI):
       <select id="PI_ID" name="pi_id" onchange="
       //sets pi_select to selected value
       var pi_select = this.value;
@@ -54,15 +52,11 @@ if(isset($_COOKIE['piCookie'])){
   </td>
 </tr>
 <tr>
-<td><div id="artPieChart" class="floatLeft" style="width: 500px; height: 500px;"><div></td>
-<td><div id="teamPieChart" class="floatRight" style="width: 500px; height: 500px;"><div></td>
-</tr>
-
-</table>
-
-  <?php
-  buildARTChart($pi_id);
-  
+<td><div id="artChart" style="width: 1000px; height: 500px;"><div></td></tr>
+<?php buildARTChart($pi_id); ?>
+<tr>
+<td><div id="teamPieChart" style="width: 1000px; height: 500px;"><div></td></tr>
+<?php 
   if(!isset($_COOKIE['artCookie'])){
     //established finds the value to use for the ART cookie
     $team = setArtCookie();
@@ -71,6 +65,11 @@ if(isset($_COOKIE['piCookie'])){
     $team = $_COOKIE['artCookie'];
     buildTeamChart($pi_id, $team);
   };
+  ?>
+</table>
+
+  <?php
+ 
 
   include("./footer.php");
 
@@ -102,12 +101,12 @@ if(isset($_COOKIE['piCookie'])){
         colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
 
-      var chart = new google.visualization.ColumnChart(document.getElementById(\'artPieChart\'));
+      var chart = new google.visualization.ColumnChart(document.getElementById(\'artChart\'));
       function selectHandler() {
         var selectedItem = chart.getSelection()[0];
         if (selectedItem) {
           var art_update = data.getValue(selectedItem.row, 0);
-          document.cookie = escape(\'teamTableCookie\') + \'=\' + escape(art_update); 
+          document.cookie = escape(\'artCookie\') + \'=\' + escape(art_update); 
           location.reload();
         }
       }
@@ -134,7 +133,7 @@ if(isset($_COOKIE['piCookie'])){
        }
      }
      if($final_total > 0){
-        echo '<div class= "floatLeft">Final Total for '.$pi_id.': '.$final_total.'</div>';
+        echo '<tr><td style=\'background-color:lightgrey; font-weight:bold;\'> <div>Final Total for '.$pi_id.': '.$final_total.'</div></td></tr>';
      }
 ;
 };
@@ -193,7 +192,7 @@ function buildTeamChart($pi_id, $parent_name){
        }
      }
      if($final_total > 0){
-        echo '<div class= "floatRight">Final Total for '.$parent_name.' '.$pi_id.': '.$final_total.'</div>';
+        echo '<tr><td style=\'background-color:lightgrey; font-weight:bold;\'> <div>Final Total for '.$parent_name.' '.$pi_id.': '.$final_total.'</div></td></tr>';
      }
 };
   ?>
