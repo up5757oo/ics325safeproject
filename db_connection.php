@@ -182,7 +182,7 @@ function buildTeamMenu(){
             <th id="capacity-table-td">Last Name</th>
             <th id="capacity-table-td">First Name</th>
             <th id="capacity-table-td">Role</th>
-            <th id="capacity-table-td">% Velocity Available<br/><p style="font-size: 9px;">(5 Days per Iteration)</p></th>
+            <th id="capacity-table-td">% Velocity Available<br/><p style="font-size: 9px;">(10 Days per Iteration)</p></th>
             <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
             <th id="capacity-table-td">Story Points</th>
             </tr>
