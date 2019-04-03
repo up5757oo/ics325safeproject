@@ -317,7 +317,7 @@ function buildTeamMenu(){
              // output data of each row
              while($row = $result->fetch_assoc()) {
                  echo '<tr>';
-                   echo '<td><a href="#" id="'.$row["parent_name"].'" onclick = "document.cookie = escape(\'teamTableCookie\') + \'=\' + escape(\''.$row["parent_name"].'\'); location.reload();">'.$row["parent_name"].'</a></td>';
+                   echo '<td><a href="#" id="'.$row["parent_name"].'" onclick = "document.cookie = escape(\'artCookie\') + \'=\' + escape(\''.$row["parent_name"].'\'); location.reload();">'.$row["parent_name"].'</a></td>';
                    echo '<td>'.$row["total"].'</td>';
                  echo '</tr>';
              }
@@ -351,7 +351,7 @@ function buildTeamMenu(){
            if ($topArtValue->num_rows > 0) {
              while($row = $topArtValue->fetch_assoc()) {
                  foreach($row as $key=>$value) {
-                    setcookie("teamTableCookie", $row["parent_name"]);
+                    setcookie("artCookie", $row["parent_name"]);
                  }
              }
            }
