@@ -229,7 +229,7 @@ function buildTeamMenu(){
                     $vel = $velocity[$rownum];
                 } else {
                     $vel = $row2["value"];
-                }   // I need to add a formula somewhere in this display to calculate story points for each row
+                }   // I need to add a formula somewhere in this display to read json values and calculate story points for each row
                 echo
                     "<tr>   
                         <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
