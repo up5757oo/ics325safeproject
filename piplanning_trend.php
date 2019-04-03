@@ -24,12 +24,14 @@
 //uses the pi Select Now function to identify the PI ID within the current date and adds it to the pi id select variable for the default
 $pi_id_select = piSelectNow();
 
+
 //capturing the pi id cookie to use for the array and BUILD the menu list
 if(isset($_COOKIE['piCookie'])){
   $pi_id = $_COOKIE['piCookie'];
   $pi_id_menu = buildPi_idMenu($pi_id);
 } else {
   $pi_id=$pi_id_select;
+  setcookie("piCookie", $pi_id_select);
   $pi_id_menu = buildPi_idMenu($pi_id);
 };
 
@@ -60,12 +62,14 @@ if(isset($_COOKIE['piCookie'])){
 
   <?php
   buildARTChart($pi_id);
-  if(isset($_COOKIE['teamTableCookie'])){
-    $pi_id = $_COOKIE['piCookie'];
-    $team = $_COOKIE['teamTableCookie'];
+  
+  if(!isset($_COOKIE['artCookie'])){
+    //established finds the value to use for the ART cookie
+    $team = setArtCookie();
     buildTeamChart($pi_id, $team);
   } else {
-    '';
+    $team = $_COOKIE['artCookie'];
+    buildTeamChart($pi_id, $team);
   };
 
   include("./footer.php");
@@ -98,7 +102,7 @@ if(isset($_COOKIE['piCookie'])){
         colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
 
-      var chart = new google.visualization.PieChart(document.getElementById(\'artPieChart\'));
+      var chart = new google.visualization.ColumnChart(document.getElementById(\'artPieChart\'));
       function selectHandler() {
         var selectedItem = chart.getSelection()[0];
         if (selectedItem) {
@@ -133,26 +137,10 @@ if(isset($_COOKIE['piCookie'])){
         echo '<div class= "floatLeft">Final Total for '.$pi_id.': '.$final_total.'</div>';
      }
 ;
-
-   //Returns first alphabetical ART
-   $topArtQuery = "SELECT DISTINCT parent_name
-   FROM trains_and_teams
-   WHERE type='AT'
-   ORDER BY parent_name
-   LIMIT 1";
-   $topArtValue = $db->query($topArtQuery);
-   if ($topArtValue->num_rows > 0) {
-     while($row = $topArtValue->fetch_assoc()) {
-         foreach($row as $key=>$value) {
-            setcookie("teamTableCookie", $row["parent_name"]);
-         }
-     }
-   }
 };
 
 
 //Function for building Team Chart
-
 function buildTeamChart($pi_id, $parent_name){
     $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
     $db->set_charset("utf8");
@@ -181,8 +169,8 @@ function buildTeamChart($pi_id, $parent_name){
         title: \'Agile Teams for '.$parent_name.' in '.$pi_id.'\',
         colors: [\'#6699CC\', \'#003366\', \'#C0C0C0\', \'#000044\', \'#31659C\', \'#639ACE\']
       };
-
-      var chart2 = new google.visualization.PieChart(document.getElementById(\'teamPieChart\'));
+      
+      var chart2 = new google.visualization.ColumnChart(document.getElementById(\'teamPieChart\'));
 
       chart2.draw(data2, options2);
     }

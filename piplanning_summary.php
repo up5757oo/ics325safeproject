@@ -57,12 +57,13 @@ if(isset($_COOKIE['piCookie'])){
 
   <?php
   buildARTTable($pi_id);
-  if(isset($_COOKIE['teamTableCookie'])){
-    $pi_id = $_COOKIE['piCookie'];
-    $team = $_COOKIE['teamTableCookie'];
+  if(!isset($_COOKIE['artCookie'])){
+    //established finds the value to use for the ART cookie
+    $team = setArtCookie();
     buildTeamTable($pi_id, $team);
   } else {
-    '';
+    $team = $_COOKIE['artCookie'];
+    buildTeamTable($pi_id, $team);
   };
 
   include("./footer.php");

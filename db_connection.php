@@ -1,6 +1,7 @@
 
-<link rel="stylesheet" type="text/css" href="styleCustom.css">
+
 <script type="text/javascript" src="piplanning_scripts.js"></script>
+<link rel="stylesheet" type="text/css" href="styleCustom.css">
 
 <?php
 /**
@@ -72,6 +73,7 @@
     };//ends url json update
 
 function setArtCookie(){
+    //this function will set a cookie and return the value so it can be applied to a variable
     if( !isset($_COOKIE['artCookie'])){
         //checks the preference table for a Default ART
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
@@ -81,6 +83,7 @@ function setArtCookie(){
         if ($art_default_results->num_rows > 0) {
             while($art_default = $art_default_results->fetch_assoc()) {
                 setcookie("artCookie", $art_default["value"]);
+                $artCookie = $art_default["value"];
             }//end while
         }//end preference search if
         else {
@@ -91,9 +94,10 @@ function setArtCookie(){
             if ($art_default_results->num_rows > 0) {
                 while($art_default = $art_default_results->fetch_assoc()) {
                     setcookie("artCookie", $art_default["parent_name"]);
+                    $artCookie = $art_default["parent_name"];
                 }//end while
             }//end preference search if
-        }
+        } return $artCookie;
     } //end cookie check
 };
 
@@ -178,7 +182,7 @@ function buildTeamMenu(){
             <th id="capacity-table-td">Last Name</th>
             <th id="capacity-table-td">First Name</th>
             <th id="capacity-table-td">Role</th>
-            <th id="capacity-table-td">% Velocity Available</th>
+            <th id="capacity-table-td">% Velocity Available<br/><p style="font-size: 9px;">(5 Days per Iteration)</p></th>
             <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
             <th id="capacity-table-td">Story Points</th>
             </tr>
@@ -333,7 +337,7 @@ function buildTeamMenu(){
                }
              }
              if($final_total > 0){
-                echo "<td>Final Total of ".$pi_id."</td><td>".$final_total."</td></table>";
+                echo "<td style='background-color:lightgrey; font-weight:bold;'>Final Total of ".$pi_id."</td><td style='background-color:lightgrey; font-weight:bold;'>".$final_total."</td></table>";
              }
 ;
 
@@ -373,8 +377,8 @@ function buildTeamMenu(){
              // output data of each row
              while($row = $result->fetch_assoc()) {
                  echo '<tr>';
-                   echo '<td>',$row["team_name"],'</td>';
-                   echo '<td>',$row["total"],'</td>';
+                   echo '<td id="test";>',$row["team_name"],'</td>';
+                   echo '<td id="test";>',$row["total"],'</td>';
                  echo '</tr>';
              }
            }
@@ -394,7 +398,7 @@ function buildTeamMenu(){
                }
              }
              if($final_total > 0){
-                echo "<td>Final Total of ".$parent_name." in ".$pi_id."</td><td>".$final_total."</td></table>";
+                echo "<td style='background-color:lightgrey; font-weight:bold;'>Final Total of ".$parent_name." in ".$pi_id."</td><td style='background-color:lightgrey; font-weight:bold;'>".$final_total."</td></table>";
              }
         };
 
