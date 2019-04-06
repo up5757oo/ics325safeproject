@@ -77,6 +77,7 @@ form for submitting data that will be prepopulated with data from the variables
         var pi_select = this.value;
         //sets the selected value as the cookie
         document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+        location.reload();
         console.log(getCookie('piCookie'));
         console.log(getCookie('artCookie'));
         console.log(getCookie('teamCookie'));
@@ -95,6 +96,7 @@ form for submitting data that will be prepopulated with data from the variables
            document.cookie = escape('artCookie') + '=' + escape(art_select) ;
            //updates the teams list
            getTeams(art_select);
+           location.reload();
            console.log(getCookie('piCookie'));
            console.log(getCookie('artCookie'));
            console.log(getCookie('teamCookie'));
@@ -106,7 +108,7 @@ form for submitting data that will be prepopulated with data from the variables
       </tr>
       <tr>
         <td>Names of Teams:</td>
-        <td><input type="text" id="teams" size=100 name="teams" readonly="readonly" value="" onload="document.cookie = escape('teamCookie') + '=' + escape(this.value) ;">
+        <td><input type="text" id="teams" size=100 name="teams" readonly="readonly" value="" onchange="document.cookie = escape('teamCookie') + '=' + escape(this.value) ; location.reload();">
       </td>
     </tr>
     <tr>
@@ -171,5 +173,70 @@ form for submitting data that will be prepopulated with data from the variables
 
   </script>
 
+<?php
+$url=$base_url_out;
+$teamlist  = urldecode($_COOKIE['teamCookie']);		// split teamCookie into arraylist called diff_team_names
+$diff_team_names =  explode(",", $teamlist);
+//checks for the PI ID in the request and the cookie to set the variable. If they are not available it is set to null
+if(isset($_REQUEST['pi_id'])){
+  $pi_id = $_REQUEST['pi_id'];
+}
+elseif(isset($_COOKIE['piCookie'])){
+  $pi_id=$_COOKIE['piCookie'];
+} 
+else {
+  $pi_id = '';
+};
 
+//Creates table headings
+echo "<table id='table_load'><tr><thead class=\"table_head\"><tr>
+              <th>No.</th>
+              <th>Team Name</th>
+              <th>".$pi_id . "-1</th>
+              <th>".$pi_id . "-2</th>
+              <th>".$pi_id . "-3</th>
+              <th>".$pi_id . "-4</th>
+              <th>".$pi_id . "-5</th>
+              <th>".$pi_id . "-6</th>
+              <th>".$pi_id . "-IP</th>
+                  </tr>
+            </thead>
+      <tbody class=\"table_body\">";
+$increment_pID = 1;					// Vars for incrementing the loop
+$list_num = 1;						// Lists each table number in order
+
+//creates the rest of the table, by rows of each team name
+foreach ($diff_team_names as $value){
+  $team_specific = $value;
+  echo "<tr>";
+  echo "<td>";
+  echo ($list_num . ".");
+  echo"</td>";
+  echo"<td>";
+  echo($team_specific);
+  echo"</td>";
+  // creates the URL with the variables
+  for($x=1; $x<7; $x++){
+    $gen_URL = $base_url_out . $pi_id . "-" . $increment_pID . "_" . urlencode($team_specific);
+    echo "<td>";
+    echo "<a href=$gen_URL title=$gen_URL>".$pi_id. "-" . $increment_pID ."</a>" ; // make gen_URL into an href
+    echo "</td>";
+
+      $increment_pID ++;	//increment the arraylist and get the next team name & create row
+
+  // specific to ending of - ID
+    if($increment_pID == 7){
+      $gen_URL = $url . $pi_id . "-" . "IP" . "_" . urlencode($team_specific);
+      echo "<td>";
+      echo "<a href=$gen_URL title=$gen_URL>".$pi_id."-IP </a>";
+      echo "</td>";
+      echo "\n";
+    }
+  }
+  echo "\n";
+  $increment_pID = 1;
+  $list_num ++;
+  echo"</tr>";
+};
+?>
   <?php include("./footer.php"); ?>
