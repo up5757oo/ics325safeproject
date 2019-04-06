@@ -73,6 +73,7 @@ form for submitting data that will be prepopulated with data from the variables
           document.cookie = escape('artCookie') + '=' + escape(art_select) ;
           //updates the teams list
           getTeams(art_select);
+          location.reload();
           ">
           <option value="">-- Select --</option>
           <?php echo $art; ?>
@@ -86,7 +87,9 @@ form for submitting data that will be prepopulated with data from the variables
       //sets team_select to selected value
       var team_select = this.value;
       //sets the selected value as the cookie
-      document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);">
+      document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);
+      location.reload();">
+
       </select>
       </td>
     </tr>
@@ -97,8 +100,10 @@ form for submitting data that will be prepopulated with data from the variables
       //sets pi_select to selected value
       var pi_select = this.value;
       //sets the selected value as the cookie
-      document.cookie = escape('piCookie') + '=' + escape(pi_select) ;">
+      document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+      location.reload();">
       <?php echo $pi_id_menu; ?>
+
     </select>
   </td>
 </tr>
@@ -154,18 +159,21 @@ function getTeams(art_select){
     return "";
   };
   </script>
-  
+
   <form method="post" action="#" id="maincap">
   <?php
   //Defaulting the selected team, this will need to be updated once the table have additional values available
-  $selected_team='805 Agile Team';
+  $selected_team='804 Agile Team';
   //settting up the pi id array for the Iteration # display
   $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
+  //Iteration # display
+  $numberIT = 1;
   $count_piid = count($pi_id_array);
-  //Loop for displaying the series of Employee table
+  //Loop for displaying the series of Employee table & iteration calculation placeholder
   for($i = 0; $i < $count_piid; $i++){
-    echo '<h4>Iteration # '.$pi_id_array[$i].'</h4>';
+    echo '<h4>Iteration #' .$numberIT .': ' .$pi_id_array[$i]. '<p style="text-align:right;">Iteration Capacity: Story Pts</p>';
     buildEmployeeTable($selected_team,$duration,$overhead_percentage);
+    $numberIT++;
   };
   //$result->close();
   ?>
@@ -191,6 +199,6 @@ $(document).ready(function () {
   });
 });
 </script>
-<?php 
-include("./footer.php"); 
+<?php
+include("./footer.php");
 ?>
