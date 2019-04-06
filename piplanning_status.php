@@ -34,9 +34,13 @@ $at = '';
 $generate_button='New';
 $pi_id_select=piSelectNow();
 
-//Function from db_connection that checks for ART Cookie, if it is not available it will update the cookie with a default value
-setArtCookie();
-$art_select = $_COOKIE['artCookie'];
+//Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
+if(!isset($_COOKIE['artCookie'])){
+  //established finds the value to use for the ART cookie
+  $art_select = setArtCookie();
+} else {
+  $art_select = $_COOKIE['artCookie'];
+};
 
 //Function that uses json file to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
@@ -47,6 +51,7 @@ if(isset($_COOKIE['piCookie'])){
   $pi_id_menu = buildPi_idMenu($pi_id);
 } else {
   $pi_id=$pi_id_select;
+  setcookie("piCookie", $pi_id_select);
   $pi_id_menu = buildPi_idMenu($pi_id);
 };
 
@@ -71,7 +76,11 @@ form for submitting data that will be prepopulated with data from the variables
         //sets pi_select to selected value
         var pi_select = this.value;
         //sets the selected value as the cookie
-        document.cookie = escape('piCookie') + '=' + escape(pi_select) ;">
+        document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+        console.log(getCookie('piCookie'));
+        console.log(getCookie('artCookie'));
+        console.log(getCookie('teamCookie'));
+        ">
         <?php echo $pi_id_menu; ?>
         </select>
         </td>
@@ -86,6 +95,9 @@ form for submitting data that will be prepopulated with data from the variables
            document.cookie = escape('artCookie') + '=' + escape(art_select) ;
            //updates the teams list
            getTeams(art_select);
+           console.log(getCookie('piCookie'));
+           console.log(getCookie('artCookie'));
+           console.log(getCookie('teamCookie'));
            ">
            <option value="">-- Select --</option>
            <?php echo $art; ?>
@@ -94,7 +106,7 @@ form for submitting data that will be prepopulated with data from the variables
       </tr>
       <tr>
         <td>Names of Teams:</td>
-        <td><input type="text" id="teams" size=100 name="teams" readonly="readonly" value="">
+        <td><input type="text" id="teams" size=100 name="teams" readonly="readonly" value="" onload="document.cookie = escape('teamCookie') + '=' + escape(this.value) ;">
       </td>
     </tr>
     <tr>
@@ -106,10 +118,12 @@ form for submitting data that will be prepopulated with data from the variables
 </form><br>
 <?php $db->close(); ?>
 <script>
+
   //assigning the artCookie to a variable
   var artCookie = getCookie('artCookie'); 
   //running the getTeams when the window is loaded using the cookie
   $( window ).on( "load", getTeams(artCookie) );
+  
   function getTeams(art_select){
     //gets values from JSON file
     $.getJSON('dataFiles/at_cache.json', function(data){
@@ -145,6 +159,16 @@ form for submitting data that will be prepopulated with data from the variables
     }
     return "";
   };
+  <?php 
+  //checks if the teamCookie is set and reloads the cookie if it is not
+  if(!isset($_COOKIE['teamCookie'])){
+    echo 'location.reload();';
+  };?>
+  console.log(getCookie('piCookie'));
+  console.log(getCookie('artCookie'));
+  console.log(getCookie('teamCookie'));
+
+
   </script>
 
 
