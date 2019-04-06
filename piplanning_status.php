@@ -155,9 +155,7 @@ form for submitting data that will be prepopulated with data from the variables
 <?php
 $url=$base_url_out;
 echo '<script>var art_select = getCookie(\'artCookie\'); var team = getTeams(art_select); console.log(art_select + \' \' + getCookie(team)); </script>';
-echo '<script> 
-'.$teamlist  = .'document.getElementById(\'teams\').value;
-</script';		// split teamCookie into arraylist called diff_team_names
+
 
 $diff_team_names =  explode(",", $teamlist);
 //checks for the PI ID in the request and the cookie to set the variable. If they are not available it is set to null
