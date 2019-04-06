@@ -187,10 +187,12 @@ function getTeams(art_select){
 </div>
 <script type="text/javascript">
 $(document).ready(function () {
+
   $('#info').DataTable({
-    paging: false,
-    searching: false,
-    infoCallback: false
+   paging: false,
+   searching: false,
+   infoCallback: false
+   
   });
 });
 </script>
