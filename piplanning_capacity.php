@@ -192,7 +192,7 @@ $(document).ready(function () {
    paging: false,
    searching: false,
    infoCallback: false
-   
+
   });
 });
 </script>
