@@ -188,6 +188,7 @@ function buildTeamMenu(){
             </tr>
          </thead>
          <tbody>';
+         $it_storypts = 0; //collect sum of story points per table iteration
          $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
          $db->set_charset("utf8");
          $sql = "SELECT last_name, first_name, employee_name, role FROM `membership`
@@ -229,7 +230,7 @@ function buildTeamMenu(){
                     $vel = $velocity[$rownum];
                 } else {
                     $vel = $row2["value"];
-                }   // I need to add a formula somewhere in this display to read json values and calculate story points for each row
+                }   
                 echo
                     "<tr>   
                         <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
@@ -241,7 +242,14 @@ function buildTeamMenu(){
                         <input type='hidden' name='rownum[]' value='".$rownum."'/>
                     </tr>";
                     $rownum++;
+
+                     //add storypt values together and display (TEST)
+                     //echo $storypts . ", ";
+                     $it_storypts = $it_storypts + $storypts;
                 }
+                echo "<br>";
+                echo "Iteration Capacity Total: " . $it_storypts;
+
             } else {
                 echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
                 print "NO TEAM MEMBERS ASSIGNED TO TEAM \"".$selected_team."\"";

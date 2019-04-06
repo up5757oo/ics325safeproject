@@ -166,7 +166,7 @@ function getTeams(art_select){
   $count_piid = count($pi_id_array);
   //Loop for displaying the series of Employee table & iteration calculation placeholder
   for($i = 0; $i < $count_piid; $i++){
-    echo '<h4>Iteration #' .$numberIT .': ' .$pi_id_array[$i]. '<p style="text-align:right;">Iteration Capacity: Story Pts</p>'; 
+    echo '<h4>Iteration #' .$numberIT .': ' .$pi_id_array[$i]; 
     buildEmployeeTable($selected_team,$duration,$overhead_percentage);
     $numberIT++;
   };
