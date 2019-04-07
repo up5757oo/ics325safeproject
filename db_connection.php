@@ -189,6 +189,7 @@ function buildTeamMenu(){
          </thead>
          <tbody>';
          $it_storypts = 0; //collect sum of story points per table iteration
+         $running_total_storypts = 0; // TOTAL collection of Capacity Iteration Story points
          $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
          $db->set_charset("utf8");
          $sql = "SELECT last_name, first_name, employee_name, role FROM `membership`
@@ -244,11 +245,16 @@ function buildTeamMenu(){
                     $rownum++;
 
                      //add storypt values together and display (TEST)
-                     //echo $storypts . ", ";
+                     echo $storypts . ", " . $doff;     //displaying values for test purposes
                      $it_storypts = $it_storypts + $storypts;
+                     $it_storypts = $it_storypts - $doff; // need to check doff values--when editable
                 }
                 echo "<br>";
                 echo "Iteration Capacity Total: " . $it_storypts;
+                //need to collect all it_storypts 
+                $running_total_storypts = $running_total_storypts + $it_storypts; //Total of ALL iteration Story points
+                echo "<br>";
+                echo "Running Total Story Points: " . $running_total_storypts ;
 
             } else {
                 echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
