@@ -31,6 +31,7 @@ if(isset($_COOKIE['piCookie'])){
   $pi_id_menu = buildPi_idMenu($pi_id);
 } else {
   $pi_id=$pi_id_select;
+  setcookie("piCookie", $pi_id_select);
   $pi_id_menu = buildPi_idMenu($pi_id);
 };
 
