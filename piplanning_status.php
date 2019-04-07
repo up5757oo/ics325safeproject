@@ -31,7 +31,7 @@ for($i = 0; $i < $x; $i++){
 $pi_id="";
 $art="";
 $at = '';
-$generate_button='New';
+$diff_team_names = array();
 $pi_id_select=piSelectNow();
 
 //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
@@ -56,6 +56,7 @@ if(isset($_COOKIE['piCookie'])){
 };
 
 $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
+
 ?>
 <!--
 form for submitting data that will be prepopulated with data from the variables
@@ -108,7 +109,9 @@ form for submitting data that will be prepopulated with data from the variables
       </tr>
       <tr>
         <td>Names of Teams:</td>
-        <td><input type="text" id="teams" size=100 name="teams" readonly="readonly" value="" onchange="document.cookie = escape('teamCookie') + '=' + escape(this.value) ; location.reload();">
+        <td><input type="text" id="teams" size=100 name="teams" readonly="readonly" value="" 
+        onchange="document.cookie = escape('teamCookie') + '=' + escape(this.value) ;  
+        ">
       </td>
     </tr>
     <tr>
@@ -124,7 +127,7 @@ form for submitting data that will be prepopulated with data from the variables
   //assigning the artCookie to a variable
   var artCookie = getCookie('artCookie'); 
   //running the getTeams when the window is loaded using the cookie
-  $( window ).on( "load", getTeams(artCookie) );
+  $( window ).on( "load", getTeams(artCookie));
   
   function getTeams(art_select){
     //gets values from JSON file
@@ -142,6 +145,7 @@ form for submitting data that will be prepopulated with data from the variables
         document.getElementById('teams').value = at_list;
         //sets teams as a cookie
         document.cookie = escape('teamCookie') + '=' + escape(at_list) ;
+        
       };
     });
   };
@@ -161,11 +165,7 @@ form for submitting data that will be prepopulated with data from the variables
     }
     return "";
   };
-  <?php 
-  //checks if the teamCookie is set and reloads the cookie if it is not
-  if(!isset($_COOKIE['teamCookie'])){
-    echo 'location.reload();';
-  };?>
+
   console.log(getCookie('piCookie'));
   console.log(getCookie('artCookie'));
   console.log(getCookie('teamCookie'));
@@ -175,19 +175,12 @@ form for submitting data that will be prepopulated with data from the variables
 
 <?php
 $url=$base_url_out;
-$teamlist  = urldecode($_COOKIE['teamCookie']);		// split teamCookie into arraylist called diff_team_names
-$diff_team_names =  explode(",", $teamlist);
-//checks for the PI ID in the request and the cookie to set the variable. If they are not available it is set to null
-if(isset($_REQUEST['pi_id'])){
-  $pi_id = $_REQUEST['pi_id'];
-}
-elseif(isset($_COOKIE['piCookie'])){
-  $pi_id=$_COOKIE['piCookie'];
-} 
-else {
-  $pi_id = '';
-};
 
+if(!isset($_COOKIE['teamCookie'])){
+  //refreshed the page to update the cookie for the table values
+  echo '<script>location.reload();</script>';
+};
+$diff_team_names =  explode(',', urldecode($_COOKIE['teamCookie']));
 //Creates table headings
 echo "<table id='table_load'><tr><thead class=\"table_head\"><tr>
               <th>No.</th>
