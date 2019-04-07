@@ -254,7 +254,7 @@ function buildTeamMenu(){
                 //need to collect all it_storypts 
                 $running_total_storypts = $running_total_storypts + $it_storypts; //Total of ALL iteration Story points
                 echo "<br>";
-                echo "Running Total Story Points: " . $running_total_storypts ;
+                echo "Running Total Story Points: " . $running_total_storypts;  //Need to move this to display elsewhere
 
             } else {
                 echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
