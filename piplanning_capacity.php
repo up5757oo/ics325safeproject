@@ -3,6 +3,7 @@ $nav_selected = "PIPLANNING";
 $left_buttons = "YES";
 $left_selected = "CAPACITY";
 include("./nav.php");
+
 global $db;
 ?>
 <!--Customer Bears style sheet-->
@@ -103,13 +104,12 @@ form for submitting data that will be prepopulated with data from the variables
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
       location.reload();">
       <?php echo $pi_id_menu; ?>
-
     </select>
   </td>
 </tr>
 <tr>
-  <td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
-  <td></td>
+<td><input type="submit" id="php_button" onclick="updateEmployeeTable()" name="generate_button" class="button" value="Generate"></td>
+<td></td>
 </tr>
 </table>
 </form><br>

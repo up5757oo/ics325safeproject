@@ -175,19 +175,21 @@ function buildTeamMenu(){
 
     //Function for creating a table of employee day
     function buildEmployeeTable($selected_team,$duration,$overhead_percentage){
-         echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+         echo '             
+         <table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
          width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
          <thead>
             <tr id="capacity-table-first-row">
             <th id="capacity-table-td">Last Name</th>
             <th id="capacity-table-td">First Name</th>
             <th id="capacity-table-td">Role</th>
-            <th id="capacity-table-td">% Velocity Available<br/></th>
+            <th id="capacity-table-td-vel">% Velocity Available<br/></th>
             <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
             <th id="capacity-table-td">Story Points</th>
             </tr>
          </thead>
          <tbody>';
+         $storypts2 = 0;
          $it_storypts = 0; //collect sum of story points per table iteration
          $running_total_storypts = 0; // TOTAL collection of Capacity Iteration Story points
          $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
@@ -202,9 +204,9 @@ function buildTeamMenu(){
             // output data of each
             $rownum = 0;
             while ($row = $result->fetch_assoc()) {
-                if ($row["role"] == "Scrum Master (SM)") {
+                if ($row["role"] == "SM") {
                     $velocityType = "SCRUM_MASTER_ALLOCATION";
-                } else if ($row["role"] == "Product Owner (PO)") {
+                } else if ($row["role"] == "PO") {
                     $velocityType = "PRODUCT_OWNER_ALLOCATION";
                 } else  {
                     $velocityType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -230,16 +232,32 @@ function buildTeamMenu(){
                 if (isset($velocity[$rownum]) && !isset($_POST['restore']) && isset($_POST['submit0'])){
                     $vel = $velocity[$rownum];
                 } else {
+                    $vel = 0;
+
+                    echo'
+                    <script>
+                        function updateEmployeeTable(){
+                            velJS = document.getElementById("autoin").value
+                            alert("Velocity: " + velJS);  
+                            
+                        }
+                    </script>
+                    ';
+
                     $vel = $row2["value"];
                 }   
+
+                //$storypts2 = $storypts * ($vel/100);
+
                 echo
-                    "<tr>   
-                        <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
-                        <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
-                        <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
-                        <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin' class='capacity-text-input' type='text' name='velocity[]' value='" . $vel . "' submit='autoLoad();' /> %</td>
-                        <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2' class='capacity-text-input' type='text' name='daysoff[]' value='".$doff."' submit='autoLoad();' /></td>
-                        <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story' class='capacity-text-input' type='text' name='storypoints[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                    "
+                    <tr>   
+                        <td id='capacity-table-td-last-name' style='font-weight:500;'>" . $row["last_name"] . "</td>
+                        <td id='capacity-table-td-first-name' style='font-weight:500;'>" . $row["first_name"] . "</td>
+                        <td id='capacity-table-td-role' style='font-weight:500;'>" . $row["role"] . "</td>
+                        <td id='capacity-table-td-velocity' style='font-weight:500; text-align: center;'><input id='autoin' class='capacity-text-input' type='text' name='velocity[]' value='" . $vel . "' submit='autoLoad();' /> %</td>
+                        <td id='capacity-table-td-days-off' style='font-weight:500; text-align: center;'><input id='autoin2' class='capacity-text-input' type='text' name='daysoff[]' value='".$doff."' submit='autoLoad();' /></td>
+                        <td id='capacity-table-td-story-pts' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story' class='capacity-text-input' type='text' name='storypoints[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
                         <input type='hidden' name='rownum[]' value='".$rownum."'/>
                     </tr>";
                     $rownum++;
@@ -262,6 +280,7 @@ function buildTeamMenu(){
                 echo "</td></tr>";
             }
             echo '</tbody><tfoot></tfoot></table>';
+
         };
 
         //function for returning the duration
@@ -289,7 +308,6 @@ function buildTeamMenu(){
             }
             return $overhead_percentage;
         };
-
 
         function buildSummaryTable($header_name,$col1,$col2){
             echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
@@ -322,7 +340,7 @@ function buildTeamMenu(){
 
             $result = $db->query($sql);
 
-            echo "<table class='floatLeft'>";
+           echo "<table class='floatLeft'>";
            echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Release Trains</th>";
            echo "<tr>";
            echo "<th>Agile Release Train</th>";
