@@ -245,7 +245,7 @@ function buildTeamMenu(){
                     $rownum++;
 
                      //add storypt values together and display (TEST)
-                     echo $storypts . ", " . $doff . "testing this";     //displaying values for test purposes
+                     echo $storypts . ", " . $doff;     //displaying values for test purposes
                      $it_storypts = $it_storypts + $storypts;
                      $it_storypts = $it_storypts - $doff; // need to check doff values--when editable
                 }

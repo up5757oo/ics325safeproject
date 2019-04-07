@@ -190,6 +190,8 @@ function getTeams(art_select){
 </table>
 </div>
 </div>
+
+<!-- Column Sorting code using DataTables -->
 <script type="text/javascript">
 $(document).ready(function () {
 
@@ -201,6 +203,7 @@ $(document).ready(function () {
   });
 });
 </script>
+
 <?php
 include("./footer.php");
 ?>
