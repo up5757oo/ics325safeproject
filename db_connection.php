@@ -204,9 +204,9 @@ function buildTeamMenu(){
             // output data of each
             $rownum = 0;
             while ($row = $result->fetch_assoc()) {
-                if ($row["role"] == "Scrum Master (SM)") {
+                if ($row["role"] == "SM") {
                     $velocityType = "SCRUM_MASTER_ALLOCATION";
-                } else if ($row["role"] == "Product Owner (PO)") {
+                } else if ($row["role"] == "PO") {
                     $velocityType = "PRODUCT_OWNER_ALLOCATION";
                 } else  {
                     $velocityType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -232,12 +232,14 @@ function buildTeamMenu(){
                 if (isset($velocity[$rownum]) && !isset($_POST['restore']) && isset($_POST['submit0'])){
                     $vel = $velocity[$rownum];
                 } else {
+                    $vel = 0;
 
                     echo'
                     <script>
                         function updateEmployeeTable(){
                             velJS = document.getElementById("autoin").value
                             alert("Velocity: " + velJS);  
+                            
                         }
                     </script>
                     ';
