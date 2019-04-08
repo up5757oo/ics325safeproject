@@ -393,6 +393,44 @@ function buildTeamMenu(){
            }
         };
 
+
+        function buildCapacityJSON($art,$team,$pi_id){
+            fopen("dataFiles/.$pi_id._.$art._.$team._cache.json", "w");
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");
+             if ($result = $db->query("SELECT art_name, team_name, PI_id, iteration_id, last_name, first_name, role, value as velocity, '0' as Days_Off, ((duration * .8) * (value/100)) as Story_points FROM `membership`,  employees, preferences, cadence where
+                (membership.polarion_id = employees.number)
+                and role = 'SM'
+                and name = 'SCRUM_MASTER_ALLOCATION'
+                and art_name = '".$art."'
+                and team_name = '".$team."'
+                and PI_id = '.$pi_id.'
+                union
+                SELECT art_name, team_name, PI_id, iteration_id, last_name, first_name, role, value as velocity, '0' as Days_Off, ((duration * .8) * (value/100))  as Story_points FROM `membership`,  employees, preferences, cadence where
+                (membership.polarion_id = employees.number)
+                and role = 'PO'
+                and name = 'PRODUCT_OWNER_ALLOCATION'
+                and art_name = '".$art."'
+                and team_name = '".$team."'
+                and PI_id = '.$pi_id.'
+                union
+                SELECT art_name, team_name, PI_id, iteration_id, last_name, first_name, role, value as velocity, '0' as Days_Off, ((duration * .8) * (value/100)) as Story_points FROM `membership`,  employees, preferences, cadence where
+                (membership.polarion_id = employees.number)
+                and role = 'DEVELOPER'
+                and name = 'AGILE_TEAM_MEMBER_ALLOCATION'
+                and art_name = '".$art."'
+                and team_name = '".$team."'
+                and PI_id = '.$pi_id.'
+                order by art_name, pi_id, iteration_id, velocity desc, role;")) {
+                    $rows = array();
+                    while($row = $result->fetch_array()) {
+                        $rows[] = $row;
+                    }
+                    fwrite("dataFiles/.$pi_id._.$art._.$team._cache.json", json_encode($rows));
+                }
+                fclose("dataFiles/.$pi_id._.$art._.$team._cache.json");
+            };   
+        
         function buildTeamTable($pi_id, $parent_name){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
