@@ -175,6 +175,10 @@ function getTeams(art_select){
     buildEmployeeTable($selected_team,$duration,$overhead_percentage);
     $numberIT++;
   };
+
+  //takes the selected values and creates a json
+  buildCapacityJSON($art_select,$selected_team,$pi_id);
+
   //$result->close();
   ?>
 <!--Buttons for future Iteration
