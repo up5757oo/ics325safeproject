@@ -214,12 +214,12 @@
             row_mod = r % 2;
             c = 0;
             link = baseURL + '?id=' ;
-            uri = ID_iteration_array[c] + '_' + teamList_array[r] + '"';
-            var encodedUri = encodeURIComponent(uri);
-            console.log(encodedUri);
-            table_link = '<td ><a href = "' + link + encodedUri+'" title="'+link+encodedUri+'">' + ID_iteration_array[c] + '</a></td>';
             $('#table_body').append('<tr class="altrow" id="' + row_id + '" ><td>' + row_id + '</td><td>' + teamList_array[r] + '</td>');
                 for (c = 0; c < ID_iteration_array.length; c++) {
+                    uri = ID_iteration_array[c] + '_' + teamList_array[r] + '"';
+                    var encodedUri = encodeURIComponent(uri);
+                    console.log(encodedUri);
+                    table_link = '<td ><a href = "' + link + encodedUri+'" title="'+link+encodedUri+'">' + ID_iteration_array[c] + '</a></td>';
                     $('#' + row_id).append(table_link);
                 }
             $('#' + row_id).append('</tr>');
