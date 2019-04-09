@@ -239,7 +239,7 @@ if(!isset($_COOKIE['teamCookie'])){
   //refreshed the page to update the cookie for the table values
   echo '<script>location.reload();</script>';
 };
-
+buildCapacityJSON($art_select,'Agile Team 1000 1',$pi_id);
 ?>
   <?php 
   //closes the database and adds the footer
