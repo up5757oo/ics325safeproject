@@ -163,7 +163,7 @@ function getTeams(art_select){
   <form method="post" action="#" id="maincap">
   <?php
   //Defaulting the selected team, this will need to be updated once the table have additional values available
-  $selected_team='804 Agile Team';
+  $selected_team='Agile Team 1000 1';
   //settting up the pi id array for the Iteration # display
   $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
   //Iteration # display
@@ -206,6 +206,8 @@ $(document).ready(function () {
 
   });
 });
+
+
 </script>
 
 <?php
