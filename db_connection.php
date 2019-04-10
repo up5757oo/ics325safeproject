@@ -174,9 +174,9 @@ function buildTeamMenu(){
     };
 
     //Function for creating a table of employee day
-    function buildEmployeeTable($selected_team,$duration,$overhead_percentage){
+    function buildEmployeeTable($selected_team,$duration,$overhead_percentage, $numberIT){
          echo '             
-         <table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+         <table id="' .$numberIT .'" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
          width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
          <thead>
             <tr id="capacity-table-first-row">
@@ -264,7 +264,7 @@ function buildTeamMenu(){
                     </tr>";
                     $rownum++;
 
-                     echo $storypts . ", " . $doff;     //displaying values for test purposes
+                     /*echo $storypts . ", " . $doff;     *///displaying values for test purposes
                      $it_storypts = $it_storypts + $storypts; //add storypoints of each row
                      $it_doff = $it_doff + $doff;           //add the days off of each row
                      $it_storypts = $it_storypts - $it_doff; //collect this table's Story Points (TABLE SCOPE)
@@ -283,7 +283,19 @@ function buildTeamMenu(){
             echo "<br>";
             echo "Running Total Story Points: " . ($running_total_storypts);  //Need to move this to display elsewhere
 
-            echo '</tbody><tfoot></tfoot></table>';
+            echo '</tbody><tfoot></tfoot></table>
+            
+            <script type="text/javascript">
+$(document).ready(function () {
+
+  $(\'#' .$numberIT .'\').DataTable({
+   paging: false,
+   searching: false,
+   infoCallback: false
+
+  });
+});
+</script>';
 
         };
 

@@ -28,9 +28,13 @@ $pi_id_select='';
 $duration = '';
 $overhead_percentage = '';
 
-//Function from db_connection that checks for ART Cookie, if it is not available it will update the cookie with a default value
-setArtCookie();
-$art_select = $_COOKIE['artCookie'];
+  //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
+  if(!isset($_COOKIE['artCookie'])){
+    //established finds the value to use for the ART cookie
+    $art_select = setArtCookie();
+  } else {
+    $art_select = $_COOKIE['artCookie'];
+  };
 
 //Function that uses json file to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
@@ -172,43 +176,29 @@ function getTeams(art_select){
   //Loop for displaying the series of Employee table & iteration calculation placeholder
   for($i = 0; $i < $count_piid; $i++){
     echo '<h4>Iteration #' .$numberIT .': ' .$pi_id_array[$i]; 
-    buildEmployeeTable($selected_team,$duration,$overhead_percentage);
+    buildEmployeeTable($selected_team,$duration,$overhead_percentage, $pi_id_array[$i]);
+      echo '
+      <input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+      <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
+      <!--input type="submit" id="capacity-button-blue" name="showNext" value="Show Next iteration_id"-->
+      <input type="hidden" name="current-team-selected" value="<?php echo '.$selected_team.'; ?>">';
+      //echo <!--input type="hidden" name="current-sequence" value="<?php echo .$sequence.; "';
     $numberIT++;
   };
 
   //takes the selected values and creates a json
-  buildCapacityJSON($art_select,$selected_team,$pi_id);
+  //
 
   //$result->close();
   ?>
-<!--Buttons for future Iteration
-<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-<input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
-<input type="submit" id="capacity-button-blue" name="showNext" value="Show Next iteration_id">
-<input type="hidden" name="current-team-selected" value="<?php //echo $selected_team; ?>">
-<input type="hidden" name="current-sequence" value="<?php //echo $sequence; ?>">
--->
+
+
 </form>
 </td>
 </tr>
 </table>
 </div>
 </div>
-
-<!-- Column Sorting code using DataTables -->
-<script type="text/javascript">
-$(document).ready(function () {
-
-  $('#info').DataTable({
-   paging: false,
-   searching: false,
-   infoCallback: false
-
-  });
-});
-
-
-</script>
 
 <?php
 include("./footer.php");
