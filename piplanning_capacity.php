@@ -176,7 +176,13 @@ function getTeams(art_select){
   //Loop for displaying the series of Employee table & iteration calculation placeholder
   for($i = 0; $i < $count_piid; $i++){
     echo '<h4>Iteration #' .$numberIT .': ' .$pi_id_array[$i]; 
-    buildEmployeeTable($selected_team,$duration,$overhead_percentage);
+    buildEmployeeTable($selected_team,$duration,$overhead_percentage, $pi_id_array[$i]);
+      echo '
+      <input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+      <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
+      <!--input type="submit" id="capacity-button-blue" name="showNext" value="Show Next iteration_id"-->
+      <input type="hidden" name="current-team-selected" value="<?php echo '.$selected_team.'; ?>">';
+      //echo <!--input type="hidden" name="current-sequence" value="<?php echo .$sequence.; "';
     $numberIT++;
   };
 
@@ -185,34 +191,14 @@ function getTeams(art_select){
 
   //$result->close();
   ?>
-<!--Buttons for future Iteration
-<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-<input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
-<input type="submit" id="capacity-button-blue" name="showNext" value="Show Next iteration_id">
-<input type="hidden" name="current-team-selected" value="<?php //echo $selected_team; ?>">
-<input type="hidden" name="current-sequence" value="<?php //echo $sequence; ?>">
--->
+
+
 </form>
 </td>
 </tr>
 </table>
 </div>
 </div>
-
-<!-- Column Sorting code using DataTables -->
-<script type="text/javascript">
-$(document).ready(function () {
-
-  $('#info').DataTable({
-   paging: false,
-   searching: false,
-   infoCallback: false
-
-  });
-});
-
-
-</script>
 
 <?php
 include("./footer.php");
