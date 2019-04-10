@@ -28,9 +28,13 @@ $pi_id_select='';
 $duration = '';
 $overhead_percentage = '';
 
-//Function from db_connection that checks for ART Cookie, if it is not available it will update the cookie with a default value
-setArtCookie();
-$art_select = $_COOKIE['artCookie'];
+  //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
+  if(!isset($_COOKIE['artCookie'])){
+    //established finds the value to use for the ART cookie
+    $art_select = setArtCookie();
+  } else {
+    $art_select = $_COOKIE['artCookie'];
+  };
 
 //Function that uses json file to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
@@ -177,7 +181,7 @@ function getTeams(art_select){
   };
 
   //takes the selected values and creates a json
-  buildCapacityJSON($art_select,$selected_team,$pi_id);
+  //
 
   //$result->close();
   ?>
