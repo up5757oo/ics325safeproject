@@ -174,10 +174,13 @@ function getTeams(art_select){
 
   date_default_timezone_set('America/Chicago');
   //updated sql so select values matched availabe column names
-  $sql = "SELECT PI_id as program_increment, iteration_id as iteration , sequence
+  $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration , sequence
+  FROM `cadence`
+  WHERE PI_id in (SELECT  PI_id
   FROM `cadence`
   WHERE start_date <= DATE(NOW())
-  AND end_date >= DATE(NOW());";
+  AND end_date >= DATE(NOW())
+  order by sequence);";
   $result = $db->query($sql);
   if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
@@ -209,12 +212,12 @@ function getTeams(art_select){
     }
     $result->close();
   }
-
+echo '<script>console.log('.$sequence.');</script>';
   if (isset($_POST['current-sequence'])) {
     $sequence = $_POST['current-sequence'];
 
   }
-
+  echo '<script>console.log('.$sequence.');</script>';
   //checks if there is a current team selected. If not it uses the artCookie to find the $selected_team
   if (isset($_POST['current-team-selected'])) {
       $selected_team = $_POST['current-team-selected'];
@@ -258,9 +261,9 @@ function getTeams(art_select){
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
 
-          if ($row["role"] == "Scrum Master (SM)") {
+          if ($row["role"] == "SM") {
             $velType = "SCRUM_MASTER_ALLOCATION";
-          } else if ($row["role"] == "Product Owner (PO)") {
+          } else if ($row["role"] == "PO") {
             $velType = "PRODUCT_OWNER_ALLOCATION";
           } else  {
             $velType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -296,9 +299,9 @@ function getTeams(art_select){
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
 
-          if ($row["role"] == "Scrum Master (SM)") {
+          if ($row["role"] == "SM") {
             $velType = "SCRUM_MASTER_ALLOCATION";
-          } else if ($row["role"] == "Product Owner (PO)") {
+          } else if ($row["role"] == "PO") {
             $velType = "PRODUCT_OWNER_ALLOCATION";
           } else  {
             $velType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -500,7 +503,7 @@ function getTeams(art_select){
               $rownum = 0;
               while ($row = $result->fetch_assoc()) {
 
-                if ($row["role"] == "SM)") {
+                if ($row["role"] == "SM") {
                   $velocityType = "SCRUM_MASTER_ALLOCATION";
                 } else if ($row["role"] == "PO") {
                   $velocityType = "PRODUCT_OWNER_ALLOCATION";
