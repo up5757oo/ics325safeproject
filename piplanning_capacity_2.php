@@ -258,9 +258,9 @@ function getTeams(art_select){
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
 
-          if ($row["role"] == "Scrum Master (SM)") {
+          if ($row["role"] == "SM") {
             $velType = "SCRUM_MASTER_ALLOCATION";
-          } else if ($row["role"] == "Product Owner (PO)") {
+          } else if ($row["role"] == "PO") {
             $velType = "PRODUCT_OWNER_ALLOCATION";
           } else  {
             $velType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -296,9 +296,9 @@ function getTeams(art_select){
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
 
-          if ($row["role"] == "Scrum Master (SM)") {
+          if ($row["role"] == "SM") {
             $velType = "SCRUM_MASTER_ALLOCATION";
-          } else if ($row["role"] == "Product Owner (PO)") {
+          } else if ($row["role"] == "PO") {
             $velType = "PRODUCT_OWNER_ALLOCATION";
           } else  {
             $velType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -500,7 +500,7 @@ function getTeams(art_select){
               $rownum = 0;
               while ($row = $result->fetch_assoc()) {
 
-                if ($row["role"] == "SM)") {
+                if ($row["role"] == "SM") {
                   $velocityType = "SCRUM_MASTER_ALLOCATION";
                 } else if ($row["role"] == "PO") {
                   $velocityType = "PRODUCT_OWNER_ALLOCATION";
