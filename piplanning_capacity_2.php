@@ -20,6 +20,7 @@ $pi_id_menu='';
 $pi_id_select='';
 $duration = '';
 $overhead_percentage = '';
+$default_total = 32;
 
   //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
   if(!isset($_COOKIE['artCookie'])){
@@ -681,6 +682,7 @@ function getTeams(art_select){
       }
       
       function getTotalCapacity(){
+        
         $program_increment = $_COOKIE['piCookie'];
         $selected_team  = $_COOKIE['teamSelectCookie'];
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
@@ -699,6 +701,7 @@ function getTeams(art_select){
             }
 
         } else {
+          
           if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
             $icapacity = array_sum($teamcapacity);
             $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
