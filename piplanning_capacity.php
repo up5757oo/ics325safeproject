@@ -53,6 +53,7 @@ if(isset($_COOKIE['piCookie'])){
 //Function for assigning the duration variable
 $duration = getDuration($pi_id_select);
 
+
 //Function for assigning the overhead percentage
 $overhead_percentage = getOverheadPercentage();
 ?>
@@ -177,12 +178,6 @@ function getTeams(art_select){
   for($i = 0; $i < $count_piid; $i++){
     echo '<h4>Iteration #' .$numberIT .': ' .$pi_id_array[$i]; 
     buildEmployeeTable($selected_team,$duration,$overhead_percentage, $pi_id_array[$i]);
-      echo '
-      <input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-      <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
-      <!--input type="submit" id="capacity-button-blue" name="showNext" value="Show Next iteration_id"-->
-      <input type="hidden" name="current-team-selected" value="<?php echo '.$selected_team.'; ?>">';
-      //echo <!--input type="hidden" name="current-sequence" value="<?php echo .$sequence.; "';
     $numberIT++;
   };
 
