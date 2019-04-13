@@ -58,11 +58,12 @@ if(isset($_COOKIE['piCookie'])){
 };
 //Function for assigning the duration variable
 $duration = getDuration($pi_id_select);
+
 if(isset($_COOKIE['totalPoints'])){
   $totalcapacity= $_COOKIE['totalPoints'];
 } else {
 
-  $totalcapacity= $_COOKIE['totalPoints'];
+  $totalcapacity = 204;
 
 };
 
