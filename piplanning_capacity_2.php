@@ -87,7 +87,7 @@ form for submitting data that will be prepopulated with data from the variables
         </td>
       </tr>
       <tr>
-        <td>Agile Release Train:</td>
+       <!--  <td>Agile Release Train:</td>
         <td>
           <select id="art" name="art" onchange="
           //sets art select to selected value
@@ -99,7 +99,7 @@ form for submitting data that will be prepopulated with data from the variables
           location.reload();
           ">
           <option value="">-- Select --</option>
-          <?php echo $art; ?>
+          <?php //echo $art; ?>
         </select>
       </td>
     </tr>
@@ -111,8 +111,8 @@ form for submitting data that will be prepopulated with data from the variables
       var pi_select = this.value;
       //sets the selected value as the cookie
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
-      location.reload();">
-      <?php echo $pi_id_menu; ?>
+      location.reload();"> 
+      <?php //echo $pi_id_menu; ?> -->
     </select>
   </td>
 </tr>
@@ -408,19 +408,33 @@ function getTeams(art_select){
         <tr>
           <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
             <form method="post" action="#">
-            Team: &emsp; <br/>
+            Agile Release Train: &emsp; <br/>
+            Agile Team: &emsp; <br/>
             Program Increment (PI): &emsp; <br/>
             Iteration (I): &emsp; <br/>
             No. of Days in the Iteration: &emsp; <br/>
             Overhead Percentage: &emsp; <br/>
           </td>
           <td  style="vertical-align: top; font-weight: bold; line-height: 130%;  font-size: 18px;" width="25%">
+            
+          <select id="art" name="art" onchange="
+            //sets art select to selected value
+            var art_select = this.value;
+            //sets the selected value as the cookie
+            document.cookie = escape('artCookie') + '=' + escape(art_select) ;
+            //updates the teams list
+            getTeams(art_select);
+            location.reload();">
+            <option value="">-- Select --</option>
+            <?php echo $art; ?>
+          </select>
+          
             <select name="select-team" onchange="      
             //sets team_select to selected value
             var team_select = this.value;
             //sets the selected value as the cookie
             document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);
-            location.reload();" style="border: 0; text-align: left; width: 300px;">
+            location.reload();" >
               <?php
               $sql = "SELECT DISTINCT c.team_id, c.team_name FROM capacity c, trains_and_teams t where c.program_increment='".$program_increment."' and c.team_id = t.team_id and t.parent_name = '".$art_select."';";
               //checks if there is a selected team in the cookie variable. If there is it will update the detault to the cookie value
@@ -442,9 +456,19 @@ function getTeams(art_select){
               }
               ?>
             </select>
+
+          <select id="PI_ID" name="pi_id" onchange="
+          //sets pi_select to selected value
+          var pi_select = this.value;
+          //sets the selected value as the cookie
+          document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+          location.reload();">
+          <?php echo $pi_id_menu; ?>
+          </select>
+
           </form><br/>
           <?php
-            echo "&nbsp;".$program_increment."<br/>";
+            //echo "&nbsp;".$program_increment."<br/>";
             echo "&nbsp;".$iteration."<br/>";
             echo "&nbsp;".$duration."<br/>";
             echo "&nbsp;".$overhead_percentage."%<br/>";
@@ -462,6 +486,7 @@ function getTeams(art_select){
                   $icapacity = array_sum($teamcapacity);
                   $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
                 }else{
+                  //this is where the problem is
                   $icapacity = $row["iteration_".substr($iteration, -1)];
                   $totalcapacity = $row["total"];
                 }
@@ -647,11 +672,10 @@ function getTeams(art_select){
           }
 
           document.getElementsByName("icap")[0].innerHTML = icap;
-          var capdiff = icap - icap_old;
-          var tcap = parseInt(capdiff) + parseInt(totalcap_old);
-          document.getElementsByName("totalcap")[0].innerHTML = tcap;
+            var capdiff = icap - icap_old;
+            var tcap = parseInt(capdiff) + parseInt(totalcap_old);
+            document.getElementsByName("totalcap")[0].innerHTML = tcap;
         }
-
 
     </script>
   <?php 
@@ -680,7 +704,7 @@ function getTeams(art_select){
           }
           return $team_id;
       }
-      
+
       function getTotalCapacity(){
         
         $program_increment = $_COOKIE['piCookie'];
@@ -688,10 +712,8 @@ function getTeams(art_select){
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
         $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
         $result = $db->query($sql);
-
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-
             if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
               $icapacity = array_sum($teamcapacity);
               $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
@@ -699,7 +721,6 @@ function getTeams(art_select){
               $icapacity = $row["iteration_".substr($iteration, -1)];
               $totalcapacity = $row["total"];
             }
-
         } else {
           
           if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
@@ -709,8 +730,8 @@ function getTeams(art_select){
             $icapacity = $default_total;
             $totalcapacity = $default_total*6;
           }
-
         }
-      };
+      }
+      ;
 ?>
 <?php include("./footer.php"); ?>
