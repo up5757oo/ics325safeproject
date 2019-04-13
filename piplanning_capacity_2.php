@@ -63,6 +63,7 @@ if(isset($_COOKIE['totalPoints'])){
   $totalcapacity= $_COOKIE['totalPoints'];
 } else {
 
+  //placeholder for total capacity field
   $totalcapacity = 204;
 
 };
