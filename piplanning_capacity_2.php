@@ -41,7 +41,6 @@ $overhead_percentage = '';
 
   //finds the team id for the team name for the selected team script
   
-
 //Function that uses json file to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
 
@@ -59,10 +58,14 @@ if(isset($_COOKIE['piCookie'])){
 };
 //Function for assigning the duration variable
 $duration = getDuration($pi_id_select);
+
 if(isset($_COOKIE['totalPoints'])){
   $totalcapacity= $_COOKIE['totalPoints'];
 } else {
-  $totalcapacity=0;
+
+  //placeholder for total capacity field
+  $totalcapacity = 204;
+
 };
 
 //Function for assigning the overhead percentage
@@ -278,9 +281,8 @@ echo '<script>console.log('.$sequence.');</script>';
               $default_total += $row2["value"];
 
           }
-
+        }
       }
-    }
     }
   }
 
@@ -316,11 +318,9 @@ echo '<script>console.log('.$sequence.');</script>';
               $default_total += $row2["value"];
 
           }
-
+        }
       }
     }
-    }
-
   }
   if (!isset($_POST['select-team']) && !isset($_POST['current-team-selected'])) {
     $sql = "SELECT team_id FROM `capacity` where program_increment='".$program_increment."' LIMIT 1;";
@@ -452,8 +452,8 @@ echo '<script>console.log('.$sequence.');</script>';
                 $icapacity = $default_total;
                 $totalcapacity = $default_total*6;
               }
-
             }
+       
              ?>
 
             <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
@@ -657,6 +657,36 @@ echo '<script>console.log('.$sequence.');</script>';
               $team_id= $row["team_id"];
           }
           return $team_id;
+      }
+      
+      function getTotalCapacity(){
+        $program_increment = $_COOKIE['piCookie'];
+        $selected_team  = $_COOKIE['teamSelectCookie'];
+        $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+        $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
+        $result = $db->query($sql);
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+
+            if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+              $icapacity = array_sum($teamcapacity);
+              $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
+            }else{
+              $icapacity = $row["iteration_".substr($iteration, -1)];
+              $totalcapacity = $row["total"];
+            }
+
+        } else {
+          if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+            $icapacity = array_sum($teamcapacity);
+            $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
+          }else{
+            $icapacity = $default_total;
+            $totalcapacity = $default_total*6;
+          }
+
+        }
       };
 ?>
 <?php include("./footer.php"); ?>
