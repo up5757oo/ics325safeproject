@@ -171,7 +171,7 @@ function getTeams(art_select){
   console.log("Team Cookie: " + getCookie('teamSelectCookie'));
   </script>
   <?php
-
+  $sequenceArray = array();
   date_default_timezone_set('America/Chicago');
   //updated sql so select values matched availabe column names
   $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration , sequence
@@ -226,7 +226,10 @@ echo '<script>console.log('.$sequence.');</script>';
 
   if (isset($_POST['showNext'])) {
     $sequence++;
-    $sql = "SELECT program_increment, iteration, sequence
+    echo '<script>console.log("Show Next: " + "'.$sequence.'");</script>';
+    echo '<script>console.log("Program Increment: " + "'.$program_increment.'");</script>';
+    
+    $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration 
             FROM `cadence`
             WHERE sequence='".$sequence."';";
     $result = $db->query($sql);
@@ -237,9 +240,10 @@ echo '<script>console.log('.$sequence.');</script>';
       $sequence = $row["sequence"];
       $result->close();
     } else {
-      $sql = "SELECT program_increment, iteration, sequence
+      $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration 
               FROM `cadence`
-              WHERE sequence='1';";
+              WHERE PI_id='".$program_increment."'
+              ORDER BY sequence limit 1;";
       $result = $db->query($sql);
       if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -249,6 +253,7 @@ echo '<script>console.log('.$sequence.');</script>';
         $result->close();
     }
   }
+  echo '<script>console.log("Program Increment: " + "'.$iteration.'");</script>';
     $sql = "SELECT * FROM `capacity` where team_id='".$selected_team."' AND program_increment='".$program_increment."';";
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
