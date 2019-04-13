@@ -470,6 +470,7 @@ echo '<script>console.log('.$sequence.');</script>';
                   $icapacity = array_sum($teamcapacity);
                   $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
                 }else{
+                  //this is where the problem is
                   $icapacity = $row["iteration_".substr($iteration, -1)];
                   $totalcapacity = $row["total"];
                 }
@@ -655,11 +656,10 @@ echo '<script>console.log('.$sequence.');</script>';
           }
 
           document.getElementsByName("icap")[0].innerHTML = icap;
-          var capdiff = icap - icap_old;
-          var tcap = parseInt(capdiff) + parseInt(totalcap_old);
-          document.getElementsByName("totalcap")[0].innerHTML = tcap;
+            var capdiff = icap - icap_old;
+            var tcap = parseInt(capdiff) + parseInt(totalcap_old);
+            document.getElementsByName("totalcap")[0].innerHTML = tcap;
         }
-
 
     </script>
   <?php 
@@ -687,6 +687,32 @@ echo '<script>console.log('.$sequence.');</script>';
               $team_id= $row["team_id"];
           }
           return $team_id;
+      }
+
+      function getTotalCapacity(){
+        $program_increment = $_COOKIE['piCookie'];
+        $selected_team  = $_COOKIE['teamSelectCookie'];
+        $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+        $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
+        $result = $db->query($sql);
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+              $icapacity = array_sum($teamcapacity);
+              $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
+            }else{
+              $icapacity = $row["iteration_".substr($iteration, -1)];
+              $totalcapacity = $row["total"];
+            }
+        } else {
+          if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+            $icapacity = array_sum($teamcapacity);
+            $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
+          }else{
+            $icapacity = $default_total;
+            $totalcapacity = $default_total*6;
+          }
+        }
       }
       ;
 ?>
