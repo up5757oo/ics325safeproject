@@ -293,21 +293,22 @@ function buildTeamMenu(){
             //for loop for collecting days off for each 7 tables ??
             echo "<br>";
             echo "Running Total Story Points: " . ($running_total_storypts);  //Need to move this to display elsewhere
-
+            //echo <!--input type="hidden" name="current-sequence" value="<?php echo .$sequence.; "
             echo '</tbody><tfoot></tfoot></table>
+            <input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+            <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
+            <!--input type="submit" id="capacity-button-blue" name="showNext" value="Show Next iteration_id"-->
+            <input type="hidden" name="current-team-selected" value="<?php echo '.$selected_team.'; ?>">
             
             <script type="text/javascript">
-$(document).ready(function () {
-
-  $(\'#' .$numberIT .'\').DataTable({
-   paging: false,
-   searching: false,
-   infoCallback: false
-
-  });
-});
-</script>';
-
+            $(document).ready(function () {
+                $(\'#' .$numberIT .'\').DataTable({
+                    paging: false,
+                    searching: false,
+                    infoCallback: false
+                });
+            });
+            </script>';
         };
 
         //function for returning the duration
@@ -337,8 +338,7 @@ $(document).ready(function () {
         };
 
         function buildSummaryTable($header_name,$col1,$col2){
-            echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
-            width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+            echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table" width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
             <thead>
                <tr id="capacity-table-first-row">
                <th id="capacity-table-td">'.$header_name.'</th>
