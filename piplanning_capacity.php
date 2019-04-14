@@ -66,7 +66,7 @@ form for submitting data that will be prepopulated with data from the variables
       <tr>
         <td></td>
         <td>
-          <input type="hidden" id="baseUrl" name="baseUrl" readonly="readonly" value="<?php echo $base_url_out; ?>">
+          <input type="hidden" id="baseUrl" name="baseUrl" readonly="readonly" value="<?php echo $base_url_out; ?>"> 
         </td>
       </tr>
       <tr>
@@ -118,7 +118,7 @@ form for submitting data that will be prepopulated with data from the variables
 </tr>
 <tr>
 <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
-              <div id="capacity-calc-bignum" name="totalcap"><?php echo "test" ?></div>
+              <div id="capacity-calc-bignum" name="totalcap"><?php echo "204" ?></div> <!-- display $totalcapacity -->
               <b>Total Capacity for the Program Increment</b>
             </div>
           </td>

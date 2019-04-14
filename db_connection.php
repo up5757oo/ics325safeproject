@@ -192,7 +192,7 @@ function buildTeamMenu(){
          $storypts2 = 0;
          $it_storypts = 0; //collect sum of story points per table iteration
          $it_doff = 0; //collect all days off per table iteration
-         $num_tables = 7; // 7 tables of story points with 2 weeks work-- need to fix the last table for half time
+         $num_tables = 6; // 7 tables of story points with 2 weeks work-- need to fix the last table for half time
          $running_total_storypts = 0; // TOTAL collection of Capacity Iteration Story points
          $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
          $db->set_charset("utf8");
@@ -248,9 +248,9 @@ function buildTeamMenu(){
 
                     $vel = $row2["value"];
                     } 
-
-                //$storypts2 = $storypts * ($vel/100);
-
+                
+                // $storypts2 = $storypts * ($vel/100);
+                
                 echo
                     "
                     <tr>   
@@ -272,17 +272,24 @@ function buildTeamMenu(){
                     }
                 echo "<br>";
                 echo "Iteration Capacity Total: " . $it_storypts; //displays story points for each table
+
+                    ?>
+                    <!-- displays iteration total for each table (test) -->
+                    <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
+                    <div id="capacity-calc-bignum" name="icap"><?php echo "56" ?></div>
+                     Capacity for this Iteration <br/>(capacity-calc-bignum $icapacity)
+                    </div>
+                    <?php
                 
             } else {
                 echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
                 print "NO TEAM MEMBERS ASSIGNED TO TEAM \"".$selected_team."\"";
                 echo "</td></tr>";
             }
-            //$it_storypts = $it_storypts + $it_doff; //max 64 for each table
-            $running_total_storypts = $it_storypts * $num_tables; // still need to collect last table (specific)
-            //for loop for collecting days off for each 7 tables
+            //$it_storypts = $it_storypts + $it_doff;
+            $running_total_storypts = ($it_storypts * $num_tables) + 28;
             echo "<br>";
-            echo "Running Total Story Points: " . ($running_total_storypts);  //Need to move this to display elsewhere
+           // echo "Running Total Story Points: " . $running_total_storypts;  //Need to move this to display elsewhere
             echo '</tbody><tfoot></tfoot></table>
             
             <script type="text/javascript">
