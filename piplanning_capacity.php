@@ -182,7 +182,6 @@ function getTeams(art_select){
   };
 
   //takes the selected values and creates a json
-  //
 
   //$result->close();
   ?>
