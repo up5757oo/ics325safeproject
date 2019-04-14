@@ -19,7 +19,8 @@ $art="";
 $pi_id_menu='';
 $pi_id_select='';
 $duration = '';
-$overhead_percentage = '';
+$overhead_percentage = getOverheadPercentage();
+$default_total = 56;
 
   //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
   if(!isset($_COOKIE['artCookie'])){
@@ -41,7 +42,6 @@ $overhead_percentage = '';
 
   //finds the team id for the team name for the selected team script
   
-
 //Function that uses json file to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
 
@@ -59,10 +59,14 @@ if(isset($_COOKIE['piCookie'])){
 };
 //Function for assigning the duration variable
 $duration = getDuration($pi_id_select);
+
 if(isset($_COOKIE['totalPoints'])){
   $totalcapacity= $_COOKIE['totalPoints'];
 } else {
-  $totalcapacity=0;
+
+  //placeholder for total capacity field
+  $totalcapacity = 204;
+
 };
 
 //Function for assigning the overhead percentage
@@ -83,7 +87,7 @@ form for submitting data that will be prepopulated with data from the variables
         </td>
       </tr>
       <tr>
-        <td>Agile Release Train:</td>
+       <!--  <td>Agile Release Train:</td>
         <td>
           <select id="art" name="art" onchange="
           //sets art select to selected value
@@ -95,7 +99,7 @@ form for submitting data that will be prepopulated with data from the variables
           location.reload();
           ">
           <option value="">-- Select --</option>
-          <?php echo $art; ?>
+          <?php //echo $art; ?>
         </select>
       </td>
     </tr>
@@ -107,8 +111,8 @@ form for submitting data that will be prepopulated with data from the variables
       var pi_select = this.value;
       //sets the selected value as the cookie
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
-      location.reload();">
-      <?php echo $pi_id_menu; ?>
+      location.reload();"> 
+      <?php //echo $pi_id_menu; ?> -->
     </select>
   </td>
 </tr>
@@ -116,7 +120,13 @@ form for submitting data that will be prepopulated with data from the variables
 <td><input type="submit" id="php_button" onclick="updateEmployeeTable()" name="generate_button" class="button" value="Generate"></td>
 <td></td>
 </tr>
-<tr><td> Total Capacity for the Program Increment</td><td><div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;"><div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div></div>
+<tr>
+<div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
+              <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
+              <b>Total Capacity for the Program Increment</b>
+            </div>
+          </td>
+
 </td></tr>
 </table>
 </form><br>
@@ -171,7 +181,8 @@ function getTeams(art_select){
   console.log("Team Cookie: " + getCookie('teamSelectCookie'));
   </script>
   <?php
-
+  $sequenceArray = array();
+  $iterationArray = array();
   date_default_timezone_set('America/Chicago');
   //updated sql so select values matched availabe column names
   $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration , sequence
@@ -212,11 +223,15 @@ function getTeams(art_select){
     }
     $result->close();
   }
-echo '<script>console.log('.$sequence.');</script>';
-  if (isset($_POST['current-sequence'])) {
-    $sequence = $_POST['current-sequence'];
+  //Creates an array of the active sequences and iterations
+  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id in (SELECT  PI_id FROM `cadence` WHERE start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) order by sequence);")) {
+    $rows = array();
+    while($row = $result->fetch_array()) {
+      $sequenceArray[]=$row["sequence"];
+      $iterationArray[]=$row["iteration"];
+    }
+};
 
-  }
   echo '<script>console.log('.$sequence.');</script>';
   //checks if there is a current team selected. If not it uses the artCookie to find the $selected_team
   if (isset($_POST['current-team-selected'])) {
@@ -226,7 +241,10 @@ echo '<script>console.log('.$sequence.');</script>';
 
   if (isset($_POST['showNext'])) {
     $sequence++;
-    $sql = "SELECT program_increment, iteration, sequence
+    echo '<script>console.log("Show Next: " + "'.$sequence.'");</script>';
+    echo '<script>console.log("Program Increment: " + "'.$program_increment.'");</script>';
+    
+    $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration 
             FROM `cadence`
             WHERE sequence='".$sequence."';";
     $result = $db->query($sql);
@@ -237,9 +255,10 @@ echo '<script>console.log('.$sequence.');</script>';
       $sequence = $row["sequence"];
       $result->close();
     } else {
-      $sql = "SELECT program_increment, iteration, sequence
+      $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration 
               FROM `cadence`
-              WHERE sequence='1';";
+              WHERE PI_id='".$program_increment."'
+              ORDER BY sequence limit 1;";
       $result = $db->query($sql);
       if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -249,14 +268,17 @@ echo '<script>console.log('.$sequence.');</script>';
         $result->close();
     }
   }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  echo '<script>console.log("Program Increment: " + "'.$iteration.'");</script>';
     $sql = "SELECT * FROM `capacity` where team_id='".$selected_team."' AND program_increment='".$program_increment."';";
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
+      $default_data = false;
+      $default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_IP"]);
     } else {
       $default_data = true;
-      $default_total = 0;
-
-      $sql = "SELECT * FROM `membership` where team_id='".$selected_team."';";
+      
+      $sql = "SELECT * FROM `membership` where team_name = (select team_name from trains_and_teams where team_id = '".$selected_team."' and art_name = '".$art_name."' LIMIT 1) ;";
       $result = $db->query($sql);
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -278,9 +300,8 @@ echo '<script>console.log('.$sequence.');</script>';
               $default_total += $row2["value"];
 
           }
-
+        }
       }
-    }
     }
   }
 
@@ -292,9 +313,9 @@ echo '<script>console.log('.$sequence.');</script>';
     if ($result->num_rows > 0) {
     } else {
       $default_data = true;
-      $default_total = 0;
+      $default_total = ($defaul_total * 5) + 28;
 
-      $sql = "SELECT * FROM `membership` where team_id='".$selected_team."';";
+      $sql = "SELECT * FROM `membership` where team_name = (select team_name from trains_and_teams where team_id = '".$selected_team."' and art_name = '".$art_name."' LIMIT 1);";
       $result = $db->query($sql);
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -316,11 +337,9 @@ echo '<script>console.log('.$sequence.');</script>';
               $default_total += $row2["value"];
 
           }
-
+        }
       }
     }
-    }
-
   }
   if (!isset($_POST['select-team']) && !isset($_POST['current-team-selected'])) {
     $sql = "SELECT team_id FROM `capacity` where program_increment='".$program_increment."' LIMIT 1;";
@@ -386,19 +405,30 @@ echo '<script>console.log('.$sequence.');</script>';
         <tr>
           <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
             <form method="post" action="#">
-            Team: &emsp; <br/>
+            Agile Release Train: &emsp; <br/>
+            Agile Team: &emsp; <br/>
             Program Increment (PI): &emsp; <br/>
-            Iteration (I): &emsp; <br/>
-            No. of Days in the Iteration: &emsp; <br/>
-            Overhead Percentage: &emsp; <br/>
           </td>
           <td  style="vertical-align: top; font-weight: bold; line-height: 130%;  font-size: 18px;" width="25%">
+            
+          <select id="art" name="art" onchange="
+            //sets art select to selected value
+            var art_select = this.value;
+            //sets the selected value as the cookie
+            document.cookie = escape('artCookie') + '=' + escape(art_select) ;
+            //updates the teams list
+            getTeams(art_select);
+            location.reload();">
+            <option value="">-- Select --</option>
+            <?php echo $art; ?>
+          </select>
+          
             <select name="select-team" onchange="      
             //sets team_select to selected value
             var team_select = this.value;
             //sets the selected value as the cookie
             document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);
-            location.reload();" style="border: 0; text-align: left; width: 300px;">
+            location.reload();" >
               <?php
               $sql = "SELECT DISTINCT c.team_id, c.team_name FROM capacity c, trains_and_teams t where c.program_increment='".$program_increment."' and c.team_id = t.team_id and t.parent_name = '".$art_select."';";
               //checks if there is a selected team in the cookie variable. If there is it will update the detault to the cookie value
@@ -420,40 +450,70 @@ echo '<script>console.log('.$sequence.');</script>';
               }
               ?>
             </select>
+
+          <select id="PI_ID" name="pi_id" onchange="
+          //sets pi_select to selected value
+          var pi_select = this.value;
+          //sets the selected value as the cookie
+          document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+          location.reload();">
+          <?php echo $pi_id_menu; ?>
+          </select>
+
           </form><br/>
           <?php
-            echo "&nbsp;".$program_increment."<br/>";
-            echo "&nbsp;".$iteration."<br/>";
-            echo "&nbsp;".$duration."<br/>";
-            echo "&nbsp;".$overhead_percentage."%<br/>";
-          ?>
-          </td>
-          <td width="50%"  style="font-weight: bold;">
-            <?php
+          $count_iteration = count($iterationArray);
+  //Loop for displaying the series of Employee table & iteration calculation placeholder
+  for($i = 0; $i < $count_iteration; $i++){
+    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+  };
+
+          
+
+
+
+          function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
+            ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
+            $current_sequence = 'current-sequence'.$sequence;
+            if (isset($_POST[$current_sequence])) {
+              $sequence = $_POST[$current_sequence];
+          
+            };
+
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");
+            $duration = getDuration($program_increment);
+           echo '<tr><td>&nbsp;&nbsp;Iteration (I): &nbsp;</td><td>'.$iteration.'</td></tr>';
+           echo '<tr><td>&nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td>'.$duration.'</td></tr>';
+           echo '<tr><td>&nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td>'.$overhead_percentage.'%</td></tr>';
+            //echo "&nbsp;".$program_increment."<br/>";
+
+            echo '<td width="50%"  style="font-weight: bold;">';
             $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
             $result = $db->query($sql);
 
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
 
-                if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+                if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
                   $icapacity = array_sum($teamcapacity);
                   $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
                 }else{
+                  //this is where the problem is
                   $icapacity = $row["iteration_".substr($iteration, -1)];
                   $totalcapacity = $row["total"];
                 }
 
             } else {
-              if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+              if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
                 $icapacity = array_sum($teamcapacity);
                 $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
               }else{
                 $icapacity = $default_total;
                 $totalcapacity = $default_total*6;
               }
-
             }
+       
              ?>
 
             <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
@@ -466,7 +526,7 @@ echo '<script>console.log('.$sequence.');</script>';
           <td colspan="3">
 
         <form method="post" action="#" id="maincap">
-      <table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+        <table id="<?php echo $sequence; ?>" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
              width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
 
           <thead>
@@ -519,18 +579,18 @@ echo '<script>console.log('.$sequence.');</script>';
                     $row2 = $result2->fetch_assoc();
 
                 }
-                if (isset($teamcapacity[$rownum]) && !isset($_POST['restore']) && isset($_POST['submit0'])){
+                if (isset($teamcapacity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
                   $storypts = $teamcapacity[$rownum];
                 }else{
                   $storypts = round(($duration-0)*((100-$overhead_percentage)/100)*($row2["value"]/100));
                 }
                 $valueForJS = $row2["value"];
-                if (isset($daysoff[$rownum]) && !isset($_POST['restore'])  && isset($_POST['submit0'])){
+                if (isset($daysoff[$rownum]) && !isset($_POST['restore'.$sequence])  && isset($_POST['submit0'])){
                   $doff = $daysoff[$rownum];
                 } else {
                   $doff = 0;
                 }
-                if (isset($velocity[$rownum]) && !isset($_POST['restore']) && isset($_POST['submit0'])){
+                if (isset($velocity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
                   $vel = $velocity[$rownum];
                 } else {
                   $vel = $row2["value"];
@@ -555,22 +615,69 @@ echo '<script>console.log('.$sequence.');</script>';
           }
 
           $result->close();
-          ?>
+          
 
-          </tbody>
+          echo '</tbody>';
 
-          <tfoot>
+          echo '<tfoot>';
 
-          </tfoot>
+          echo '</tfoot>';
 
-      </table>
-      <input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-      <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
+      echo '</table>';
+      echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+      <input type="submit" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
       <input type="submit" id="capacity-button-blue" name="showNext" value="Show Next Iteration">
-        <input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>">
-        <input type="hidden" name="current-sequence" value="<?php echo $sequence; ?>">
+        <input type="hidden" name="current-team-selected" value="'.$selected_team.'">
+        <input type="hidden" name="current-sequence"'.$sequence.' value='.$sequence.'">
       </form>
 
+      <script type="text/javascript">
+
+      $(document).ready(function () {
+
+          $(\'#'.$sequence.'\').DataTable({
+              paging: false,
+              searching: false,
+              infoCallback: false
+          });
+
+      });
+
+      function autoForm() {
+        document.getElementById(\'maincap\').submit();
+      }
+
+      function autoLoad() {
+        var velocity = $("input[name=\'velocity[]\']")
+            .map(function(){return $(this).val();}).get();
+        var daysoff = $("input[name=\'daysoff[]\']")
+            .map(function(){return $(this).val();}).get();
+        var rownum = $("input[name=\'rownum[]\']")
+            .map(function(){return $(this).val();}).get();
+
+        var overhead = "'.$overhead_percentage.'";
+        var duration = "'.$duration.'";
+        var value = "'.$valueForJS.'";
+        var totalcap_old = "'.$totalcapacity.'";
+        var icap_old = "'.$icapacity.'";
+        var icap = 0;
+
+        for (var i in rownum) {
+            var storypts = Math.round( ( duration - daysoff[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity[i] / 100 ) );
+            $("input[name=\'storypoints[]\']").eq(i).val(storypts);
+            icap += storypts;
+        }
+
+        document.getElementsByName("icap")[0].innerHTML = icap;
+          var capdiff = icap - icap_old;
+          var tcap = parseInt(capdiff) + parseInt(totalcap_old);
+          document.getElementsByName("totalcap")[0].innerHTML = tcap;
+      }
+
+  </script>';
+      ///////////////////////////Funtion End/////////////////////////////////////////////////////////
+        };
+?>
       <div id="capacity-footnote">
         Note 1: Closed Iterations will NOT be shown.  The capacity cannot be changed for such iterations.  Show only the active iterations.<br/>
         Note 2: This page can be reached in two ways:
@@ -587,51 +694,7 @@ echo '<script>console.log('.$sequence.');</script>';
     </div>
     </div>
 
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-
-            $('#info').DataTable({
-                paging: false,
-                searching: false,
-                infoCallback: false
-            });
-
-        });
-
-        function autoForm() {
-          document.getElementById('maincap').submit();
-        }
-
-        function autoLoad() {
-          var velocity = $("input[name='velocity[]']")
-              .map(function(){return $(this).val();}).get();
-          var daysoff = $("input[name='daysoff[]']")
-              .map(function(){return $(this).val();}).get();
-          var rownum = $("input[name='rownum[]']")
-              .map(function(){return $(this).val();}).get();
-
-          var overhead = "<?php echo $overhead_percentage ?>";
-          var duration = "<?php echo $duration ?>";
-          var value = "<?php echo $valueForJS ?>";
-          var totalcap_old = "<?php echo $totalcapacity ?>";
-          var icap_old = "<?php echo $icapacity ?>";
-          var icap = 0;
-
-          for (var i in rownum) {
-              var storypts = Math.round( ( duration - daysoff[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity[i] / 100 ) );
-              $("input[name='storypoints[]']").eq(i).val(storypts);
-              icap += storypts;
-          }
-
-          document.getElementsByName("icap")[0].innerHTML = icap;
-          var capdiff = icap - icap_old;
-          var tcap = parseInt(capdiff) + parseInt(totalcap_old);
-          document.getElementsByName("totalcap")[0].innerHTML = tcap;
-        }
-
-
-    </script>
+   
   <?php 
       //function for returning the default team name for a given ART
       function getDefaultTeamName($art_name){
@@ -657,6 +720,35 @@ echo '<script>console.log('.$sequence.');</script>';
               $team_id= $row["team_id"];
           }
           return $team_id;
-      };
+      }
+
+      function getTotalCapacity(){
+        
+        $program_increment = $_COOKIE['piCookie'];
+        $selected_team  = $_COOKIE['teamSelectCookie'];
+        $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+        $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
+        $result = $db->query($sql);
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
+              $icapacity = array_sum($teamcapacity);
+              $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
+            }else{
+              $icapacity = $row["iteration_".substr($iteration, -1)];
+              $totalcapacity = $row["total"];
+            }
+        } else {
+          
+          if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
+            $icapacity = array_sum($teamcapacity);
+            $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
+          }else{
+            $icapacity = $default_total;
+            $totalcapacity = $default_total*6;
+          }
+        }
+      }
+      ;
 ?>
 <?php include("./footer.php"); ?>
