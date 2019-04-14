@@ -59,16 +59,24 @@ if(isset($_COOKIE['piCookie'])){
 };
 //Function for assigning the duration variable
 $duration = getDuration($pi_id_select);
-
-if(isset($_COOKIE['totalPoints'])){
-  $totalcapacity= $_COOKIE['totalPoints'];
+//initializes the totalcapacity variable
+$sql = "SELECT * FROM `capacity` WHERE program_increment='".$pi_id."' AND team_id='".$selected_team."'";
+$result = $db->query($sql);
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+      $totalcapacity = $row["total"] ;
+    }else{
+      $totalcapacity = $row["total"];
+    }
 } else {
-
-  //placeholder for total capacity field
-  $totalcapacity = 204;
-
+  
+  if (!isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+    $totalcapacity = ($default_total*6);
+  }else{
+    $totalcapacity = $default_total*6;
+  }
 };
-
 //Function for assigning the overhead percentage
 $overhead_percentage = getOverheadPercentage();
 ?>
@@ -722,14 +730,14 @@ function getTeams(art_select){
           return $team_id;
       }
 
-      function getTotalCapacity($program_increment, $selected_team ){
+      function getTotalCapacity($program_increment, $selected_team){
      
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
         $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
+            if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
               $icapacity = array_sum($teamcapacity);
               $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
             }else{
@@ -738,7 +746,7 @@ function getTeams(art_select){
             }
         } else {
           
-          if (!isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
+          if (!isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
             $icapacity = array_sum($teamcapacity);
             $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
           }else{
