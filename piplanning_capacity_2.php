@@ -5,19 +5,182 @@
   $left_selected = "CALCULATE";
 
   include("./nav.php");
-  DEFINE('DATABASE_HOST', 'localhost');
-  DEFINE('DATABASE_DATABASE', 'ics325safedb');
-  DEFINE('DATABASE_USER', 'root');
-  DEFINE('DATABASE_PASSWORD', '');
+  include("./db_connection.php");
   global $db;
-  $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
-  $db->set_charset("utf8");
-  date_default_timezone_set('America/Chicago');
 
-  $sql = "SELECT program_increment, iteration, sequence
-          FROM `cadence`
-          WHERE start_date <= '" . date("Y-m-d") . "'
-          AND end_date >= '". date("Y-m-d") . "';";
+
+ 
+  echo'<!--Copies in Bears custom stylesheet-->
+  <link rel="stylesheet" type="text/css" href="styleCustom.css">';
+  //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
+//initializes remaining variables
+$pi_id="";
+$art="";
+$pi_id_menu='';
+$pi_id_select='';
+$duration = '';
+$overhead_percentage = '';
+
+  //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
+  if(!isset($_COOKIE['artCookie'])){
+    //established finds the value to use for the ART cookie
+    $art_select = setArtCookie();
+  } else {
+    $art_select = $_COOKIE['artCookie'];
+  };
+
+  //checks if a team has been selected. If it has not then if finds the default team name and applies it to the team variable
+  if(!isset($_COOKIE['teamSelectCookie'])){
+  //sets the default team name
+  $team = getDefaultTeamName($art_select);
+  $selected_team = getTeamID($team);
+  setcookie('teamSelectCookie', $selected_team );
+  } else {
+    $selected_team  = $_COOKIE['teamSelectCookie'];
+  };
+
+  //finds the team id for the team name for the selected team script
+  
+
+//Function that uses json file to build ART select menu. Updates selected default with the Cookie value
+$art = buildArtMenu($art_select);
+
+//uses the pi Select Now function to identify the PI ID within the current date and adds it to the pi id select variable for the default
+$pi_id_select = piSelectNow();
+
+//capturing the pi id cookie to use for the array and build the menu list
+if(isset($_COOKIE['piCookie'])){
+  $pi_id = $_COOKIE['piCookie'];
+  $pi_id_menu = buildPi_idMenu($pi_id);
+} else {
+  $pi_id=$pi_id_select;
+  setcookie('piCookie', $pi_id_select);
+  $pi_id_menu = buildPi_idMenu($pi_id);
+};
+//Function for assigning the duration variable
+$duration = getDuration($pi_id_select);
+if(isset($_COOKIE['totalPoints'])){
+  $totalcapacity= $_COOKIE['totalPoints'];
+} else {
+  $totalcapacity=0;
+};
+
+//Function for assigning the overhead percentage
+$overhead_percentage = getOverheadPercentage();
+?>
+
+<!--
+form for submitting data that will be prepopulated with data from the variables
+-->
+<div class="right-content" >
+    <div class="container">
+  <form  method="POST" id="PI_form" name="PI_form">
+    <table id="form_table" class="container">
+      <tr>
+        <td></td>
+        <td>
+          <input type="hidden" id="baseUrl" name="baseUrl" readonly="readonly" value="<?php echo $base_url_out; ?>">
+        </td>
+      </tr>
+      <tr>
+        <td>Agile Release Train:</td>
+        <td>
+          <select id="art" name="art" onchange="
+          //sets art select to selected value
+          var art_select = this.value;
+          //sets the selected value as the cookie
+          document.cookie = escape('artCookie') + '=' + escape(art_select) ;
+          //updates the teams list
+          getTeams(art_select);
+          location.reload();
+          ">
+          <option value="">-- Select --</option>
+          <?php echo $art; ?>
+        </select>
+      </td>
+    </tr>
+    <tr>
+    <td>Program Increment (PI):</td>
+    <td>
+      <select id="PI_ID" name="pi_id" onchange="
+      //sets pi_select to selected value
+      var pi_select = this.value;
+      //sets the selected value as the cookie
+      document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+      location.reload();">
+      <?php echo $pi_id_menu; ?>
+    </select>
+  </td>
+</tr>
+<tr>
+<td><input type="submit" id="php_button" onclick="updateEmployeeTable()" name="generate_button" class="button" value="Generate"></td>
+<td></td>
+</tr>
+<tr><td> Total Capacity for the Program Increment</td><td><div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;"><div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div></div>
+</td></tr>
+</table>
+</form><br>
+</div>
+</div>
+<script>
+//assigning the artCookie to a variable
+var artCookie = getCookie('artCookie');
+//running the getTeams when the window is loaded using the cookie
+$( window ).on( "load", getTeams(artCookie) );
+function getTeams(art_select){
+  //gets values from JSON file
+  $.getJSON('dataFiles/at_cache.json', function(data){
+    //initializes an array to story the avilable teams
+      var at_list = [];
+      //for loop for adding team names to teams_list
+      var x=data.length;
+      for(var i=0; i < x ; i++){
+        var parent = data[i].parent_name;
+        if(parent == art_select){
+          at_list.push(data[i].team_name);
+        }
+        //updates teams with the calculated list
+        //document.getElementById('teams').value = at_list;
+        var select = document.getElementById("teams");
+        select.options.length = 0;
+        for(index in at_list) {
+          select.options[select.options.length] = new Option(at_list[index], index);
+        }
+      };
+    });
+  };
+
+  //function for capturing the cookie
+  function getCookie(cookieName) {
+    var name = cookieName + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  };
+  console.log("PI Cookie: " + getCookie('piCookie'));
+  console.log("ART Cookie: "+getCookie('artCookie'));
+  console.log("Team Cookie: " + getCookie('teamSelectCookie'));
+  </script>
+  <?php
+
+  date_default_timezone_set('America/Chicago');
+  //updated sql so select values matched availabe column names
+  $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration , sequence
+  FROM `cadence`
+  WHERE PI_id in (SELECT  PI_id
+  FROM `cadence`
+  WHERE start_date <= DATE(NOW())
+  AND end_date >= DATE(NOW())
+  order by sequence);";
   $result = $db->query($sql);
   if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
@@ -26,19 +189,19 @@
     $sequence = $row["sequence"];
     $result->close();
   } else {
-    //echo "In-between Iterations";
+    echo "No Available Iterations available for Today's date";
     $result->close();
 
     $sql = "SELECT *
         FROM
         (	SELECT MIN(start_date) as start_date, MAX(end_date) as end_date
           FROM cadence
-          WHERE start_date <= '" . date("Y-m-d") . "'
-          OR end_date >= '" . date("Y-m-d") . "'
+          WHERE start_date <= DATE(NOW())
+          OR end_date >= end_date >= DATE(NOW())
           GROUP BY program_increment
         ) as PI
-        WHERE PI.start_date <= '" . date("Y-m-d") . "'
-        AND PI.end_date >= '" . date("Y-m-d") . "';";
+        WHERE PI.start_date <= DATE(NOW())
+        AND PI.end_date >= DATE(NOW());";
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
       $row = $result->fetch_assoc();
@@ -49,16 +212,17 @@
     }
     $result->close();
   }
-
+echo '<script>console.log('.$sequence.');</script>';
   if (isset($_POST['current-sequence'])) {
     $sequence = $_POST['current-sequence'];
 
   }
-
+  echo '<script>console.log('.$sequence.');</script>';
+  //checks if there is a current team selected. If not it uses the artCookie to find the $selected_team
   if (isset($_POST['current-team-selected'])) {
       $selected_team = $_POST['current-team-selected'];
 
-  }
+  } ;
 
   if (isset($_POST['showNext'])) {
     $sequence++;
@@ -97,9 +261,9 @@
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
 
-          if ($row["role"] == "Scrum Master (SM)") {
+          if ($row["role"] == "SM") {
             $velType = "SCRUM_MASTER_ALLOCATION";
-          } else if ($row["role"] == "Product Owner (PO)") {
+          } else if ($row["role"] == "PO") {
             $velType = "PRODUCT_OWNER_ALLOCATION";
           } else  {
             $velType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -135,9 +299,9 @@
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
 
-          if ($row["role"] == "Scrum Master (SM)") {
+          if ($row["role"] == "SM") {
             $velType = "SCRUM_MASTER_ALLOCATION";
-          } else if ($row["role"] == "Product Owner (PO)") {
+          } else if ($row["role"] == "PO") {
             $velType = "PRODUCT_OWNER_ALLOCATION";
           } else  {
             $velType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -169,7 +333,7 @@
     }
   }
 
-  $sql5 = "SELECT * FROM `cadence` WHERE program_increment='".$program_increment."';";
+  $sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$program_increment."';";
   $result5 = $db->query($sql5);
   if ($result5->num_rows > 0) {
       $row5 = $result5->fetch_assoc();
@@ -213,7 +377,7 @@
 
   ?>
 
-<div class="right-content">
+<div class="right-content" >
     <div class="container">
 
       <h3 style=" color: #01B0F1; font-weight: bold;">Capacity Calculations for the Agile Team</h3>
@@ -229,19 +393,27 @@
             Overhead Percentage: &emsp; <br/>
           </td>
           <td  style="vertical-align: top; font-weight: bold; line-height: 130%;  font-size: 18px;" width="25%">
-            <select name="select-team" onchange="this.form.submit()" style="border: 0; text-align: left;">
+            <select name="select-team" onchange="      
+            //sets team_select to selected value
+            var team_select = this.value;
+            //sets the selected value as the cookie
+            document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);
+            location.reload();" style="border: 0; text-align: left; width: 300px;">
               <?php
-              //$sql = "SELECT team_id, team_name FROM `capacity` where program_increment='".$program_increment."';";
-              $sql = "SELECT team_id, name FROM `trains_and_teams` where type='AT';";
+              $sql = "SELECT DISTINCT c.team_id, c.team_name FROM capacity c, trains_and_teams t where c.program_increment='".$program_increment."' and c.team_id = t.team_id and t.parent_name = '".$art_select."';";
+              //checks if there is a selected team in the cookie variable. If there is it will update the detault to the cookie value
+              if(isset($_COOKIE['teamSelectCookie'])){
+                $selected_team = $_COOKIE['teamSelectCookie'];
+              }
               $result = $db->query($sql);
 
               if ($result->num_rows > 0) {
 
                   while ($row = $result->fetch_assoc()) {
                     if ( trim($selected_team) == trim($row["team_id"]) ) {
-                      echo '<option value="'.$row["team_id"].'" selected>('.$row["team_id"].': '.$row["name"].')</option>';
+                      echo '<option value="'.$row["team_id"].'" selected>'.$row["team_name"].'</option>';
                     }else{
-                      echo '<option value="'.$row["team_id"].'">('.$row["team_id"].': '.$row["name"].')</option>';
+                      echo '<option value="'.$row["team_id"].'">'.$row["team_name"].'</option>';
                     }
 
                   }
@@ -283,10 +455,7 @@
 
             }
              ?>
-             <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
-               <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
-               Total Capacity for the Program Increment
-             </div>
+
             <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="icap"><?php echo $icapacity ?></div>
               Total Capacity for this Iteration
@@ -321,8 +490,9 @@
           <?php
 
           $sql = "SELECT last_name, first_name, role FROM `membership`
-                  NATURAL JOIN `employees`
-                  WHERE team_id='".$selected_team."';";
+                  JOIN `employees` on (membership.polarion_id = employees.number)
+                  JOIN `trains_and_teams` on (membership.team_name = trains_and_teams.team_name)
+                  WHERE trains_and_teams.team_id = '".$selected_team."';";
 
           $result = $db->query($sql);
 
@@ -333,9 +503,9 @@
               $rownum = 0;
               while ($row = $result->fetch_assoc()) {
 
-                if ($row["role"] == "Scrum Master (SM)") {
+                if ($row["role"] == "SM") {
                   $velocityType = "SCRUM_MASTER_ALLOCATION";
-                } else if ($row["role"] == "Product Owner (PO)") {
+                } else if ($row["role"] == "PO") {
                   $velocityType = "PRODUCT_OWNER_ALLOCATION";
                 } else  {
                   $velocityType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -462,5 +632,31 @@
 
 
     </script>
-
+  <?php 
+      //function for returning the default team name for a given ART
+      function getDefaultTeamName($art_name){
+          $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+          $db->set_charset("utf8");
+          $sql = "SELECT DISTINCT team_name FROM trains_and_teams where type = 'AT'  and parent_name = '".$art_name."' ORDER BY parent_name LIMIT 1;";
+          $result = $db->query($sql);
+          if ($result->num_rows > 0) {
+              $row = $result->fetch_assoc();
+              $team_name = $row["team_name"];
+          }
+          return $team_name;
+      };
+      //function for returning the team id for a given team name
+      function getTeamID($team){
+          $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+          $db->set_charset("utf8");
+          $team_id= '';
+          $sql = "SELECT DISTINCT team_id FROM trains_and_teams where team_name = '".$team."' ORDER BY parent_name LIMIT 1;";
+          $result = $db->query($sql);
+          if ($result->num_rows > 0) {
+              $row = $result->fetch_assoc();
+              $team_id= $row["team_id"];
+          }
+          return $team_id;
+      };
+?>
 <?php include("./footer.php"); ?>

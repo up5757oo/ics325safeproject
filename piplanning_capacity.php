@@ -3,6 +3,7 @@ $nav_selected = "PIPLANNING";
 $left_buttons = "YES";
 $left_selected = "CAPACITY";
 include("./nav.php");
+
 global $db;
 ?>
 <!--Customer Bears style sheet-->
@@ -27,9 +28,13 @@ $pi_id_select='';
 $duration = '';
 $overhead_percentage = '';
 
-//Function from db_connection that checks for ART Cookie, if it is not available it will update the cookie with a default value
-setArtCookie();
-$art_select = $_COOKIE['artCookie'];
+  //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
+  if(!isset($_COOKIE['artCookie'])){
+    //established finds the value to use for the ART cookie
+    $art_select = setArtCookie();
+  } else {
+    $art_select = $_COOKIE['artCookie'];
+  };
 
 //Function that uses json file to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
@@ -47,6 +52,7 @@ if(isset($_COOKIE['piCookie'])){
 };
 //Function for assigning the duration variable
 $duration = getDuration($pi_id_select);
+
 
 //Function for assigning the overhead percentage
 $overhead_percentage = getOverheadPercentage();
@@ -103,13 +109,12 @@ form for submitting data that will be prepopulated with data from the variables
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
       location.reload();">
       <?php echo $pi_id_menu; ?>
-
     </select>
   </td>
 </tr>
 <tr>
-  <td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
-  <td></td>
+<td><input type="submit" id="php_button" onclick="updateEmployeeTable()" name="generate_button" class="button" value="Generate"></td>
+<td></td>
 </tr>
 </table>
 </form><br>
@@ -163,7 +168,7 @@ function getTeams(art_select){
   <form method="post" action="#" id="maincap">
   <?php
   //Defaulting the selected team, this will need to be updated once the table have additional values available
-  $selected_team='804 Agile Team';
+  $selected_team='Agile Team 1000 1';
   //settting up the pi id array for the Iteration # display
   $pi_id_array=array($pi_id."-1", $pi_id."-2" ,$pi_id."-3" ,$pi_id."-4", $pi_id."-5",$pi_id."-6",$pi_id."-IP");
   //Iteration # display
@@ -172,35 +177,24 @@ function getTeams(art_select){
   //Loop for displaying the series of Employee table & iteration calculation placeholder
   for($i = 0; $i < $count_piid; $i++){
     echo '<h4>Iteration #' .$numberIT .': ' .$pi_id_array[$i]; 
-    buildEmployeeTable($selected_team,$duration,$overhead_percentage);
+    buildEmployeeTable($selected_team,$duration,$overhead_percentage, $pi_id_array[$i]);
     $numberIT++;
   };
+
+  //takes the selected values and creates a json
+  //
+
   //$result->close();
   ?>
-<!--Buttons for future Iteration
-<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-<input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
-<input type="submit" id="capacity-button-blue" name="showNext" value="Show Next iteration_id">
-<input type="hidden" name="current-team-selected" value="<?php //echo $selected_team; ?>">
-<input type="hidden" name="current-sequence" value="<?php //echo $sequence; ?>">
--->
+
+
 </form>
 </td>
 </tr>
 </table>
 </div>
 </div>
-<script type="text/javascript">
-$(document).ready(function () {
 
-  $('#info').DataTable({
-   paging: false,
-   searching: false,
-   infoCallback: false
-
-  });
-});
-</script>
 <?php
 include("./footer.php");
 ?>
