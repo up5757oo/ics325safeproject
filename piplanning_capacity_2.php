@@ -123,7 +123,7 @@ form for submitting data that will be prepopulated with data from the variables
 <tr>
 <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
-              <b>Total Capacity for the Program Increment</b>
+              <b>Total Capacity for the Program Increment (capacity-calc-bignum $totalcap)</b>
             </div>
           </td>
 
@@ -274,7 +274,7 @@ function getTeams(art_select){
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
       $default_data = false;
-      $default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_IP"]);
+      //$default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_IP"]);
     } else {
       $default_data = true;
       
@@ -304,7 +304,6 @@ function getTeams(art_select){
       }
     }
   }
-
   if (isset($_POST['select-team'])) {
     $selected_team = $_POST['select-team'];
 
@@ -483,13 +482,14 @@ function getTeams(art_select){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
             $duration = getDuration($program_increment);
+
            echo '<tr><td>&nbsp;&nbsp;Iteration (I): &nbsp;</td><td>'.$iteration.'</td></tr>';
            echo '<tr><td>&nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td>'.$duration.'</td></tr>';
            echo '<tr><td>&nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td>'.$overhead_percentage.'%</td></tr>';
             //echo "&nbsp;".$program_increment."<br/>";
 
             echo '<td width="50%"  style="font-weight: bold;">';
-            $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
+            $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
             $result = $db->query($sql);
 
             if ($result->num_rows > 0) {
@@ -518,7 +518,7 @@ function getTeams(art_select){
 
             <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="icap"><?php echo $icapacity ?></div>
-              Total Capacity for this Iteration
+              Total Capacity for this Iteration <br/>(capacity-calc-bignum $icapacity)
             </div>
           </td>
         </tr>
@@ -722,10 +722,8 @@ function getTeams(art_select){
           return $team_id;
       }
 
-      function getTotalCapacity(){
-        
-        $program_increment = $_COOKIE['piCookie'];
-        $selected_team  = $_COOKIE['teamSelectCookie'];
+      function getTotalCapacity($program_increment, $selected_team ){
+     
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
         $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
         $result = $db->query($sql);
@@ -740,7 +738,7 @@ function getTeams(art_select){
             }
         } else {
           
-          if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
+          if (!isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
             $icapacity = array_sum($teamcapacity);
             $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
           }else{
