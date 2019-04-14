@@ -236,7 +236,7 @@ function buildTeamMenu(){
                 } else {
                     $vel = 0;
 
-                    echo'
+                    /*echo'
                     <script>
                         function updateEmployeeTable(){
                             velJS = document.getElementById("autoin").value
@@ -244,7 +244,7 @@ function buildTeamMenu(){
                             
                         }
                     </script>
-                    ';
+                    '; */
 
                     $vel = $row2["value"];
                 }   
@@ -263,8 +263,19 @@ function buildTeamMenu(){
                         <input type='hidden' name='rownum[]' value='".$rownum."'/>
                     </tr>";
                     $rownum++;
-
-                     /*echo $storypts . ", " . $doff;     *///displaying values for test purposes
+                    
+                    //alert to see if days off can be read from the table
+                    echo'
+                    <script>
+                        function updateEmployeeTable(){
+                            doff = document.getElementById("autoin2").value
+                            alert(" # Days off: " + doff);  
+                            
+                        }
+                    </script>
+                    ';
+                                //need to get table values to be read into variable $doff --what is _$POST?
+                     echo $storypts . ", " . $doff;     //displaying values for test purposes
                      $it_storypts = $it_storypts + $storypts; //add storypoints of each row
                      $it_doff = $it_doff + $doff;           //add the days off of each row
                      $it_storypts = $it_storypts - $it_doff; //collect this table's Story Points (TABLE SCOPE)
@@ -279,7 +290,7 @@ function buildTeamMenu(){
             }
             //$it_storypts = $it_storypts + $it_doff; //max 64 for each table
             $running_total_storypts = $it_storypts * $num_tables; // still need to collect last table (specific)
-            //for loop for collecting days off for each 7 tables
+            //for loop for collecting days off for each 7 tables ??
             echo "<br>";
             echo "Running Total Story Points: " . ($running_total_storypts);  //Need to move this to display elsewhere
             //echo <!--input type="hidden" name="current-sequence" value="<?php echo .$sequence.; "
