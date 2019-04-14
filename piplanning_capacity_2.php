@@ -123,7 +123,7 @@ form for submitting data that will be prepopulated with data from the variables
 <tr>
 <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
-              <b>Total Capacity for the Program Increment (capacity-calc-bignum $totalcap)</b>
+              <b>Total Capacity for the Program Increment<br/>(capacity-calc-bignum $totalcap)</b>
             </div>
           </td>
 
