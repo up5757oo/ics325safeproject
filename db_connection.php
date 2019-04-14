@@ -264,7 +264,7 @@ function buildTeamMenu(){
                     </tr>";
                     $rownum++;
 
-                     /*echo $storypts . ", " . $doff;     *///displaying values for test purposes
+                     /*echo $storypts . ", " . $doff;     */
                      $it_storypts = $it_storypts + $storypts; //add storypoints of each row
                      $it_doff = $it_doff + $doff;           //add the days off of each row
                      $it_storypts = $it_storypts - $it_doff; //collect this table's Story Points (TABLE SCOPE)

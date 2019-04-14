@@ -116,8 +116,17 @@ form for submitting data that will be prepopulated with data from the variables
 <td><input type="submit" id="php_button" onclick="updateEmployeeTable()" name="generate_button" class="button" value="Generate"></td>
 <td></td>
 </tr>
+<tr>
+<div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
+              <div id="capacity-calc-bignum" name="totalcap"><?php echo "test" ?></div>
+              <b>Total Capacity for the Program Increment</b>
+            </div>
+          </td>
+
+</td></tr>
 </table>
 </form><br>
+
 
 <script>
 //assigning the artCookie to a variable
