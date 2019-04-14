@@ -19,7 +19,7 @@ $art="";
 $pi_id_menu='';
 $pi_id_select='';
 $duration = '';
-$overhead_percentage = '';
+$overhead_percentage = getOverheadPercentage();
 $default_total = 56;
 
   //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
@@ -411,9 +411,6 @@ function getTeams(art_select){
             Agile Release Train: &emsp; <br/>
             Agile Team: &emsp; <br/>
             Program Increment (PI): &emsp; <br/>
-            Iteration (I): &emsp; <br/>
-            No. of Days in the Iteration: &emsp; <br/>
-            Overhead Percentage: &emsp; <br/>
           </td>
           <td  style="vertical-align: top; font-weight: bold; line-height: 130%;  font-size: 18px;" width="25%">
             
@@ -468,14 +465,26 @@ function getTeams(art_select){
 
           </form><br/>
           <?php
+          $count_iteration = count($iterationArray);
+  //Loop for displaying the series of Employee table & iteration calculation placeholder
+  for($i = 0; $i < $count_iteration; $i++){
+    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+  };
+
+          
+
+
+
+          function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");
+            $duration = getDuration($program_increment);
+           echo '<tr><td>&nbsp;&nbsp;Iteration (I): &nbsp;</td><td>'.$iteration.'</td></tr>';
+           echo '<tr><td>&nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td>'.$duration.'</td></tr>';
+           echo '<tr><td>&nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td>'.$overhead_percentage.'%</td></tr>';
             //echo "&nbsp;".$program_increment."<br/>";
-            echo "&nbsp;".$iteration."<br/>";
-            echo "&nbsp;".$duration."<br/>";
-            echo "&nbsp;".$overhead_percentage."%<br/>";
-          ?>
-          </td>
-          <td width="50%"  style="font-weight: bold;">
-            <?php
+
+            echo '<td width="50%"  style="font-weight: bold;">';
             $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
             $result = $db->query($sql);
 
@@ -513,7 +522,7 @@ function getTeams(art_select){
           <td colspan="3">
 
         <form method="post" action="#" id="maincap">
-      <table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+        <table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
              width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
 
           <thead>
@@ -602,22 +611,23 @@ function getTeams(art_select){
           }
 
           $result->close();
-          ?>
+          
 
-          </tbody>
+          echo '</tbody>';
 
-          <tfoot>
+          echo '<tfoot>';
 
-          </tfoot>
+          echo '</tfoot>';
 
-      </table>
-      <input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+      echo '</table>';
+      echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
       <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
       <input type="submit" id="capacity-button-blue" name="showNext" value="Show Next Iteration">
-        <input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>">
-        <input type="hidden" name="current-sequence" value="<?php echo $sequence; ?>">
-      </form>
-
+        <input type="hidden" name="current-team-selected" value="'.$selected_team.'">
+        <input type="hidden" name="current-sequence" value='.$sequence.'">
+      </form>';
+        };
+?>
       <div id="capacity-footnote">
         Note 1: Closed Iterations will NOT be shown.  The capacity cannot be changed for such iterations.  Show only the active iterations.<br/>
         Note 2: This page can be reached in two ways:
