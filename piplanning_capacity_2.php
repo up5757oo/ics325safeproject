@@ -231,10 +231,7 @@ function getTeams(art_select){
       $iterationArray[]=$row["iteration"];
     }
 };
-  if (isset($_POST['current-sequence'])) {
-    $sequence = $_POST['current-sequence'];
 
-  }
   echo '<script>console.log('.$sequence.');</script>';
   //checks if there is a current team selected. If not it uses the artCookie to find the $selected_team
   if (isset($_POST['current-team-selected'])) {
@@ -476,6 +473,13 @@ function getTeams(art_select){
 
 
           function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
+            ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
+            $current_sequence = 'current-sequence'.$sequence;
+            if (isset($_POST[$current_sequence])) {
+              $sequence = $_POST[$current_sequence];
+          
+            };
+
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
             $duration = getDuration($program_increment);
@@ -491,7 +495,7 @@ function getTeams(art_select){
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
 
-                if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+                if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
                   $icapacity = array_sum($teamcapacity);
                   $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
                 }else{
@@ -501,7 +505,7 @@ function getTeams(art_select){
                 }
 
             } else {
-              if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+              if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
                 $icapacity = array_sum($teamcapacity);
                 $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
               }else{
@@ -522,7 +526,7 @@ function getTeams(art_select){
           <td colspan="3">
 
         <form method="post" action="#" id="maincap">
-        <table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+        <table id="<?php echo $sequence; ?>" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
              width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
 
           <thead>
@@ -575,18 +579,18 @@ function getTeams(art_select){
                     $row2 = $result2->fetch_assoc();
 
                 }
-                if (isset($teamcapacity[$rownum]) && !isset($_POST['restore']) && isset($_POST['submit0'])){
+                if (isset($teamcapacity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
                   $storypts = $teamcapacity[$rownum];
                 }else{
                   $storypts = round(($duration-0)*((100-$overhead_percentage)/100)*($row2["value"]/100));
                 }
                 $valueForJS = $row2["value"];
-                if (isset($daysoff[$rownum]) && !isset($_POST['restore'])  && isset($_POST['submit0'])){
+                if (isset($daysoff[$rownum]) && !isset($_POST['restore'.$sequence])  && isset($_POST['submit0'])){
                   $doff = $daysoff[$rownum];
                 } else {
                   $doff = 0;
                 }
-                if (isset($velocity[$rownum]) && !isset($_POST['restore']) && isset($_POST['submit0'])){
+                if (isset($velocity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
                   $vel = $velocity[$rownum];
                 } else {
                   $vel = $row2["value"];
@@ -621,11 +625,57 @@ function getTeams(art_select){
 
       echo '</table>';
       echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-      <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
+      <input type="submit" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
       <input type="submit" id="capacity-button-blue" name="showNext" value="Show Next Iteration">
         <input type="hidden" name="current-team-selected" value="'.$selected_team.'">
-        <input type="hidden" name="current-sequence" value='.$sequence.'">
-      </form>';
+        <input type="hidden" name="current-sequence"'.$sequence.' value='.$sequence.'">
+      </form>
+
+      <script type="text/javascript">
+
+      $(document).ready(function () {
+
+          $(\'#'.$sequence.'\').DataTable({
+              paging: false,
+              searching: false,
+              infoCallback: false
+          });
+
+      });
+
+      function autoForm() {
+        document.getElementById(\'maincap\').submit();
+      }
+
+      function autoLoad() {
+        var velocity = $("input[name=\'velocity[]\']")
+            .map(function(){return $(this).val();}).get();
+        var daysoff = $("input[name=\'daysoff[]\']")
+            .map(function(){return $(this).val();}).get();
+        var rownum = $("input[name=\'rownum[]\']")
+            .map(function(){return $(this).val();}).get();
+
+        var overhead = "'.$overhead_percentage.'";
+        var duration = "'.$duration.'";
+        var value = "'.$valueForJS.'";
+        var totalcap_old = "'.$totalcapacity.'";
+        var icap_old = "'.$icapacity.'";
+        var icap = 0;
+
+        for (var i in rownum) {
+            var storypts = Math.round( ( duration - daysoff[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity[i] / 100 ) );
+            $("input[name=\'storypoints[]\']").eq(i).val(storypts);
+            icap += storypts;
+        }
+
+        document.getElementsByName("icap")[0].innerHTML = icap;
+          var capdiff = icap - icap_old;
+          var tcap = parseInt(capdiff) + parseInt(totalcap_old);
+          document.getElementsByName("totalcap")[0].innerHTML = tcap;
+      }
+
+  </script>';
+      ///////////////////////////Funtion End/////////////////////////////////////////////////////////
         };
 ?>
       <div id="capacity-footnote">
@@ -644,50 +694,7 @@ function getTeams(art_select){
     </div>
     </div>
 
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-
-            $('#info').DataTable({
-                paging: false,
-                searching: false,
-                infoCallback: false
-            });
-
-        });
-
-        function autoForm() {
-          document.getElementById('maincap').submit();
-        }
-
-        function autoLoad() {
-          var velocity = $("input[name='velocity[]']")
-              .map(function(){return $(this).val();}).get();
-          var daysoff = $("input[name='daysoff[]']")
-              .map(function(){return $(this).val();}).get();
-          var rownum = $("input[name='rownum[]']")
-              .map(function(){return $(this).val();}).get();
-
-          var overhead = "<?php echo $overhead_percentage ?>";
-          var duration = "<?php echo $duration ?>";
-          var value = "<?php echo $valueForJS ?>";
-          var totalcap_old = "<?php echo $totalcapacity ?>";
-          var icap_old = "<?php echo $icapacity ?>";
-          var icap = 0;
-
-          for (var i in rownum) {
-              var storypts = Math.round( ( duration - daysoff[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity[i] / 100 ) );
-              $("input[name='storypoints[]']").eq(i).val(storypts);
-              icap += storypts;
-          }
-
-          document.getElementsByName("icap")[0].innerHTML = icap;
-            var capdiff = icap - icap_old;
-            var tcap = parseInt(capdiff) + parseInt(totalcap_old);
-            document.getElementsByName("totalcap")[0].innerHTML = tcap;
-        }
-
-    </script>
+   
   <?php 
       //function for returning the default team name for a given ART
       function getDefaultTeamName($art_name){
@@ -724,7 +731,7 @@ function getTeams(art_select){
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+            if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
               $icapacity = array_sum($teamcapacity);
               $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
             }else{
@@ -733,7 +740,7 @@ function getTeams(art_select){
             }
         } else {
           
-          if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+          if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
             $icapacity = array_sum($teamcapacity);
             $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
           }else{
