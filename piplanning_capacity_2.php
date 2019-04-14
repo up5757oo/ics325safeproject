@@ -20,7 +20,7 @@ $pi_id_menu='';
 $pi_id_select='';
 $duration = '';
 $overhead_percentage = '';
-$default_total = 32;
+$default_total = 56;
 
   //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
   if(!isset($_COOKIE['artCookie'])){
@@ -271,6 +271,7 @@ function getTeams(art_select){
         $result->close();
     }
   }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////
   echo '<script>console.log("Program Increment: " + "'.$iteration.'");</script>';
     $sql = "SELECT * FROM `capacity` where team_id='".$selected_team."' AND program_increment='".$program_increment."';";
     $result = $db->query($sql);
@@ -279,9 +280,8 @@ function getTeams(art_select){
       $default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_IP"]);
     } else {
       $default_data = true;
-      $default_total = 0;
-
-      $sql = "SELECT * FROM `membership` where team_name in (select team_name from trains_and_teams where team_id = '".$selected_team."');";
+      
+      $sql = "SELECT * FROM `membership` where team_name = (select team_name from trains_and_teams where team_id = '".$selected_team."' and art_name = '".$art_name."' LIMIT 1) ;";
       $result = $db->query($sql);
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -316,9 +316,9 @@ function getTeams(art_select){
     if ($result->num_rows > 0) {
     } else {
       $default_data = true;
-      $default_total = 0;
+      $default_total = ($defaul_total * 5) + 28;
 
-      $sql = "SELECT * FROM `membership` where team_id='".$selected_team."';";
+      $sql = "SELECT * FROM `membership` where team_name = (select team_name from trains_and_teams where team_id = '".$selected_team."' and art_name = '".$art_name."' LIMIT 1);";
       $result = $db->query($sql);
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
