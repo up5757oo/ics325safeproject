@@ -14,10 +14,10 @@
   <link rel="stylesheet" type="text/css" href="styleCustom.css">';
   //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
 //initializes remaining variables
-$pi_id="";
+$program_increment="";
 $art="";
-$pi_id_menu='';
-$pi_id_select='';
+$program_increment_menu='';
+$program_increment_select='';
 $duration = '';
 $overhead_percentage = getOverheadPercentage();
 $default_total = 56;
@@ -46,21 +46,21 @@ $default_total = 56;
 $art = buildArtMenu($art_select);
 
 //uses the pi Select Now function to identify the PI ID within the current date and adds it to the pi id select variable for the default
-$pi_id_select = piSelectNow();
+$program_increment_select = piSelectNow();
 
 //capturing the pi id cookie to use for the array and build the menu list
 if(isset($_COOKIE['piCookie'])){
-  $pi_id = $_COOKIE['piCookie'];
-  $pi_id_menu = buildPi_idMenu($pi_id);
+  $program_increment = $_COOKIE['piCookie'];
+  $program_increment_menu = buildPi_idMenu($program_increment);
 } else {
-  $pi_id=$pi_id_select;
-  setcookie('piCookie', $pi_id_select);
-  $pi_id_menu = buildPi_idMenu($pi_id);
+  $program_increment=$program_increment_select;
+  setcookie('piCookie', $program_increment_select);
+  $program_increment_menu = buildPi_idMenu($program_increment);
 };
 //Function for assigning the duration variable
-$duration = getDuration($pi_id_select);
+$duration = getDuration($program_increment_select);
 //initializes the totalcapacity variable
-$sql = "SELECT * FROM `capacity` WHERE program_increment='".$pi_id."' AND team_id='".$selected_team."'";
+$sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
 $result = $db->query($sql);
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
@@ -120,7 +120,7 @@ form for submitting data that will be prepopulated with data from the variables
       //sets the selected value as the cookie
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
       location.reload();"> 
-      <?php //echo $pi_id_menu; ?> -->
+      <?php //echo $program_increment_menu; ?> -->
     </select>
   </td>
 </tr>
@@ -464,7 +464,7 @@ function getTeams(art_select){
           //sets the selected value as the cookie
           document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
           location.reload();">
-          <?php echo $pi_id_menu; ?>
+          <?php echo $program_increment_menu; ?>
           </select>
 
           </form><br/>
@@ -472,7 +472,7 @@ function getTeams(art_select){
           $count_iteration = count($iterationArray);
   //Loop for displaying the series of Employee table & iteration calculation placeholder
   for($i = 0; $i < $count_iteration; $i++){
-    creatTables($pi_id, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
   };
 
           
