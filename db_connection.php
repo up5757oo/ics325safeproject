@@ -264,14 +264,12 @@ function buildTeamMenu(){
                     </tr>";
                     $rownum++;
 
-                     /*echo $storypts . ", " . $doff;     */
                      $it_storypts = $it_storypts + $storypts; //add storypoints of each row
                      $it_doff = $it_doff + $doff;           //add the days off of each row
                      $it_storypts = $it_storypts - $it_doff; //collect this table's Story Points (TABLE SCOPE)
-                     // need to check doff values--when editable
                     }
-                echo "<br>";
-                echo "Iteration Capacity Total: " . $it_storypts; //displays story points for each table
+                     echo "<br>";
+                     // echo "Iteration Capacity Total: " . $it_storypts;
 
                     ?>
                     <!-- displays iteration total for each table (test) -->
@@ -286,10 +284,10 @@ function buildTeamMenu(){
                 print "NO TEAM MEMBERS ASSIGNED TO TEAM \"".$selected_team."\"";
                 echo "</td></tr>";
             }
-            //$it_storypts = $it_storypts + $it_doff;
+            $it_storypts = $it_storypts + $it_doff;
             $running_total_storypts = ($it_storypts * $num_tables) + 28;
             echo "<br>";
-           // echo "Running Total Story Points: " . $running_total_storypts;  //Need to move this to display elsewhere
+           // echo "Running Total Story Points: " . $running_total_storypts;
             echo '</tbody><tfoot></tfoot></table>
             
             <script type="text/javascript">
