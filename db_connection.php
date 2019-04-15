@@ -288,7 +288,10 @@ function buildTeamMenu(){
             $running_total_storypts = ($it_storypts * $num_tables) + 28;
             echo "<br>";
            // echo "Running Total Story Points: " . $running_total_storypts;
-            echo '</tbody><tfoot></tfoot></table>
+           
+           //Need to add the buttons
+            echo '</tbody><tfoot></tfoot></table> 
+            
             
             <script type="text/javascript">
 $(document).ready(function () {
