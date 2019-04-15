@@ -429,7 +429,7 @@ function getTeams(art_select){
             <option value="">-- Select --</option>
             <?php echo $art; ?>
           </select>
-          
+          <br/>
             <select name="select-team" onchange="      
             //sets team_select to selected value
             var team_select = this.value;
@@ -457,7 +457,7 @@ function getTeams(art_select){
               }
               ?>
             </select>
-
+            <br/>
           <select id="PI_ID" name="pi_id" onchange="
           //sets pi_select to selected value
           var pi_select = this.value;
@@ -472,7 +472,7 @@ function getTeams(art_select){
           $count_iteration = count($iterationArray);
   //Loop for displaying the series of Employee table & iteration calculation placeholder
   for($i = 0; $i < $count_iteration; $i++){
-    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+    creatTables($pi_id, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
   };
 
           
@@ -507,7 +507,7 @@ function getTeams(art_select){
                   $icapacity = array_sum($teamcapacity);
                   $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
                 }else{
-                  //this is where the problem is
+                  //this is where the problem is<-Fixed by adding column iteration_P to the capacity table
                   $icapacity = $row["iteration_".substr($iteration, -1)];
                   $totalcapacity = $row["total"];
                 }
@@ -523,8 +523,10 @@ function getTeams(art_select){
             }
        
              ?>
-
-            <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
+            <tr>
+            <td></td>
+            <td>
+            <div style="float: left; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="icap"><?php echo $icapacity ?></div>
               Total Capacity for this Iteration <br/>(capacity-calc-bignum $icapacity)
             </div>
@@ -533,7 +535,7 @@ function getTeams(art_select){
         <tr>
           <td colspan="3">
 
-        <form method="post" action="#" id="maincap">
+        <form method="post" action="#" id="maincap<?php echo $sequence; ?>">
         <table id="<?php echo $sequence; ?>" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
              width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
 
@@ -652,7 +654,7 @@ function getTeams(art_select){
       });
 
       function autoForm() {
-        document.getElementById(\'maincap\').submit();
+        document.getElementById(\'maincap'.$sequence.'\').submit();
       }
 
       function autoLoad() {
