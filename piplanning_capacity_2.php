@@ -231,14 +231,7 @@ function getTeams(art_select){
     }
     $result->close();
   }
-  //Creates an array of the active sequences and iterations
-  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id in (SELECT  PI_id FROM `cadence` WHERE start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) order by sequence);")) {
-    $rows = array();
-    while($row = $result->fetch_array()) {
-      $sequenceArray[]=$row["sequence"];
-      $iterationArray[]=$row["iteration"];
-    }
-};
+
 
   echo '<script>console.log('.$sequence.');</script>';
   //checks if there is a current team selected. If not it uses the artCookie to find the $selected_team
@@ -469,6 +462,15 @@ function getTeams(art_select){
 
           </form><br/>
           <?php
+
+            //Creates an array of the active sequences and iterations
+  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$_COOKIE['piCookie']."';")) {
+    $rows = array();
+    while($row = $result->fetch_array()) {
+      $sequenceArray[]=$row["sequence"];
+      $iterationArray[]=$row["iteration"];
+    }
+};
           $count_iteration = count($iterationArray);
   //Loop for displaying the series of Employee table & iteration calculation placeholder
   for($i = 0; $i < $count_iteration; $i++){
