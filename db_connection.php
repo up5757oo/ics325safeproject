@@ -192,7 +192,7 @@ function buildTeamMenu(){
          $storypts2 = 0;
          $it_storypts = 0; //collect sum of story points per table iteration
          $it_doff = 0; //collect all days off per table iteration
-         $num_tables = 7; // 7 tables of story points with 2 weeks work
+         $num_tables = 7; // 7 tables of story points with 2 weeks work-- need to fix the last table for half time
          $running_total_storypts = 0; // TOTAL collection of Capacity Iteration Story points
          $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
          $db->set_charset("utf8");
@@ -247,7 +247,7 @@ function buildTeamMenu(){
                     ';
 
                     $vel = $row2["value"];
-                }   
+                    } 
 
                 //$storypts2 = $storypts * ($vel/100);
 
@@ -272,6 +272,7 @@ function buildTeamMenu(){
                     }
                 echo "<br>";
                 echo "Iteration Capacity Total: " . $it_storypts; //displays story points for each table
+                
             } else {
                 echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
                 print "NO TEAM MEMBERS ASSIGNED TO TEAM \"".$selected_team."\"";
@@ -282,22 +283,20 @@ function buildTeamMenu(){
             //for loop for collecting days off for each 7 tables
             echo "<br>";
             echo "Running Total Story Points: " . ($running_total_storypts);  //Need to move this to display elsewhere
-            //echo <!--input type="hidden" name="current-sequence" value="<?php echo .$sequence.; "
             echo '</tbody><tfoot></tfoot></table>
-            <input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-            <input type="submit" id="capacity-button-blue" name="restore" value="Restore Defaults">
-            <!--input type="submit" id="capacity-button-blue" name="showNext" value="Show Next iteration_id"-->
-            <input type="hidden" name="current-team-selected" value="<?php echo '.$selected_team.'; ?>">
             
             <script type="text/javascript">
-            $(document).ready(function () {
-                $(\'#' .$numberIT .'\').DataTable({
-                    paging: false,
-                    searching: false,
-                    infoCallback: false
-                });
-            });
-            </script>';
+$(document).ready(function () {
+
+  $(\'#' .$numberIT .'\').DataTable({
+   paging: false,
+   searching: false,
+   infoCallback: false
+
+  });
+});
+</script>';
+
         };
 
         //function for returning the duration
@@ -327,7 +326,8 @@ function buildTeamMenu(){
         };
 
         function buildSummaryTable($header_name,$col1,$col2){
-            echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table" width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+            echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+            width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
             <thead>
                <tr id="capacity-table-first-row">
                <th id="capacity-table-td">'.$header_name.'</th>
