@@ -1,7 +1,7 @@
 <?php
 
   $nav_selected = "PIPLANNING";
-  $left_buttons = "YES"; 
+  $left_buttons = "YES";
   $left_selected = "CALCULATE";
 
   include("./nav.php");
@@ -9,7 +9,7 @@
   global $db;
 
 
- 
+
   echo'<!--Copies in Bears custom stylesheet-->
   <link rel="stylesheet" type="text/css" href="styleCustom.css">';
   //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
@@ -41,7 +41,7 @@ $default_total = 56;
   };
 
   //finds the team id for the team name for the selected team script
-  
+
 //Function that uses json file to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
 
@@ -70,7 +70,7 @@ if ($result->num_rows > 0) {
       $totalcapacity = $row["total"];
     }
 } else {
-  
+
   if (!isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
     $totalcapacity = ($default_total*6);
   }else{
@@ -129,14 +129,14 @@ form for submitting data that will be prepopulated with data from the variables
       var pi_select = this.value;
       //sets the selected value as the cookie
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
-      location.reload();"> 
-      <?php echo $program_increment_menu; ?> 
+      location.reload();">
+      <?php echo $program_increment_menu; ?>
     </select>
   </td>
 </tr>
 <tr>
             <td>Names of Teams:</td>
-            <td><select name="select-team" onchange="      
+            <td><select name="select-team" onchange="
             //sets team_select to selected value
             var team_select = this.value;
             //sets the selected value as the cookie
@@ -173,8 +173,8 @@ form for submitting data that will be prepopulated with data from the variables
 
 </table>
 </form><br>
-</div>
-</div>
+
+
 <script>
 //assigning the artCookie to a variable
 var artCookie = getCookie('artCookie');
@@ -291,8 +291,8 @@ function getTeams(art_select){
     $sequence++;
     echo '<script>console.log("Show Next: " + "'.$sequence.'");</script>';
     echo '<script>console.log("Program Increment: " + "'.$program_increment.'");</script>';
-    
-    $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration 
+
+    $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration
             FROM `cadence`
             WHERE sequence='".$sequence."';";
     $result = $db->query($sql);
@@ -303,7 +303,7 @@ function getTeams(art_select){
       $sequence = $row["sequence"];
       $result->close();
     } else {
-      $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration 
+      $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration
               FROM `cadence`
               WHERE PI_id='".$program_increment."'
               ORDER BY sequence limit 1;";
@@ -325,7 +325,7 @@ function getTeams(art_select){
       $default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_P"]);
     } else {
       $default_data = true;
-      
+
       $sql = "SELECT * FROM `membership` where team_name = (select team_name from trains_and_teams where team_id = '".$selected_team."' and art_name = '".$art_name."' LIMIT 1) ;";
       $result = $db->query($sql);
       if ($result->num_rows > 0) {
@@ -457,9 +457,9 @@ function getTeams(art_select){
 
           <?php
 
-            
 
-          
+
+
 
 
 
@@ -515,7 +515,7 @@ function getTeams(art_select){
                 $totalcapacity = $default_total*6;
               }
             }
-       
+
              ?>
             <tr>
             <td></td>
@@ -619,7 +619,7 @@ function getTeams(art_select){
           }
 
           $result->close();
-          
+
 
           echo '</tbody>';
 
@@ -631,10 +631,10 @@ function getTeams(art_select){
       echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
       <input type="submit" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
       <input type="submit" id="capacity-button-blue" name="showNext" value="Show Next Iteration">
-        
+
 
       </form>
-  
+
 
       <script type="text/javascript">
 
@@ -680,7 +680,7 @@ function getTeams(art_select){
           console.log("icap_old: " +  icap'.$sequence.'_old);
           console.log("icap: " +  icap'.$sequence.');
           console.log("storypoints: " + storypts'.$sequence.');
-          
+
       }
 
   </script>';
@@ -703,8 +703,8 @@ function getTeams(art_select){
     </div>
     </div>
 
-   
-  <?php 
+
+  <?php
       //function for returning the default team name for a given ART
       function getDefaultTeamName($art_name){
           $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
@@ -732,7 +732,7 @@ function getTeams(art_select){
       }
 
       function getTotalCapacity($program_increment, $selected_team, $sequence){
-     
+
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
         $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
         $result = $db->query($sql);
@@ -746,7 +746,7 @@ function getTeams(art_select){
               $totalcapacity = $row["total"];
             }
         } else {
-          
+
           if (!isset($teamcapacity)  && !isset($_POST['restore'.sequence])  && !isset($_POST['submit0'])){
             $icapacity = array_sum($teamcapacity);
             $totalcapacity = ($default_total*6) + ($icapacity - $default_total);

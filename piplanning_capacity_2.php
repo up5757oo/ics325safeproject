@@ -691,14 +691,6 @@ function getTeams(art_select){
       ///////////////////////////Funtion End/////////////////////////////////////////////////////////
         };
 ?>
-      <div id="capacity-footnote">
-        Note 1: Closed Iterations will NOT be shown.  The capacity cannot be changed for such iterations.  Show only the active iterations.<br/>
-        Note 2: This page can be reached in two ways:
-        <ul>
-          <li>Capacity > Calculate</li>
-          <li>Capacity > Summary > By clicking on one of the numbers</li>
-        </ul>
-      </div>
 
       </td>
       </tr>
