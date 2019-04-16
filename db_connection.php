@@ -308,14 +308,18 @@ $(document).ready(function () {
         };
 
         //function for returning the duration
-        function getDuration($pi_id_select){
+        function getDuration($iteration){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
-            $sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$pi_id_select."';";
+            $sql5 = "SELECT * FROM `cadence` WHERE iteration_id='".$iteration."';";
             $result5 = $db->query($sql5);
             if ($result5->num_rows > 0) {
                 $row5 = $result5->fetch_assoc();
                 $duration = $row5["duration"];
+            } elseif(substr($iteration, -1) == 6){
+                $duration = 5;
+            } else {
+                $duration = 10;
             }
             return $duration;
         };

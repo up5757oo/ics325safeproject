@@ -57,8 +57,8 @@ if(isset($_COOKIE['piCookie'])){
   setcookie('piCookie', $program_increment_select);
   $program_increment_menu = buildPi_idMenu($program_increment);
 };
-//Function for assigning the duration variable
-$duration = getDuration($program_increment_select);
+//assigning duration with a default value
+$duration = 10;
 //initializes the totalcapacity variable
 $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
 $result = $db->query($sql);
@@ -471,7 +471,7 @@ function getTeams(art_select){
             console.log("Team Cookie: " + getCookie('teamSelectCookie'));*/
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
-            $duration = getDuration($program_increment);
+            $duration = getDuration($iteration);
             echo'<table width="95%">
             <tr>
               <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
