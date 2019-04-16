@@ -167,8 +167,8 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
         </tr>
 <tr>
-<td><input type="submit" id="php_button" onclick="<?php for($i = 0; $i < $count_iteration; $i++){creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);};?>" name="generate_button" class="button" value="Generate"></td>
-<td><<input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>">/td>
+<td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
+<td><input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>"></td>
 </tr>
 
 </table>
@@ -268,11 +268,23 @@ function getTeams(art_select){
   }*/
 
 
-  echo '<script>console.log('.$sequence.');</script>';
+  //echo '<script>console.log('.$sequence.');</script>';
   //checks if there is a current team selected. If not it uses the artCookie to find the $selected_team
-  if (isset($_POST['current-team-selected'])) {
+  if ($_REQUEST['generate_button']) {
       $selected_team = $_POST['current-team-selected'];
-
+  //Creates an array of the active sequences and iterations
+  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$_COOKIE['piCookie']."';")) {
+    $rows = array();
+    while($row = $result->fetch_array()) {
+      $sequenceArray[]=$row["sequence"];
+      $iterationArray[]=$row["iteration"];
+    }
+};
+          $count_iteration = count($iterationArray);
+  //Loop for displaying the series of Employee table & iteration calculation placeholder
+  for($i = 0; $i < $count_iteration; $i++){
+    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+  };
   } ;
 /*
   if (isset($_POST['showNext'])) {
@@ -342,13 +354,18 @@ function getTeams(art_select){
   }*/
   if (isset($_POST['select-team'])) {
     $selected_team = $_POST['select-team'];
-
+    //$default_total = 56;
     $sql = "SELECT * FROM `capacity` where team_id='".$selected_team."' AND program_increment='".$program_increment."';";
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
     } else {
       $default_data = true;
-      $default_total = ($defaul_total * 5) + 28;
+      //$default_total = ($defaul_total * 5) + 28;
+      if(isset($_COOKIE['artCookie'])){
+        $art_name=$_COOKIE['artCookie'];
+      } else {
+        $art_name = setArtCookie();
+      }
 
       $sql = "SELECT * FROM `membership` where team_name = (select team_name from trains_and_teams where team_id = '".$selected_team."' and art_name = '".$art_name."' LIMIT 1);";
       $result = $db->query($sql);
@@ -449,11 +466,6 @@ function getTeams(art_select){
           function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
             ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
             $default_total = 56;
-            $current_sequence = 'current-sequence'.$sequence;
-            if (isset($_POST[$current_sequence])) {
-              $sequence = $_POST[$current_sequence];
-          
-            };
             /*console.log("PI Cookie: " + getCookie('piCookie'));
             console.log("ART Cookie: "+getCookie('artCookie'));
             console.log("Team Cookie: " + getCookie('teamSelectCookie'));*/
@@ -509,7 +521,7 @@ function getTeams(art_select){
             <td></td>
             <td>
             <div style="float: left; text-align: center; font-size: 12px;">
-              <div id="capacity-calc-bignum" name="icap"><?php echo $icapacity ?></div>
+              <div id="capacity-calc-bignum" name="icap<?php echo $sequence ?>"><?php echo $icapacity ?></div>
               Total Capacity for this Iteration <br/>(capacity-calc-bignum $icapacity)
             </div>
           </td>
@@ -620,8 +632,9 @@ function getTeams(art_select){
       <input type="submit" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
       <input type="submit" id="capacity-button-blue" name="showNext" value="Show Next Iteration">
         
-        <input type="hidden" name="current-sequence"'.$sequence.' value='.$sequence.'">
+
       </form>
+  
 
       <script type="text/javascript">
 
@@ -651,19 +664,23 @@ function getTeams(art_select){
         var duration = "'.$duration.'";
         var value = "'.$valueForJS.'";
         var totalcap_old = "'.$totalcapacity.'";
-        var icap_old = "'.$icapacity.'";
-        var icap = 0;
+        var icap'.$sequence.'_old = "'.$icapacity.'";
+        var icap'.$sequence.' = 0;
 
         for (var i in rownum) {
-            var storypts = Math.round( ( duration - daysoff[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity[i] / 100 ) );
-            $("input[name=\'storypoints[]\']").eq(i).val(storypts);
-            icap += storypts;
+            var storypts'.$sequence.' = Math.round( ( duration - daysoff[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity[i] / 100 ) );
+            $("input[name=\'storypoints[]\']").eq(i).val(storypts'.$sequence.');
+            icap'.$sequence.' += storypts'.$sequence.';
         }
 
-        document.getElementsByName("icap")[0].innerHTML = icap;
-          var capdiff = icap - icap_old;
+        document.getElementsByName("icap'.$sequence.'").innerHTML = icap'.$sequence.';
+          var capdiff = icap'.$sequence.' - icap'.$sequence.'_old;
           var tcap = parseInt(capdiff) + parseInt(totalcap_old);
           document.getElementsByName("totalcap")[0].innerHTML = tcap;
+          console.log("icap_old: " +  icap'.$sequence.'_old);
+          console.log("icap: " +  icap'.$sequence.');
+          console.log("storypoints: " + storypts'.$sequence.');
+          
       }
 
   </script>';
