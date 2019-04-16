@@ -89,12 +89,6 @@ form for submitting data that will be prepopulated with data from the variables
   <form  method="POST" id="PI_form" name="PI_form">
     <table id="form_table" class="container">
       <tr>
-        <td></td>
-        <td>
-          <input type="hidden" id="baseUrl" name="baseUrl" readonly="readonly" value="<?php echo $base_url_out; ?>">
-        </td>
-      </tr>
-      <tr>
         <td>Agile Release Train:</td>
         <td>
           <select id="art" name="art" onchange="
@@ -102,8 +96,7 @@ form for submitting data that will be prepopulated with data from the variables
           var art_select = this.value;
           //sets the selected value as the cookie
           document.cookie = escape('artCookie') + '=' + escape(art_select) ;
-          //updates the teams list
-          getTeams(art_select);
+
           location.reload();
           ">
           <option value="">-- Select --</option>
@@ -133,7 +126,8 @@ form for submitting data that will be prepopulated with data from the variables
             document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);
             location.reload();" >
               <?php
-              $sql = "SELECT DISTINCT c.team_id, c.team_name FROM capacity c, trains_and_teams t where c.program_increment='".$program_increment."' and c.team_id = t.team_id and t.parent_name = '".$art_select."';";
+
+              $sql = "SELECT DISTINCT t.team_id, t.team_name FROM trains_and_teams t where t.parent_name = '".$art_select."';";
               //checks if there is a selected team in the cookie variable. If there is it will update the detault to the cookie value
               if(isset($_COOKIE['teamSelectCookie'])){
                 $selected_team = $_COOKIE['teamSelectCookie'];
@@ -156,8 +150,21 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
         </tr>
 <tr>
-<td><input type="submit" id="php_button" onclick="updateEmployeeTable()" name="generate_button" class="button" value="Generate"></td>
-<td></td>
+<td><input type="submit" id="php_button" onclick="<?php //Creates an array of the active sequences and iterations
+  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$_COOKIE['piCookie']."';")) {
+    $rows = array();
+    while($row = $result->fetch_array()) {
+      $sequenceArray[]=$row["sequence"];
+      $iterationArray[]=$row["iteration"];
+    }
+};
+          $count_iteration = count($iterationArray);
+  //Loop for displaying the series of Employee table & iteration calculation placeholder
+  for($i = 0; $i < $count_iteration; $i++){
+    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+  };
+  ?>" name="generate_button" class="button" value="Generate"></td>
+<td><<input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>">/td>
 </tr>
 <tr>
 <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
@@ -436,19 +443,7 @@ function getTeams(art_select){
 
           <?php
 
-            //Creates an array of the active sequences and iterations
-  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$_COOKIE['piCookie']."';")) {
-    $rows = array();
-    while($row = $result->fetch_array()) {
-      $sequenceArray[]=$row["sequence"];
-      $iterationArray[]=$row["iteration"];
-    }
-};
-          $count_iteration = count($iterationArray);
-  //Loop for displaying the series of Employee table & iteration calculation placeholder
-  for($i = 0; $i < $count_iteration; $i++){
-    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
-  };
+            
 
           
 
@@ -456,6 +451,7 @@ function getTeams(art_select){
 
           function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
             ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
+            $default_total = 56;
             $current_sequence = 'current-sequence'.$sequence;
             if (isset($_POST[$current_sequence])) {
               $sequence = $_POST[$current_sequence];
@@ -626,7 +622,7 @@ function getTeams(art_select){
       echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
       <input type="submit" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
       <input type="submit" id="capacity-button-blue" name="showNext" value="Show Next Iteration">
-        <input type="hidden" name="current-team-selected" value="'.$selected_team.'">
+        
         <input type="hidden" name="current-sequence"'.$sequence.' value='.$sequence.'">
       </form>
 
