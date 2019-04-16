@@ -14,10 +14,10 @@
   <link rel="stylesheet" type="text/css" href="styleCustom.css">';
   //Checks for ART Cookie, if it is not available it will update the cookie with a default value using the artCookie function
 //initializes remaining variables
-$pi_id="";
+$program_increment="";
 $art="";
-$pi_id_menu='';
-$pi_id_select='';
+$program_increment_menu='';
+$program_increment_select='';
 $duration = '';
 $overhead_percentage = getOverheadPercentage();
 $default_total = 56;
@@ -46,29 +46,37 @@ $default_total = 56;
 $art = buildArtMenu($art_select);
 
 //uses the pi Select Now function to identify the PI ID within the current date and adds it to the pi id select variable for the default
-$pi_id_select = piSelectNow();
+$program_increment_select = piSelectNow();
 
 //capturing the pi id cookie to use for the array and build the menu list
 if(isset($_COOKIE['piCookie'])){
-  $pi_id = $_COOKIE['piCookie'];
-  $pi_id_menu = buildPi_idMenu($pi_id);
+  $program_increment = $_COOKIE['piCookie'];
+  $program_increment_menu = buildPi_idMenu($program_increment);
 } else {
-  $pi_id=$pi_id_select;
-  setcookie('piCookie', $pi_id_select);
-  $pi_id_menu = buildPi_idMenu($pi_id);
+  $program_increment=$program_increment_select;
+  setcookie('piCookie', $program_increment_select);
+  $program_increment_menu = buildPi_idMenu($program_increment);
 };
 //Function for assigning the duration variable
-$duration = getDuration($pi_id_select);
-
-if(isset($_COOKIE['totalPoints'])){
-  $totalcapacity= $_COOKIE['totalPoints'];
+$duration = getDuration($program_increment_select);
+//initializes the totalcapacity variable
+$sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
+$result = $db->query($sql);
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+      $totalcapacity = $row["total"] ;
+    }else{
+      $totalcapacity = $row["total"];
+    }
 } else {
-
-  //placeholder for total capacity field
-  $totalcapacity = 204;
-
+  
+  if (!isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+    $totalcapacity = ($default_total*6);
+  }else{
+    $totalcapacity = $default_total*6;
+  }
 };
-
 //Function for assigning the overhead percentage
 $overhead_percentage = getOverheadPercentage();
 ?>
@@ -112,7 +120,7 @@ form for submitting data that will be prepopulated with data from the variables
       //sets the selected value as the cookie
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
       location.reload();"> 
-      <?php //echo $pi_id_menu; ?> -->
+      <?php //echo $program_increment_menu; ?> -->
     </select>
   </td>
 </tr>
@@ -123,7 +131,7 @@ form for submitting data that will be prepopulated with data from the variables
 <tr>
 <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
-              <b>Total Capacity for the Program Increment</b>
+              <b>Total Capacity for the Program Increment<br/>(capacity-calc-bignum $totalcap)</b>
             </div>
           </td>
 
@@ -223,14 +231,7 @@ function getTeams(art_select){
     }
     $result->close();
   }
-  //Creates an array of the active sequences and iterations
-  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id in (SELECT  PI_id FROM `cadence` WHERE start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) order by sequence);")) {
-    $rows = array();
-    while($row = $result->fetch_array()) {
-      $sequenceArray[]=$row["sequence"];
-      $iterationArray[]=$row["iteration"];
-    }
-};
+
 
   echo '<script>console.log('.$sequence.');</script>';
   //checks if there is a current team selected. If not it uses the artCookie to find the $selected_team
@@ -274,7 +275,7 @@ function getTeams(art_select){
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
       $default_data = false;
-      $default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_IP"]);
+      //$default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_IP"]);
     } else {
       $default_data = true;
       
@@ -304,7 +305,6 @@ function getTeams(art_select){
       }
     }
   }
-
   if (isset($_POST['select-team'])) {
     $selected_team = $_POST['select-team'];
 
@@ -422,7 +422,7 @@ function getTeams(art_select){
             <option value="">-- Select --</option>
             <?php echo $art; ?>
           </select>
-          
+          <br/>
             <select name="select-team" onchange="      
             //sets team_select to selected value
             var team_select = this.value;
@@ -450,18 +450,27 @@ function getTeams(art_select){
               }
               ?>
             </select>
-
+            <br/>
           <select id="PI_ID" name="pi_id" onchange="
           //sets pi_select to selected value
           var pi_select = this.value;
           //sets the selected value as the cookie
           document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
           location.reload();">
-          <?php echo $pi_id_menu; ?>
+          <?php echo $program_increment_menu; ?>
           </select>
 
           </form><br/>
           <?php
+
+            //Creates an array of the active sequences and iterations
+  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$_COOKIE['piCookie']."';")) {
+    $rows = array();
+    while($row = $result->fetch_array()) {
+      $sequenceArray[]=$row["sequence"];
+      $iterationArray[]=$row["iteration"];
+    }
+};
           $count_iteration = count($iterationArray);
   //Loop for displaying the series of Employee table & iteration calculation placeholder
   for($i = 0; $i < $count_iteration; $i++){
@@ -483,13 +492,14 @@ function getTeams(art_select){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
             $duration = getDuration($program_increment);
+
            echo '<tr><td>&nbsp;&nbsp;Iteration (I): &nbsp;</td><td>'.$iteration.'</td></tr>';
            echo '<tr><td>&nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td>'.$duration.'</td></tr>';
            echo '<tr><td>&nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td>'.$overhead_percentage.'%</td></tr>';
             //echo "&nbsp;".$program_increment."<br/>";
 
             echo '<td width="50%"  style="font-weight: bold;">';
-            $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
+            $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
             $result = $db->query($sql);
 
             if ($result->num_rows > 0) {
@@ -499,7 +509,7 @@ function getTeams(art_select){
                   $icapacity = array_sum($teamcapacity);
                   $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
                 }else{
-                  //this is where the problem is
+                  //this is where the problem is<-Fixed by adding column iteration_P to the capacity table
                   $icapacity = $row["iteration_".substr($iteration, -1)];
                   $totalcapacity = $row["total"];
                 }
@@ -515,17 +525,19 @@ function getTeams(art_select){
             }
        
              ?>
-
-            <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
+            <tr>
+            <td></td>
+            <td>
+            <div style="float: left; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="icap"><?php echo $icapacity ?></div>
-              Total Capacity for this Iteration
+              Total Capacity for this Iteration <br/>(capacity-calc-bignum $icapacity)
             </div>
           </td>
         </tr>
         <tr>
           <td colspan="3">
 
-        <form method="post" action="#" id="maincap">
+        <form method="post" action="#" id="maincap<?php echo $sequence; ?>">
         <table id="<?php echo $sequence; ?>" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
              width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
 
@@ -644,7 +656,7 @@ function getTeams(art_select){
       });
 
       function autoForm() {
-        document.getElementById(\'maincap\').submit();
+        document.getElementById(\'maincap'.$sequence.'\').submit();
       }
 
       function autoLoad() {
@@ -678,14 +690,6 @@ function getTeams(art_select){
       ///////////////////////////Funtion End/////////////////////////////////////////////////////////
         };
 ?>
-      <div id="capacity-footnote">
-        Note 1: Closed Iterations will NOT be shown.  The capacity cannot be changed for such iterations.  Show only the active iterations.<br/>
-        Note 2: This page can be reached in two ways:
-        <ul>
-          <li>Capacity > Calculate</li>
-          <li>Capacity > Summary > By clicking on one of the numbers</li>
-        </ul>
-      </div>
 
       </td>
       </tr>
@@ -722,16 +726,14 @@ function getTeams(art_select){
           return $team_id;
       }
 
-      function getTotalCapacity(){
-        
-        $program_increment = $_COOKIE['piCookie'];
-        $selected_team  = $_COOKIE['teamSelectCookie'];
+      function getTotalCapacity($program_increment, $selected_team){
+     
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
         $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
+            if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
               $icapacity = array_sum($teamcapacity);
               $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
             }else{
@@ -740,7 +742,7 @@ function getTeams(art_select){
             }
         } else {
           
-          if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
+          if (!isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
             $icapacity = array_sum($teamcapacity);
             $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
           }else{
