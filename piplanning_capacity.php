@@ -79,6 +79,15 @@ if ($result->num_rows > 0) {
 };
 //Function for assigning the overhead percentage
 $overhead_percentage = getOverheadPercentage();
+//Creates an array of the active sequences and iterations
+if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$_COOKIE['piCookie']."';")) {
+  $rows = array();
+  while($row = $result->fetch_array()) {
+    $sequenceArray[]=$row["sequence"];
+    $iterationArray[]=$row["iteration"];
+  }
+};
+        $count_iteration = count($iterationArray);
 ?>
 
 <!--
@@ -88,6 +97,14 @@ form for submitting data that will be prepopulated with data from the variables
     <div class="container">
   <form  method="POST" id="PI_form" name="PI_form">
     <table id="form_table" class="container">
+    <tr>
+<div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
+              <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
+              <b>Total Capacity for the Program Increment<br/>(capacity-calc-bignum $totalcap)</b>
+            </div>
+          </td>
+
+</td></tr>
       <tr>
         <td>Agile Release Train:</td>
         <td>
@@ -150,30 +167,10 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
         </tr>
 <tr>
-<td><input type="submit" id="php_button" onclick="<?php //Creates an array of the active sequences and iterations
-  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$_COOKIE['piCookie']."';")) {
-    $rows = array();
-    while($row = $result->fetch_array()) {
-      $sequenceArray[]=$row["sequence"];
-      $iterationArray[]=$row["iteration"];
-    }
-};
-          $count_iteration = count($iterationArray);
-  //Loop for displaying the series of Employee table & iteration calculation placeholder
-  for($i = 0; $i < $count_iteration; $i++){
-    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
-  };
-  ?>" name="generate_button" class="button" value="Generate"></td>
+<td><input type="submit" id="php_button" onclick="<?php for($i = 0; $i < $count_iteration; $i++){creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);};?>" name="generate_button" class="button" value="Generate"></td>
 <td><<input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>">/td>
 </tr>
-<tr>
-<div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
-              <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
-              <b>Total Capacity for the Program Increment<br/>(capacity-calc-bignum $totalcap)</b>
-            </div>
-          </td>
 
-</td></tr>
 </table>
 </form><br>
 </div>
@@ -230,7 +227,7 @@ function getTeams(art_select){
   $sequenceArray = array();
   $iterationArray = array();
   date_default_timezone_set('America/Chicago');
-  //updated sql so select values matched availabe column names
+  /*//updated sql so select values matched availabe column names
   $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration , sequence
   FROM `cadence`
   WHERE PI_id in (SELECT  PI_id
@@ -268,7 +265,7 @@ function getTeams(art_select){
       //echo "In-between Program Increments";
     }
     $result->close();
-  }
+  }*/
 
 
   echo '<script>console.log('.$sequence.');</script>';
@@ -277,7 +274,7 @@ function getTeams(art_select){
       $selected_team = $_POST['current-team-selected'];
 
   } ;
-
+/*
   if (isset($_POST['showNext'])) {
     $sequence++;
     echo '<script>console.log("Show Next: " + "'.$sequence.'");</script>';
@@ -342,7 +339,7 @@ function getTeams(art_select){
         }
       }
     }
-  }
+  }*/
   if (isset($_POST['select-team'])) {
     $selected_team = $_POST['select-team'];
 
