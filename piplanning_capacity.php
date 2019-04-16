@@ -95,7 +95,7 @@ form for submitting data that will be prepopulated with data from the variables
         </td>
       </tr>
       <tr>
-       <!--  <td>Agile Release Train:</td>
+        <td>Agile Release Train:</td>
         <td>
           <select id="art" name="art" onchange="
           //sets art select to selected value
@@ -107,7 +107,7 @@ form for submitting data that will be prepopulated with data from the variables
           location.reload();
           ">
           <option value="">-- Select --</option>
-          <?php //echo $art; ?>
+          <?php echo $art; ?>
         </select>
       </td>
     </tr>
@@ -120,10 +120,41 @@ form for submitting data that will be prepopulated with data from the variables
       //sets the selected value as the cookie
       document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
       location.reload();"> 
-      <?php //echo $program_increment_menu; ?> -->
+      <?php echo $program_increment_menu; ?> 
     </select>
   </td>
 </tr>
+<tr>
+            <td>Names of Teams:</td>
+            <td><select name="select-team" onchange="      
+            //sets team_select to selected value
+            var team_select = this.value;
+            //sets the selected value as the cookie
+            document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);
+            location.reload();" >
+              <?php
+              $sql = "SELECT DISTINCT c.team_id, c.team_name FROM capacity c, trains_and_teams t where c.program_increment='".$program_increment."' and c.team_id = t.team_id and t.parent_name = '".$art_select."';";
+              //checks if there is a selected team in the cookie variable. If there is it will update the detault to the cookie value
+              if(isset($_COOKIE['teamSelectCookie'])){
+                $selected_team = $_COOKIE['teamSelectCookie'];
+              }
+              $result = $db->query($sql);
+
+              if ($result->num_rows > 0) {
+
+                  while ($row = $result->fetch_assoc()) {
+                    if ( trim($selected_team) == trim($row["team_id"]) ) {
+                      echo '<option value="'.$row["team_id"].'" selected>'.$row["team_name"].'</option>';
+                    }else{
+                      echo '<option value="'.$row["team_id"].'">'.$row["team_name"].'</option>';
+                    }
+
+                  }
+              }
+              ?>
+            </select>
+            </td>
+        </tr>
 <tr>
 <td><input type="submit" id="php_button" onclick="updateEmployeeTable()" name="generate_button" class="button" value="Generate"></td>
 <td></td>
@@ -275,7 +306,7 @@ function getTeams(art_select){
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
       $default_data = false;
-      //$default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_IP"]);
+      $default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_P"]);
     } else {
       $default_data = true;
       
@@ -401,66 +432,8 @@ function getTeams(art_select){
 
       <h3 style=" color: #01B0F1; font-weight: bold;">Capacity Calculations for the Agile Team</h3>
 
-      <table width="95%">
-        <tr>
-          <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-            <form method="post" action="#">
-            Agile Release Train: &emsp; <br/>
-            Agile Team: &emsp; <br/>
-            Program Increment (PI): &emsp; <br/>
-          </td>
-          <td  style="vertical-align: top; font-weight: bold; line-height: 130%;  font-size: 18px;" width="25%">
-            
-          <select id="art" name="art" onchange="
-            //sets art select to selected value
-            var art_select = this.value;
-            //sets the selected value as the cookie
-            document.cookie = escape('artCookie') + '=' + escape(art_select) ;
-            //updates the teams list
-            getTeams(art_select);
-            location.reload();">
-            <option value="">-- Select --</option>
-            <?php echo $art; ?>
-          </select>
-          <br/>
-            <select name="select-team" onchange="      
-            //sets team_select to selected value
-            var team_select = this.value;
-            //sets the selected value as the cookie
-            document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);
-            location.reload();" >
-              <?php
-              $sql = "SELECT DISTINCT c.team_id, c.team_name FROM capacity c, trains_and_teams t where c.program_increment='".$program_increment."' and c.team_id = t.team_id and t.parent_name = '".$art_select."';";
-              //checks if there is a selected team in the cookie variable. If there is it will update the detault to the cookie value
-              if(isset($_COOKIE['teamSelectCookie'])){
-                $selected_team = $_COOKIE['teamSelectCookie'];
-              }
-              $result = $db->query($sql);
 
-              if ($result->num_rows > 0) {
 
-                  while ($row = $result->fetch_assoc()) {
-                    if ( trim($selected_team) == trim($row["team_id"]) ) {
-                      echo '<option value="'.$row["team_id"].'" selected>'.$row["team_name"].'</option>';
-                    }else{
-                      echo '<option value="'.$row["team_id"].'">'.$row["team_name"].'</option>';
-                    }
-
-                  }
-              }
-              ?>
-            </select>
-            <br/>
-          <select id="PI_ID" name="pi_id" onchange="
-          //sets pi_select to selected value
-          var pi_select = this.value;
-          //sets the selected value as the cookie
-          document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
-          location.reload();">
-          <?php echo $program_increment_menu; ?>
-          </select>
-
-          </form><br/>
           <?php
 
             //Creates an array of the active sequences and iterations
@@ -488,14 +461,28 @@ function getTeams(art_select){
               $sequence = $_POST[$current_sequence];
           
             };
-
+            /*console.log("PI Cookie: " + getCookie('piCookie'));
+            console.log("ART Cookie: "+getCookie('artCookie'));
+            console.log("Team Cookie: " + getCookie('teamSelectCookie'));*/
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
             $duration = getDuration($program_increment);
+            echo'<table width="95%">
+            <tr>
+              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+              &nbsp;&nbsp;Agile Release Train: </td><td>'.$_COOKIE['artCookie'].'</td></tr>
+              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+              &nbsp;&nbsp;Agile Team ID: </td><td>'.$selected_team.'</td></tr>
+              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+              &nbsp;&nbsp;Program Increment (PI): </td><td>'.$program_increment.'</td></tr>
+              ';
 
-           echo '<tr><td>&nbsp;&nbsp;Iteration (I): &nbsp;</td><td>'.$iteration.'</td></tr>';
-           echo '<tr><td>&nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td>'.$duration.'</td></tr>';
-           echo '<tr><td>&nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td>'.$overhead_percentage.'%</td></tr>';
+           echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+           &nbsp;&nbsp;Iteration (I): &nbsp;</td><td>'.$iteration.'</td></tr>';
+           echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+           &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td>'.$duration.'</td></tr>';
+           echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+           &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td>'.$overhead_percentage.'%</td></tr>';
             //echo "&nbsp;".$program_increment."<br/>";
 
             echo '<td width="50%"  style="font-weight: bold;">';
@@ -734,14 +721,14 @@ function getTeams(art_select){
           return $team_id;
       }
 
-      function getTotalCapacity($program_increment, $selected_team){
+      function getTotalCapacity($program_increment, $selected_team, $sequence){
      
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
         $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+            if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
               $icapacity = array_sum($teamcapacity);
               $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
             }else{
@@ -750,7 +737,7 @@ function getTeams(art_select){
             }
         } else {
           
-          if (!isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+          if (!isset($teamcapacity)  && !isset($_POST['restore'.sequence])  && !isset($_POST['submit0'])){
             $icapacity = array_sum($teamcapacity);
             $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
           }else{
