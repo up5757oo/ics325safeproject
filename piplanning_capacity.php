@@ -79,15 +79,7 @@ if ($result->num_rows > 0) {
 };
 //Function for assigning the overhead percentage
 $overhead_percentage = getOverheadPercentage();
-//Creates an array of the active sequences and iterations
-if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$_COOKIE['piCookie']."';")) {
-  $rows = array();
-  while($row = $result->fetch_array()) {
-    $sequenceArray[]=$row["sequence"];
-    $iterationArray[]=$row["iteration"];
-  }
-};
-        $count_iteration = count($iterationArray);
+
 ?>
 
 <!--
