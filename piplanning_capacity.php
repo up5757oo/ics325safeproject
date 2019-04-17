@@ -239,7 +239,7 @@ form for submitting data that will be prepopulated with data from the variables
   //if ($_REQUEST['generate_button']) {
       //$selected_team = $_POST['current-team-selected'];
   //Creates an array of the active sequences and iterations
-  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$_COOKIE['piCookie']."';")) {
+  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$program_increment."';")) {
     $rows = array();
     while($row = $result->fetch_array()) {
       $sequenceArray[]=$row["sequence"];
