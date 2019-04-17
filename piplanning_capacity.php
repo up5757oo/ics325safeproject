@@ -159,7 +159,7 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
         </tr>
 <tr>
-<td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
+<td><!--input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td-->
 <td><input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>"></td>
 </tr>
 
