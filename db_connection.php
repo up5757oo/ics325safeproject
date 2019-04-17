@@ -174,21 +174,25 @@ function buildTeamMenu(){
     };
 
     //Function for creating a table of employee day
-    function buildEmployeeTable($selected_team,$duration,$overhead_percentage){
-         echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+    function buildEmployeeTable($selected_team,$duration,$overhead_percentage, $numberIT){
+         echo '             
+         <table id="' .$numberIT .'" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
          width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
          <thead>
             <tr id="capacity-table-first-row">
             <th id="capacity-table-td">Last Name</th>
             <th id="capacity-table-td">First Name</th>
             <th id="capacity-table-td">Role</th>
-            <th id="capacity-table-td">% Velocity Available<br/></th>
+            <th id="capacity-table-td-vel">% Velocity Available<br/></th>
             <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
             <th id="capacity-table-td">Story Points</th>
             </tr>
          </thead>
          <tbody>';
+         $storypts2 = 0;
          $it_storypts = 0; //collect sum of story points per table iteration
+         $it_doff = 0; //collect all days off per table iteration
+         $num_tables = 6; // 7 tables of story points with 2 weeks work-- need to fix the last table for half time
          $running_total_storypts = 0; // TOTAL collection of Capacity Iteration Story points
          $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
          $db->set_charset("utf8");
@@ -202,9 +206,9 @@ function buildTeamMenu(){
             // output data of each
             $rownum = 0;
             while ($row = $result->fetch_assoc()) {
-                if ($row["role"] == "Scrum Master (SM)") {
+                if ($row["role"] == "SM") {
                     $velocityType = "SCRUM_MASTER_ALLOCATION";
-                } else if ($row["role"] == "Product Owner (PO)") {
+                } else if ($row["role"] == "PO") {
                     $velocityType = "PRODUCT_OWNER_ALLOCATION";
                 } else  {
                     $velocityType = "AGILE_TEAM_MEMBER_ALLOCATION";
@@ -230,49 +234,92 @@ function buildTeamMenu(){
                 if (isset($velocity[$rownum]) && !isset($_POST['restore']) && isset($_POST['submit0'])){
                     $vel = $velocity[$rownum];
                 } else {
+                    $vel = 0;
+
+                    echo'
+                    <script>
+                        function updateEmployeeTable(){
+                            velJS = document.getElementById("autoin").value
+                            alert("Velocity: " + velJS);  
+                            
+                        }
+                    </script>
+                    ';
+
                     $vel = $row2["value"];
-                }   
+                    } 
+                
+                // $storypts2 = $storypts * ($vel/100);
+                
                 echo
-                    "<tr>   
-                        <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
-                        <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
-                        <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
-                        <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin' class='capacity-text-input' type='text' name='velocity[]' value='" . $vel . "' submit='autoLoad();' /> %</td>
-                        <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2' class='capacity-text-input' type='text' name='daysoff[]' value='".$doff."' submit='autoLoad();' /></td>
-                        <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story' class='capacity-text-input' type='text' name='storypoints[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                    "
+                    <tr>   
+                        <td id='capacity-table-td-last-name' style='font-weight:500;'>" . $row["last_name"] . "</td>
+                        <td id='capacity-table-td-first-name' style='font-weight:500;'>" . $row["first_name"] . "</td>
+                        <td id='capacity-table-td-role' style='font-weight:500;'>" . $row["role"] . "</td>
+                        <td id='capacity-table-td-velocity' style='font-weight:500; text-align: center;'><input id='autoin' class='capacity-text-input' type='text' name='velocity[]' value='" . $vel . "' submit='autoLoad();' /> %</td>
+                        <td id='capacity-table-td-days-off' style='font-weight:500; text-align: center;'><input id='autoin2' class='capacity-text-input' type='text' name='daysoff[]' value='".$doff."' submit='autoLoad();' /></td>
+                        <td id='capacity-table-td-story-pts' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story' class='capacity-text-input' type='text' name='storypoints[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
                         <input type='hidden' name='rownum[]' value='".$rownum."'/>
                     </tr>";
                     $rownum++;
 
-                     //add storypt values together and display (TEST)
-                     echo $storypts . ", " . $doff;     //displaying values for test purposes
-                     $it_storypts = $it_storypts + $storypts;
-                     $it_storypts = $it_storypts - $doff; // need to check doff values--when editable
-                }
-                echo "<br>";
-                echo "Iteration Capacity Total: " . $it_storypts;
-                //need to collect all it_storypts 
-                $running_total_storypts = $running_total_storypts + $it_storypts; //Total of ALL iteration Story points
-                echo "<br>";
-                echo "Running Total Story Points: " . $running_total_storypts ;
+                     $it_storypts = $it_storypts + $storypts; //add storypoints of each row
+                     $it_doff = $it_doff + $doff;           //add the days off of each row
+                     $it_storypts = $it_storypts - $it_doff; //collect this table's Story Points (TABLE SCOPE)
+                    }
+                     echo "<br>";
+                     // echo "Iteration Capacity Total: " . $it_storypts;
 
+                    ?>
+                    <!-- displays iteration total for each table (test) -->
+                    <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
+                    <div id="capacity-calc-bignum" name="icap"><?php echo "56" ?></div>
+                     Capacity for this Iteration <br/>(capacity-calc-bignum $icapacity)
+                    </div>
+                    <?php
+                
             } else {
                 echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
                 print "NO TEAM MEMBERS ASSIGNED TO TEAM \"".$selected_team."\"";
                 echo "</td></tr>";
             }
-            echo '</tbody><tfoot></tfoot></table>';
+            $it_storypts = $it_storypts + $it_doff;
+            $running_total_storypts = ($it_storypts * $num_tables) + 28;
+            echo "<br>";
+           // echo "Running Total Story Points: " . $running_total_storypts;
+           
+           //Need to add the buttons
+            echo '</tbody><tfoot></tfoot></table> 
+            
+            
+            <script type="text/javascript">
+$(document).ready(function () {
+
+  $(\'#' .$numberIT .'\').DataTable({
+   paging: false,
+   searching: false,
+   infoCallback: false
+
+  });
+});
+</script>';
+
         };
 
         //function for returning the duration
-        function getDuration($pi_id_select){
+        function getDuration($iteration){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
-            $sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$pi_id_select."';";
+            $sql5 = "SELECT * FROM `cadence` WHERE iteration_id='".$iteration."';";
             $result5 = $db->query($sql5);
             if ($result5->num_rows > 0) {
                 $row5 = $result5->fetch_assoc();
                 $duration = $row5["duration"];
+            } elseif(substr($iteration, -1) == 6){
+                $duration = 5;
+            } else {
+                $duration = 10;
             }
             return $duration;
         };
@@ -289,7 +336,6 @@ function buildTeamMenu(){
             }
             return $overhead_percentage;
         };
-
 
         function buildSummaryTable($header_name,$col1,$col2){
             echo '<table id="info" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
@@ -322,7 +368,7 @@ function buildTeamMenu(){
 
             $result = $db->query($sql);
 
-            echo "<table class='floatLeft'>";
+           echo "<table class='floatLeft'>";
            echo "<th style='text-align: center; background-color: grey'; colspan='2'>Agile Release Trains</th>";
            echo "<tr>";
            echo "<th>Agile Release Train</th>";
@@ -371,6 +417,45 @@ function buildTeamMenu(){
            }
         };
 
+        //function for using art data to create a json file for Capacity data
+        function buildCapacityJSON($art,$team,$pi_id){
+            $file = $pi_id."_".$art."_".$team."_cache.json";
+            fopen("dataFiles/".urlencode($file), "w+");
+            $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+            $db->set_charset("utf8");
+             if ($result = $db->query("SELECT art_name, team_name, PI_id, iteration_id, last_name, first_name, role, value as velocity, '0' as Days_Off, ((duration * .8) * (value/100)) as Story_points FROM `membership`,  employees, preferences, cadence where
+                (membership.polarion_id = employees.number)
+                and role = 'SM'
+                and name = 'SCRUM_MASTER_ALLOCATION'
+                and art_name = '".$art."'
+                and team_name = '".$team."'
+                and PI_id = '".$pi_id."'
+                union
+                SELECT art_name, team_name, PI_id, iteration_id, last_name, first_name, role, value as velocity, '0' as Days_Off, ((duration * .8) * (value/100))  as Story_points FROM `membership`,  employees, preferences, cadence where
+                (membership.polarion_id = employees.number)
+                and role = 'PO'
+                and name = 'PRODUCT_OWNER_ALLOCATION'
+                and art_name = '".$art."'
+                and team_name = '".$team."'
+                and PI_id = '".$pi_id."'
+                union
+                SELECT art_name, team_name, PI_id, iteration_id, last_name, first_name, role, value as velocity, '0' as Days_Off, ((duration * .8) * (value/100)) as Story_points FROM `membership`,  employees, preferences, cadence where
+                (membership.polarion_id = employees.number)
+                and role = 'DEVELOPER'
+                and name = 'AGILE_TEAM_MEMBER_ALLOCATION'
+                and art_name = '".$art."'
+                and team_name = '".$team."'
+                and PI_id = '".$pi_id."'
+                order by art_name, pi_id, iteration_id, velocity desc, role;")) {
+                    $rows = array();
+                    while($row = $result->fetch_array()) {
+                        $rows[] = $row;
+                    }
+                    file_put_contents("dataFiles/".urlencode($file), json_encode($rows));
+                }
+                
+            };   
+        
         function buildTeamTable($pi_id, $parent_name){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
