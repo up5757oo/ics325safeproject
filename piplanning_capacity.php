@@ -579,10 +579,10 @@ form for submitting data that will be prepopulated with data from the variables
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
-                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin' class='capacity-text-input' type='text' name='velocity_".$sequence."[]' value='" . $vel . "' onchange='autoLoad();' /> %</td>
-                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2' class='capacity-text-input' type='text' name='daysoff_".$sequence."[]' value='".$doff."' onchange='autoLoad();' /></td>
-                      <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story' class='capacity-text-input' type='text' name='storypoints_".$sequence."[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
-                      <input type='hidden' name='rownum_".$sequence."[]' id='rownum' value='".$rownum."'/>
+                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_".$sequence."' class='capacity-text-input' type='text' name='velocity_".$sequence."[]' value='" . $vel . "' onchange='autoLoad();' /> %</td>
+                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_".$sequence."' class='capacity-text-input' type='text' name='daysoff_".$sequence."[]' value='".$doff."' onchange='autoLoad();' /></td>
+                      <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_".$sequence."' class='capacity-text-input' type='text' name='storypoints_".$sequence."[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                      <input type='hidden' name='rownum_".$sequence."[]' id='autoin3_".$sequence."' value='".$rownum."'/>
                   </tr>";
                   $rownum++;
               }
@@ -628,11 +628,11 @@ form for submitting data that will be prepopulated with data from the variables
 
       function autoLoad() {
         var velocity'.$sequence.' = $("input[name=\'velocity_'.$sequence.'[]\']")
-            .map(function(){return $(\'#autoin\').val();}).get();
+            .map(function(){return $(\'#autoin_'.$sequence.'\').val();}).get();
         var daysoff'.$sequence.' = $("input[name=\'daysoff_'.$sequence.'[]\']")
-            .map(function(){return $(\'#autoin2\').val();}).get();
+            .map(function(){return $(\'#autoin2_'.$sequence.'\').val();}).get();
         var rownum'.$sequence.' = $("input[name=\'rownum_'.$sequence.'[]\']")
-            .map(function(){return $(\'#rownum\').val();}).get();
+            .map(function(){return $(\'#autoin3_'.$sequence.'\').val();}).get();
 
         var overhead = "'.$overhead_percentage.'";
         var duration'.$sequence.' = "'.$duration.'";
@@ -648,8 +648,8 @@ form for submitting data that will be prepopulated with data from the variables
         }
 
         document.getElementsByName("icap'.$sequence.'").innerHTML = icap'.$sequence.';
-          var capdiff = icap'.$sequence.' - icap'.$sequence.'_old;
-          var tcap = parseInt(capdiff) + parseInt(totalcap_old);
+          var capdiff'.$sequence.' = icap'.$sequence.' - icap'.$sequence.'_old;
+          var tcap = parseInt(capdiff'.$sequence.') + parseInt(totalcap_old);
           document.getElementsByName("totalcap")[0].innerHTML = tcap;
           console.log("icap_old: " +  icap'.$sequence.'_old);
           console.log("icap: " +  icap'.$sequence.');
