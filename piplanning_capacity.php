@@ -92,7 +92,7 @@ form for submitting data that will be prepopulated with data from the variables
     <tr>
 <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
-              <b>Total Capacity for the Program Increment<br/>(capacity-calc-bignum $totalcap)</b>
+              <b>Total Capacity for the Program Increment</b>
             </div>
           </td>
 
@@ -159,7 +159,7 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
         </tr>
 <tr>
-<td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
+<td><!--input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td-->
 <td><input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>"></td>
 </tr>
 
@@ -461,7 +461,7 @@ form for submitting data that will be prepopulated with data from the variables
             <td>
             <div style="float: left; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="icap<?php echo $sequence ?>"><?php echo $icapacity ?></div>
-              Total Capacity for this Iteration <br/>(capacity-calc-bignum $icapacity)
+              Total Capacity for this Iteration
             </div>
           </td>
         </tr>
