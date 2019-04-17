@@ -411,7 +411,7 @@ form for submitting data that will be prepopulated with data from the variables
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
             $duration = getDuration($iteration);
-            echo'<table width="95%">
+            echo'<table width="100%">
             <tr>
               <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
               &nbsp;&nbsp;Agile Release Train: </td><td>'.$_COOKIE['artCookie'].'</td></tr>
