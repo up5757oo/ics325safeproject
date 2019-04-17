@@ -247,10 +247,7 @@ form for submitting data that will be prepopulated with data from the variables
     }
 };
           $count_iteration = count($iterationArray);
-  //Loop for displaying the series of Employee table & iteration calculation placeholder
-  for($i = 0; $i < $count_iteration; $i++){
-    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
-  };
+
  // } ;
 /*
   if (isset($_POST['showNext'])) {
@@ -396,7 +393,10 @@ form for submitting data that will be prepopulated with data from the variables
 
           <?php
 
-
+  //Loop for displaying the series of Employee table & iteration calculation placeholder
+  for($i = 0; $i < $count_iteration; $i++){
+    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+  };
 
 
 
@@ -544,8 +544,8 @@ form for submitting data that will be prepopulated with data from the variables
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
-                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_".$sequence."' class='capacity-text-input' type='text' name='velocity_".$sequence."[]' value='" . $vel . "' onchange='autoLoad();' /> %</td>
-                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_".$sequence."' class='capacity-text-input' type='text' name='daysoff_".$sequence."[]' value='".$doff."' onchange='autoLoad();' /></td>
+                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_".$sequence."' class='capacity-text-input' type='text' name='velocity_".$sequence."[]' value='" . $vel . "' onchange='autoLoad".$sequence."();' /> %</td>
+                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_".$sequence."' class='capacity-text-input' type='text' name='daysoff_".$sequence."[]' value='".$doff."' onchange='autoLoad".$sequence."();' /></td>
                       <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_".$sequence."' class='capacity-text-input' type='text' name='storypoints_".$sequence."[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
                       <input type='hidden' name='rownum_".$sequence."[]' id='autoin3_".$sequence."' value='".$rownum."'/>
                   </tr>";
@@ -591,7 +591,7 @@ form for submitting data that will be prepopulated with data from the variables
         document.getElementById(\'maincap'.$sequence.'\').submit();
       }
 
-      function autoLoad() {
+      function autoLoad'.$sequence.'() {
         var velocity'.$sequence.' = $("input[name=\'velocity_'.$sequence.'[]\']")
             .map(function(){return $(\'#autoin_'.$sequence.'\').val();}).get();
         var daysoff'.$sequence.' = $("input[name=\'daysoff_'.$sequence.'[]\']")
@@ -607,9 +607,9 @@ form for submitting data that will be prepopulated with data from the variables
         var icap'.$sequence.' = 0;
 
         for (var i in rownum'.$sequence.') {
-            var storypts'.$sequence.' = Math.round( ( duration'.$sequence.' - daysoff_'.$sequence.'[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity_'.$sequence.'[i] / 100 ) );
-            $("input[name=\'storypoints_'.$sequence.'[]\']").eq(i).val(storypts'.$sequence.');
-            icap'.$sequence.' += storypts'.$sequence.';
+            var storypts'.$sequence.'_'.$rownum.' = Math.round( ( duration'.$sequence.' - daysoff'.$sequence.'[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity'.$sequence.'[i] / 100 ) );
+            $("input[name=\'storypoints_'.$sequence.'[]\']").eq(i).val(storypts'.$sequence.'_'.$rownum.');
+            icap'.$sequence.' += storypts'.$sequence.'_'.$rownum.';
         }
 
         document.getElementsByName("icap'.$sequence.'").innerHTML = icap'.$sequence.';
@@ -624,16 +624,19 @@ form for submitting data that will be prepopulated with data from the variables
 
   </script>';
   if (isset($_POST['submit0'])) {
+    $rownum_name = 'rownum'.$sequence;
+    $daysoff_name = 'daysoff'.$sequence;
+    $velocity_name = 'velocity'.$sequence;
     $iterationcapacity = 0;
-    for ($x=0; $x < count($_POST['rownum']); $x++){
-      $teamcapacity[$_POST['rownum'][$x]] = round(($duration-$_POST['daysoff'][$x])*((100-$overhead_percentage)/100)*($_POST['velocity'][$x]/100));
-      $iterationcapacity += $teamcapacity[$_POST['rownum'][$x]];
-      $daysoff[$_POST['rownum'][$x]] = $_POST['daysoff'][$x];
-      $velocity[$_POST['rownum'][$x]] = $_POST['velocity'][$x];
+    for ($x=0; $x < count($_POST[$rownum_name]); $x++){
+      $teamcapacity[$_POST[$rownum_name][$x]] = round(($duration-$_POST[$daysoff_name][$x])*((100-$overhead_percentage)/100)*($_POST[$velocity_name][$x]/100));
+      $iterationcapacity += $teamcapacity[$_POST[$rownum_name][$x]];
+      $daysoff[$_POST[$rownum_name][$x]] = $_POST[$daysoff_name][$x];
+      $velocity[$_POST[$rownum_name][$x]] = $_POST[$velocity_name][$x];
     }
     $sqliter = "UPDATE `capacity` SET iteration_".substr($iteration, -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
     $result_iter = $db->query($sqliter);
-    $sqlinc = "SELECT (iteration_1 + iteration_2 + iteration_3 + iteration_4 + iteration_5 + iteration_6) as new_total FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
+    $sqlinc = "SELECT (iteration_1 + iteration_2 + iteration_3 + iteration_4 + iteration_5 + iteration_6 + iteration_P) as new_total FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
     $result_inc = $db->query($sqlinc);
     if ($result_inc->num_rows > 0) {
         $rowinc = $result_inc->fetch_assoc();
@@ -643,12 +646,13 @@ form for submitting data that will be prepopulated with data from the variables
     $result_up = $db->query($sqlup);
 
     // keep velocity and days off value changes
+
     $iterationcapacity = 0;
-    for ($x=0; $x < count($_POST['rownum']); $x++){
-      $teamcapacity[$_POST['rownum'][$x]] = round(($duration-$_POST['daysoff'][$x])*((100-$overhead_percentage)/100)*($_POST['velocity'][$x]/100));
-      $iterationcapacity += $teamcapacity[$_POST['rownum'][$x]];
-      $daysoff[$_POST['rownum'][$x]] = $_POST['daysoff'][$x];
-      $velocity[$_POST['rownum'][$x]] = $_POST['velocity'][$x];
+    for ($x=0; $x < count($_POST[$rownum_name]); $x++){
+      $teamcapacity[$_POST[$rownum_name][$x]] = round(($duration-$_POST[$daysoff_name][$x])*((100-$overhead_percentage)/100)*($_POST[$velocity_name][$x]/100));
+      $iterationcapacity += $teamcapacity[$_POST[ $rownum_name][$x]];
+      $daysoff[$_POST[$rownum_name][$x]] = $_POST[$daysoff_name][$x];
+      $velocity[$_POST[$rownum_name][$x]] = $_POST[$velocity_name][$x];
     }
   }
       ///////////////////////////Funtion End/////////////////////////////////////////////////////////
