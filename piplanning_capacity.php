@@ -176,32 +176,6 @@ form for submitting data that will be prepopulated with data from the variables
 
 
 <script>
-//assigning the artCookie to a variable
-var artCookie = getCookie('artCookie');
-//running the getTeams when the window is loaded using the cookie
-$( window ).on( "load", getTeams(artCookie) );
-function getTeams(art_select){
-  //gets values from JSON file
-  $.getJSON('dataFiles/at_cache.json', function(data){
-    //initializes an array to story the avilable teams
-      var at_list = [];
-      //for loop for adding team names to teams_list
-      var x=data.length;
-      for(var i=0; i < x ; i++){
-        var parent = data[i].parent_name;
-        if(parent == art_select){
-          at_list.push(data[i].team_name);
-        }
-        //updates teams with the calculated list
-        //document.getElementById('teams').value = at_list;
-        var select = document.getElementById("teams");
-        select.options.length = 0;
-        for(index in at_list) {
-          select.options[select.options.length] = new Option(at_list[index], index);
-        }
-      };
-    });
-  };
 
   //function for capturing the cookie
   function getCookie(cookieName) {
@@ -605,10 +579,10 @@ function getTeams(art_select){
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
-                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin' class='capacity-text-input' type='text' name='velocity[]' value='" . $vel . "' onchange='autoLoad();' /> %</td>
-                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2' class='capacity-text-input' type='text' name='daysoff[]' value='".$doff."' onchange='autoLoad();' /></td>
-                      <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story' class='capacity-text-input' type='text' name='storypoints[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
-                      <input type='hidden' name='rownum[]' value='".$rownum."'/>
+                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin' class='capacity-text-input' type='text' name='velocity_".$sequence."[]' value='" . $vel . "' onchange='autoLoad();' /> %</td>
+                      <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2' class='capacity-text-input' type='text' name='daysoff_".$sequence."[]' value='".$doff."' onchange='autoLoad();' /></td>
+                      <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story' class='capacity-text-input' type='text' name='storypoints_".$sequence."[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                      <input type='hidden' name='rownum_".$sequence."[]' id='rownum' value='".$rownum."'/>
                   </tr>";
                   $rownum++;
               }
@@ -653,23 +627,23 @@ function getTeams(art_select){
       }
 
       function autoLoad() {
-        var velocity = $("input[name=\'velocity[]\']")
-            .map(function(){return $(this).val();}).get();
-        var daysoff = $("input[name=\'daysoff[]\']")
-            .map(function(){return $(this).val();}).get();
-        var rownum = $("input[name=\'rownum[]\']")
-            .map(function(){return $(this).val();}).get();
+        var velocity'.$sequence.' = $("input[name=\'velocity_'.$sequence.'[]\']")
+            .map(function(){return $(\'#autoin\').val();}).get();
+        var daysoff'.$sequence.' = $("input[name=\'daysoff_'.$sequence.'[]\']")
+            .map(function(){return $(\'#autoin2\').val();}).get();
+        var rownum'.$sequence.' = $("input[name=\'rownum_'.$sequence.'[]\']")
+            .map(function(){return $(\'#rownum\').val();}).get();
 
         var overhead = "'.$overhead_percentage.'";
-        var duration = "'.$duration.'";
+        var duration'.$sequence.' = "'.$duration.'";
         var value = "'.$valueForJS.'";
         var totalcap_old = "'.$totalcapacity.'";
         var icap'.$sequence.'_old = "'.$icapacity.'";
         var icap'.$sequence.' = 0;
 
-        for (var i in rownum) {
-            var storypts'.$sequence.' = Math.round( ( duration - daysoff[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity[i] / 100 ) );
-            $("input[name=\'storypoints[]\']").eq(i).val(storypts'.$sequence.');
+        for (var i in rownum'.$sequence.') {
+            var storypts'.$sequence.' = Math.round( ( duration'.$sequence.' - daysoff_'.$sequence.'[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity_'.$sequence.'[i] / 100 ) );
+            $("input[name=\'storypoints_'.$sequence.'[]\']").eq(i).val(storypts'.$sequence.');
             icap'.$sequence.' += storypts'.$sequence.';
         }
 
