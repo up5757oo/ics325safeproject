@@ -546,7 +546,7 @@ form for submitting data that will be prepopulated with data from the variables
                       <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
                       <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_".$sequence."' class='capacity-text-input' type='text' name='velocity_".$sequence."[]' value='" . $vel . "' onchange='autoLoad".$sequence."();' /> %</td>
                       <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_".$sequence."' class='capacity-text-input' type='text' name='daysoff_".$sequence."[]' value='".$doff."' onchange='autoLoad".$sequence."();' /></td>
-                      <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_".$sequence."' class='capacity-text-input' type='text' name='storypoints_".$sequence."[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                      <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_".$sequence."_".$rownum."' class='capacity-text-input' type='text' name='storypoints_".$sequence."_".$rownum."[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
                       <input type='hidden' name='rownum_".$sequence."[]' id='autoin3_".$sequence."' value='".$rownum."'/>
                   </tr>";
                   $rownum++;
@@ -607,7 +607,7 @@ form for submitting data that will be prepopulated with data from the variables
 
         for (var i in rownum'.$sequence.') {
             var storypts'.$sequence.'_'.$rownum.' = Math.round( ( duration'.$sequence.' - daysoff'.$sequence.'[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity'.$sequence.'[i] / 100 ) );
-            $("input[name=\'storypoints_'.$sequence.'[]\']").eq(i).val(storypts'.$sequence.'_'.$rownum.');
+            $("input[name=\'storypoints_'.$sequence.'_'.$rownum.'[]\']").eq(i).val(storypts'.$sequence.'_'.$rownum.');
             icap'.$sequence.' += storypts'.$sequence.'_'.$rownum.';
         }
 
