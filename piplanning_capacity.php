@@ -638,8 +638,8 @@ function getTeams(art_select){
       echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
       <input type="reset" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
       <input type="submit" id="capacity-button-blue" name="showNext" value="Show Next Iteration">
-        <input type="hidden" name="current-team-selected" value="'.$selected_team.'">
-        <input type="hidden" name="current-sequence"'.$sequence.' value='.$sequence.'">
+      <input type="hidden" name="current-team-selected" value="'.$selected_team.'">
+      <input type="hidden" name="current-sequence"'.$sequence.' value='.$sequence.'">
       </form>
 
       <script type="text/javascript">
