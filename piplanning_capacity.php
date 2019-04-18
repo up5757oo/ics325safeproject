@@ -568,7 +568,7 @@ form for submitting data that will be prepopulated with data from the variables
 
       echo '</table>';
       echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-      <input type="submit" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
+      <input type="reset" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
 
 
       </form>
