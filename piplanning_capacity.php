@@ -8,7 +8,6 @@
   include("./db_connection.php");
   global $db;
 
-
  
   echo'<!--Copies in Bears custom stylesheet-->
   <link rel="stylesheet" type="text/css" href="styleCustom.css">';
@@ -595,7 +594,7 @@ function getTeams(art_select){
                   $storypts = $teamcapacity[$rownum];
                 }else{
                   $storypts = round(($duration-0)*((100-$overhead_percentage)/100)*($row2["value"]/100));
-                }
+                } 
                 $valueForJS = $row2["value"];
                 if (isset($daysoff[$rownum]) && !isset($_POST['restore'.$sequence])  && isset($_POST['submit0'])){
                   $doff = $daysoff[$rownum];
@@ -637,7 +636,7 @@ function getTeams(art_select){
 
       echo '</table>';
       echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-      <input type="submit" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
+      <input type="reset" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
       <input type="submit" id="capacity-button-blue" name="showNext" value="Show Next Iteration">
         <input type="hidden" name="current-team-selected" value="'.$selected_team.'">
         <input type="hidden" name="current-sequence"'.$sequence.' value='.$sequence.'">
