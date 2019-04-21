@@ -159,7 +159,7 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
         </tr>
 <tr>
-<td><!--input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td-->
+<td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
 <td><input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>"></td>
 </tr>
 
@@ -577,6 +577,10 @@ form for submitting data that will be prepopulated with data from the variables
                       <input type='hidden' name='rownum_".$sequence."[]' id='autoin3_".$sequence."' value='".$rownum."'/>
                   </tr>";
                   $rownum++;
+
+                  echo "vel is: " .$vel . ", days off: " . $doff .".";
+                  // submit the values to correlating tables to TEST
+                
               }
           } else {
             echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
