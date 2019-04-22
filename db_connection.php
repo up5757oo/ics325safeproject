@@ -265,11 +265,8 @@ function buildTeamMenu(){
                     $rownum++;
 
                      $it_storypts = $it_storypts + $storypts; //add storypoints of each row
-                     $it_doff = $it_doff + $doff;           //add the days off of each row
-                     $it_storypts = $it_storypts - $it_doff; //collect this table's Story Points (TABLE SCOPE)
                     }
                      echo "<br>";
-                     // echo "Iteration Capacity Total: " . $it_storypts;
 
                     ?>
                     <!-- displays iteration total for each table (test) -->
@@ -284,16 +281,17 @@ function buildTeamMenu(){
                 print "NO TEAM MEMBERS ASSIGNED TO TEAM \"".$selected_team."\"";
                 echo "</td></tr>";
             }
+
             $it_storypts = $it_storypts + $it_doff;
             $running_total_storypts = ($it_storypts * $num_tables) + 28;
             echo "<br>";
+            
            // echo "Running Total Story Points: " . $running_total_storypts;
-           
-           //Need to add the buttons
+
             echo '</tbody><tfoot></tfoot></table> 
             
             
-            <script type="text/javascript">
+<script type="text/javascript">
 $(document).ready(function () {
 
   $(\'#' .$numberIT .'\').DataTable({
@@ -303,19 +301,24 @@ $(document).ready(function () {
 
   });
 });
+    
 </script>';
 
         };
 
         //function for returning the duration
-        function getDuration($pi_id_select){
+        function getDuration($iteration){
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
-            $sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$pi_id_select."';";
+            $sql5 = "SELECT * FROM `cadence` WHERE iteration_id='".$iteration."';";
             $result5 = $db->query($sql5);
             if ($result5->num_rows > 0) {
                 $row5 = $result5->fetch_assoc();
                 $duration = $row5["duration"];
+            } elseif(substr($iteration, -1) == 6){
+                $duration = 5;
+            } else {
+                $duration = 10;
             }
             return $duration;
         };
@@ -495,6 +498,36 @@ $(document).ready(function () {
              if($final_total > 0){
                 echo "<td style='background-color:lightgrey; font-weight:bold;'>Final Total of ".$parent_name." in ".$pi_id."</td><td style='background-color:lightgrey; font-weight:bold;'>".$final_total."</td></table>";
              }
-        };
+            };
 
-?>
+            ?>
+
+            <script type="text/javascript">
+
+             function autoForm() {
+                document.getElementById('maincap').submit();
+              }
+      
+              function autoLoad() {
+                var velocity = $("input[name='velocity[]']")
+                    .map(function(){return $(this).val();}).get();
+                var daysoff = $("input[name='daysoff[]']")
+                    .map(function(){return $(this).val();}).get();
+                var rownum = $("input[name='rownum[]']")
+                    .map(function(){return $(this).val();}).get();
+      
+                var overhead = "<?php echo $overhead_percentage ?>";
+                var duration = "<?php echo $duration ?>";
+                var value = "<?php echo $valueForJS ?>";
+                var totalcap_old = "<?php echo $totalcapacity ?>";
+                var icap_old = "<?php echo $icapacity ?>";
+                var icap = 0;
+            </script>
+
+            <?php
+                
+            ?>
+             
+        
+
+
