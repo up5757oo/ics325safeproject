@@ -97,6 +97,9 @@ form for submitting data that will be prepopulated with data from the variables
           </td>
 
 </td></tr>
+
+<div style="float: left; text-align: center; font-size: 12px;">
+
       <tr>
         <td>Agile Release Train:</td>
         <td>
@@ -413,12 +416,26 @@ form for submitting data that will be prepopulated with data from the variables
             $duration = getDuration($iteration);
             echo'<table width="100%">
             <tr>
+              <td width="50%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+              &nbsp;&nbsp;Agile Release Train: </td><td>'.$_COOKIE['artCookie'].'</td>
+              <td id="filler" rowspan="6">
+                <div id="capacity-calc-bignum" name="icap<?php echo $sequence ?>"><?php echo $icapacity ?></div>
+                Total Capacity for this Iteration
+              </td>
+            </tr>
+            <tr>
               <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-              &nbsp;&nbsp;Agile Release Train: </td><td>'.$_COOKIE['artCookie'].'</td></tr>
+              &nbsp;&nbsp;Agile Team ID: </td><td>'.$selected_team.'</td>
+            </tr>
+            <tr>
               <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-              &nbsp;&nbsp;Agile Team ID: </td><td>'.$selected_team.'</td></tr>
-              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-              &nbsp;&nbsp;Program Increment (PI): </td><td>'.$program_increment.'</td></tr>
+              &nbsp;&nbsp;Program Increment (PI): </td><td>'.$program_increment.'</td>
+            </tr>
+
+
+
+
+
               ';
 
            echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
@@ -456,15 +473,19 @@ form for submitting data that will be prepopulated with data from the variables
             }
 
              ?>
+            
+            <!--
             <tr>
             <td></td>
             <td>
-            <div style="float: left; text-align: center; font-size: 12px;">
+            <div style="float: right; text-align: center; font-size: 12px;">
               <div id="capacity-calc-bignum" name="icap<?php echo $sequence ?>"><?php echo $icapacity ?></div>
               Total Capacity for this Iteration
             </div>
           </td>
         </tr>
+
+        -->
         <tr>
           <td colspan="3">
 
@@ -526,7 +547,7 @@ form for submitting data that will be prepopulated with data from the variables
                   $storypts = $teamcapacity[$rownum];
                 }else{
                   $storypts = round(($duration-0)*((100-$overhead_percentage)/100)*($row2["value"]/100));
-                } 
+                }
                 $valueForJS = $row2["value"];
                 if (isset($daysoff[$rownum]) && !isset($_POST['restore'.$sequence])  && isset($_POST['submit0'])){
                   $doff = $daysoff[$rownum];
@@ -568,7 +589,7 @@ form for submitting data that will be prepopulated with data from the variables
 
       echo '</table>';
       echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-      <input type="reset" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
+      <input type="submit" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
 
 
       </form>
