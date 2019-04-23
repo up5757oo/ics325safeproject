@@ -441,39 +441,6 @@ form for submitting data that will be prepopulated with data from the variables
             $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
             $db->set_charset("utf8");
             $duration = getDuration($iteration);
-            echo'<table width="100%">
-            <tr>
-              <td width="50%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-              &nbsp;&nbsp;Agile Release Train: </td><td>'.$_COOKIE['artCookie'].'</td>
-              <td id="filler" rowspan="6">
-                <div id="capacity-calc-bignum" name="icap<?php echo $sequence ?>"><?php echo $icapacity ?></div>
-                Total Capacity for this Iteration
-              </td>
-            </tr>
-            <tr>
-              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-              &nbsp;&nbsp;Agile Team ID: </td><td>'.$selected_team.'</td>
-            </tr>
-            <tr>
-              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-              &nbsp;&nbsp;Program Increment (PI): </td><td>'.$program_increment.'</td>
-            </tr>
-
-
-
-
-
-              ';
-
-           echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-           &nbsp;&nbsp;Iteration (I): &nbsp;</td><td>'.$iteration.'</td></tr>';
-           echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-           &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td>'.$duration.'</td></tr>';
-           echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-           &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td>'.$overhead_percentage.'%</td></tr>';
-            //echo "&nbsp;".$program_increment."<br/>";
-
-            echo '<td width="50%"  style="font-weight: bold;">';
             $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
             $result = $db->query($sql);
 
@@ -498,6 +465,35 @@ form for submitting data that will be prepopulated with data from the variables
                 $totalcapacity = $default_total*6;
               }
             }
+            echo'<table width="100%">
+            <tr>
+              <td width="50%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+              &nbsp;&nbsp;Agile Release Train: </td><td>'.$_COOKIE['artCookie'].'</td>
+              <td id="filler" rowspan="6">
+                <div id="capacity-calc-bignum" name="icap'.$sequence.'">'.$icapacity.'</div>
+                Total Capacity for this Iteration
+              </td>
+            </tr>
+            <tr>
+              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+              &nbsp;&nbsp;Agile Team ID: </td><td>'.$selected_team.'</td>
+            </tr>
+            <tr>
+              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+              &nbsp;&nbsp;Program Increment (PI): </td><td>'.$program_increment.'</td>
+            </tr>
+              ';
+
+           echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+           &nbsp;&nbsp;Iteration (I): &nbsp;</td><td>'.$iteration.'</td></tr>';
+           echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+           &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td>'.$duration.'</td></tr>';
+           echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+           &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td>'.$overhead_percentage.'%</td></tr>';
+            //echo "&nbsp;".$program_increment."<br/>";
+
+            echo '<td width="50%"  style="font-weight: bold;">';
+
 
              ?>
             
