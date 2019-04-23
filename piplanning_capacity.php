@@ -465,31 +465,32 @@ form for submitting data that will be prepopulated with data from the variables
                 $totalcapacity = $default_total*6;
               }
             }
-            echo'<table width="100%">
-            <tr>
-              <td width="50%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+            echo'<table width="100%">';
+            /*echo '<tr>
+              <td width="50%" class="cap-data">
               &nbsp;&nbsp;Agile Release Train: </td><td>'.$_COOKIE['artCookie'].'</td>
-              <td id="filler" rowspan="6">
-                <div id="capacity-calc-bignum" name="icap'.$sequence.'">'.$icapacity.'</div>
-                Total Capacity for this Iteration
-              </td>
+
             </tr>
             <tr>
-              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+              <td width="25%" class="cap-ata">
               &nbsp;&nbsp;Agile Team ID: </td><td>'.$selected_team.'</td>
             </tr>
             <tr>
-              <td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+              <td width="25%" class="cap-data">
               &nbsp;&nbsp;Program Increment (PI): </td><td>'.$program_increment.'</td>
             </tr>
-              ';
+              ';*/
 
            echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-           &nbsp;&nbsp;Iteration (I): &nbsp;</td><td>'.$iteration.'</td></tr>';
+           &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$iteration.'</td>';
+           echo '<td id="filler" rowspan="3">
+           <p style="vertical-align: top; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration '.$iteration.' <br/>of team id '.$selected_team.'</p>
+           <div id="capacity-calc-bignum" name="icap'.$sequence.'">'.$icapacity.'</div>
+           </td></tr>';
            echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-           &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td>'.$duration.'</td></tr>';
+           &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$duration.'</td></tr>';
            echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
-           &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td>'.$overhead_percentage.'%</td></tr>';
+           &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$overhead_percentage.'%</td></tr>';
             //echo "&nbsp;".$program_increment."<br/>";
 
             echo '<td width="50%"  style="font-weight: bold;">';
