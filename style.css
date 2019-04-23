@@ -21,14 +21,6 @@ a:hover {
   color: #179b77;
 }
 
-.cap-data{
-  vertical-align: top; 
-  font-weight: bold; 
-  color: #01B0F1; 
-  line-height: 130%; 
-  font-size: 18px;
-}
-
 .form {
   background: rgba(19, 35, 47, 0.9);
   padding: 40px;
