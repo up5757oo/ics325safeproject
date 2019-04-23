@@ -482,6 +482,7 @@ function getTeams(art_select){
 
 
           function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
+            getTotalCapacity($program_increment, $selected_team, $sequence);
             ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
             $current_sequence = 'current-sequence'.$sequence;
             if (isset($_POST[$current_sequence])) {
@@ -690,14 +691,6 @@ function getTeams(art_select){
       ///////////////////////////Funtion End/////////////////////////////////////////////////////////
         };
 ?>
-      <div id="capacity-footnote">
-        Note 1: Closed Iterations will NOT be shown.  The capacity cannot be changed for such iterations.  Show only the active iterations.<br/>
-        Note 2: This page can be reached in two ways:
-        <ul>
-          <li>Capacity > Calculate</li>
-          <li>Capacity > Summary > By clicking on one of the numbers</li>
-        </ul>
-      </div>
 
       </td>
       </tr>
@@ -734,14 +727,14 @@ function getTeams(art_select){
           return $team_id;
       }
 
-      function getTotalCapacity($program_increment, $selected_team){
+      function getTotalCapacity($program_increment, $selected_team, $sequence){
      
         $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
         $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            if (isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+            if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
               $icapacity = array_sum($teamcapacity);
               $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
             }else{
@@ -750,7 +743,7 @@ function getTeams(art_select){
             }
         } else {
           
-          if (!isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+          if (!isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
             $icapacity = array_sum($teamcapacity);
             $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
           }else{
