@@ -33,14 +33,7 @@
         } return $base_url;
     };
 
-    //removed time check
-    if ($result = $db->query("SELECT DISTINCT parent_name, team_name FROM trains_and_teams where type = 'AT' ORDER BY parent_name, team_name")) {
-        $rows = array();
-        while($row = $result->fetch_array()) {
-            $rows[] = $row;
-        }
-        file_put_contents('dataFiles/at_cache.json', json_encode($rows));
-    };
+
 function setArtCookie(){
     //this function will set a cookie and return the value so it can be applied to a variable
     if( !isset($_COOKIE['artCookie'])){
