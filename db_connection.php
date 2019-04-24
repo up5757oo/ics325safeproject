@@ -22,17 +22,25 @@
     };//database connect check
 
     //checks the timestamp is over 24 hours old for the at cache file before proceeding
-    if (filemtime('dataFiles/url_cache.json') < time()-$day) {
-        //places the art data into the cache file
+    function getBaseURL() {
+        $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+        $db->set_charset("utf8");
         if ($result = $db->query("SELECT value FROM preferences WHERE name='BASE_URL'")) {
-            $rows = array();
+            $base_url = '';
             while($row = $result->fetch_array()) {
-                $rows[] = $row;
+                $base_url = $row['value'];
             }
-            file_put_contents('dataFiles/url_cache.json', json_encode($rows));
-        }
-    };//ends url json update
+        } return $base_url;
+    };
 
+    //removed time check
+    if ($result = $db->query("SELECT DISTINCT parent_name, team_name FROM trains_and_teams where type = 'AT' ORDER BY parent_name, team_name")) {
+        $rows = array();
+        while($row = $result->fetch_array()) {
+            $rows[] = $row;
+        }
+        file_put_contents('dataFiles/at_cache.json', json_encode($rows));
+    };
 function setArtCookie(){
     //this function will set a cookie and return the value so it can be applied to a variable
     if( !isset($_COOKIE['artCookie'])){
