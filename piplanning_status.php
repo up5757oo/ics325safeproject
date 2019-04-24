@@ -16,14 +16,10 @@
   //pulls in db_connection.php where the Bears php functions are stored
   require_once("./db_connection.php");
 
-  //pull BASE_URL from json file generated within db_connection.php
-  $url_file = file_get_contents("dataFiles/url_cache.json");
-  $url_json = json_decode($url_file, true);
-  $x=count($url_json);
-  for($i = 0; $i < $x; $i++){
-    $base_url_out = $url_json[$i]['value'];
-  }
-  setcookie("urlCookie", $base_url_out);
+  //pull BASE_URL from function generated within db_connection.php
+
+    $base_url_out = getBaseURL() ;
+    setcookie("urlCookie", $base_url_out);
   
   //initializes remaining variables
   $pi_id="";
@@ -46,11 +42,11 @@
   //capturing the pi id cookie to use for the array and build the menu list
   if(isset($_COOKIE['piCookie'])){
     $pi_id = $_COOKIE['piCookie'];
-    $pi_id_menu = buildPi_idMenu($pi_id);
+    $pi_id_menu = buildPi_idMenu($pi_id, false);
   } else {
     $pi_id=$pi_id_select;
     setcookie("piCookie", $pi_id_select);
-    $pi_id_menu = buildPi_idMenu($pi_id);
+    $pi_id_menu = buildPi_idMenu($pi_id, false);
   };
   
   //Sets an array of the program increment values
