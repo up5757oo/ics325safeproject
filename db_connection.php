@@ -102,12 +102,12 @@ function piSelectNow(){
 };
 
 //function for build PI table
-function buildPi_idMenu($pi_id_select, $include_past){
+function buildPi_idMenu($pi_id_select, $exclude_past){
     //initializes variables
     $pi_id_menu='';
     $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
     $db->set_charset("utf8");
-    if($include_past){
+    if($exclude_past){
         $sql = "SELECT DISTINCT PI_id FROM cadence where start_date >= NOW() ORDER BY start_date";
     } else{
         $sql = "SELECT DISTINCT PI_id FROM cadence ORDER BY start_date";
@@ -403,20 +403,7 @@ function buildTeamMenu(){
                   }
                 }
                 echo'<table width="100%">';
-                /*echo '<tr>
-                  <td width="50%" class="cap-data">
-                  &nbsp;&nbsp;Agile Release Train: </td><td>'.$_COOKIE['artCookie'].'</td>
-    
-                </tr>
-                <tr>
-                  <td width="25%" class="cap-ata">
-                  &nbsp;&nbsp;Agile Team ID: </td><td>'.$selected_team.'</td>
-                </tr>
-                <tr>
-                  <td width="25%" class="cap-data">
-                  &nbsp;&nbsp;Program Increment (PI): </td><td>'.$program_increment.'</td>
-                </tr>
-                  ';*/
+
     
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$iteration.'</td>';
@@ -533,7 +520,7 @@ function buildTeamMenu(){
                       </tr>";
                       $rownum++;
     
-                      echo "vel is: " .$vel . ", days off: " . $doff .".";
+                      //echo "vel is: " .$vel . ", days off: " . $doff .".";
                       // submit the values to correlating tables to TEST
                     
                   }
