@@ -21,29 +21,8 @@
      exit();
     };//database connect check
 
-    //checks the timestamp is over 24 hours old for the art cache file before proceeding
-    if (filemtime('dataFiles/art_cache.json') < time()-$day) {
-        //places the art data into the cache file
-        if ($result = $db->query("SELECT DISTINCT parent_name FROM trains_and_teams where type = 'AT' ORDER BY parent_name")) {
-            $rows = array();
-            while($row = $result->fetch_array()) {
-                $rows[] = $row;
-            }
-            file_put_contents('dataFiles/art_cache.json', json_encode($rows));
-        }
-    };//ends art json update
 
-    //checks the timestamp is over 24 hours old for the at cache file before proceeding
-    if (filemtime('dataFiles/at_cache.json') < time()-$day) {
-        //places the art data into the cache file
-        if ($result = $db->query("SELECT DISTINCT parent_name, team_name FROM trains_and_teams where type = 'AT' ORDER BY parent_name, team_name")) {
-            $rows = array();
-            while($row = $result->fetch_array()) {
-                $rows[] = $row;
-            }
-            file_put_contents('dataFiles/at_cache.json', json_encode($rows));
-        }
-    };//ends at cache update
+
 
     //checks the timestamp is over 24 hours old for the at cache file before proceeding
     if (filemtime('dataFiles/url_cache.json') < time()-$day) {
@@ -89,20 +68,22 @@ function setArtCookie(){
 function buildArtMenu($art_select){
     //initializes the art variable
     $art="";
-    //uses json file to build ART select menu. Updates selected default with the Cookie value
-    $art_file = file_get_contents("dataFiles/art_cache.json");
-    $art_json = json_decode($art_file, true);
-    $x=count($art_json);
-    for($i = 0; $i < $x; $i++){
-        $art_item = $art_json[$i]['parent_name'];
-        //checks if the ART should selected
-        if($art_item===$art_select){
-            $art = $art.'<option value="'.$art_item.'" selected>'.$art_item.'</option>';
-        } else{
-            $art = $art.'<option value="'.$art_item.'">'.$art_item.'</option>';
+    $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+        $db->set_charset("utf8");
+    if ($result = $db->query("SELECT DISTINCT parent_name FROM trains_and_teams where type = 'AT' ORDER BY parent_name")) {
+        $rows = array();
+        while($row = $result->fetch_array()) {
+            $rows[] = $row;
+            $art_item = $row['parent_name'];
+            //checks if the ART should selected
+            if($art_item===$art_select){
+                $art = $art.'<option value="'.$art_item.'" selected>'.$art_item.'</option>';
+            } else{
+                $art = $art.'<option value="'.$art_item.'">'.$art_item.'</option>';
+            }
         }
+        return $art;
     }
-    return $art;
 };
 
 //finds the PI within today's date
