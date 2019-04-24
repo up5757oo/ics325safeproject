@@ -20,17 +20,6 @@
      printf("Connect failed: %s\n", $mysqli->connect_error);
      exit();
     };//database connect check
-    //checks the timestamp is over 24 hours old for the pi id cache file before proceeding
-    if (filemtime('dataFiles/pi_id_cache.json') < time()-$day) {
-        //places the pi_id data into the cache file
-        if ($result = $db->query("SELECT DISTINCT PI_id FROM cadence ORDER BY start_date")) {
-            $rows = array();
-            while($row = $result->fetch_array()) {
-                $rows[] = $row;
-            }
-            file_put_contents('dataFiles/pi_id_cache.json', json_encode($rows));
-        }
-    };//ends pi id json update
 
     //checks the timestamp is over 24 hours old for the art cache file before proceeding
     if (filemtime('dataFiles/art_cache.json') < time()-$day) {
@@ -134,16 +123,21 @@ function piSelectNow(){
 //function for build PI table
 function buildPi_idMenu($pi_id_select){
     //initializes variables
-    $pi_id_file = file_get_contents("dataFiles/pi_id_cache.json");
-    $pi_id_json = json_decode($pi_id_file, true);
-    $x=count($pi_id_json);
     $pi_id_menu='';
-    for($i = 0; $i < $x; $i++){
-        $pi_id_item = $pi_id_json[$i]['PI_id'];
-        if($pi_id_item===$pi_id_select){
-            $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'" selected>'.$pi_id_item.'</option>';
-        } else{
+    $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+    $db->set_charset("utf8");
+    $sql = "SELECT DISTINCT PI_id FROM cadence ORDER BY start_date";
+    $result = $db->query($sql);
+    if ($result->num_rows > 0) {
+
+        while ($row = $result->fetch_assoc()) {
+            $pi_id_item = $row["PI_id"];
+            if($pi_id_item===$pi_id_select){
+                $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'" selected>'.$pi_id_item.'</option>';
+          }else{
             $pi_id_menu = $pi_id_menu.'<option value="'.$pi_id_item.'">'.$pi_id_item.'</option>';
+          }
+
         }
     }
     return $pi_id_menu;
@@ -332,8 +326,8 @@ function buildTeamMenu(){
 
             //function for returning the default team name for a given ART
       function getDefaultTeamName($art_name){
-        //$db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
-        //$db->set_charset("utf8");
+        $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+        $db->set_charset("utf8");
         $sql = "SELECT DISTINCT team_name FROM trains_and_teams where type = 'AT'  and parent_name = '".$art_name."' ORDER BY parent_name LIMIT 1;";
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
@@ -344,9 +338,9 @@ function buildTeamMenu(){
     };
     //function for returning the team id for a given team name
     function getTeamID($team){
-        //$db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
-        //$db->set_charset("utf8");
-        $team_id= '';
+        $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+        $db->set_charset("utf8");
+  $team_id= '';
         $sql = "SELECT DISTINCT team_id FROM trains_and_teams where team_name = '".$team."' ORDER BY parent_name LIMIT 1;";
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
