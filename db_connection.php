@@ -568,7 +568,7 @@ function buildTeamMenu(){
     
           });
     
-          function autoForm() {
+          function autoForm'.$sequence.'() {
             document.getElementById(\'maincap'.$sequence.'\').submit();
           }
     
