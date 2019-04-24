@@ -65,4 +65,44 @@
     }
     }
   }
+
+  
+        //function for using art data to create a json file for Capacity data
+        function buildCapacityJSON($art,$team,$pi_id){
+          $file = $pi_id."_".$art."_".$team."_cache.json";
+          fopen("dataFiles/".urlencode($file), "w+");
+          $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+          $db->set_charset("utf8");
+           if ($result = $db->query("SELECT art_name, team_name, PI_id, iteration_id, last_name, first_name, role, value as velocity, '0' as Days_Off, ((duration * .8) * (value/100)) as Story_points FROM `membership`,  employees, preferences, cadence where
+              (membership.polarion_id = employees.number)
+              and role = 'SM'
+              and name = 'SCRUM_MASTER_ALLOCATION'
+              and art_name = '".$art."'
+              and team_name = '".$team."'
+              and PI_id = '".$pi_id."'
+              union
+              SELECT art_name, team_name, PI_id, iteration_id, last_name, first_name, role, value as velocity, '0' as Days_Off, ((duration * .8) * (value/100))  as Story_points FROM `membership`,  employees, preferences, cadence where
+              (membership.polarion_id = employees.number)
+              and role = 'PO'
+              and name = 'PRODUCT_OWNER_ALLOCATION'
+              and art_name = '".$art."'
+              and team_name = '".$team."'
+              and PI_id = '".$pi_id."'
+              union
+              SELECT art_name, team_name, PI_id, iteration_id, last_name, first_name, role, value as velocity, '0' as Days_Off, ((duration * .8) * (value/100)) as Story_points FROM `membership`,  employees, preferences, cadence where
+              (membership.polarion_id = employees.number)
+              and role = 'DEVELOPER'
+              and name = 'AGILE_TEAM_MEMBER_ALLOCATION'
+              and art_name = '".$art."'
+              and team_name = '".$team."'
+              and PI_id = '".$pi_id."'
+              order by art_name, pi_id, iteration_id, velocity desc, role;")) {
+                  $rows = array();
+                  while($row = $result->fetch_array()) {
+                      $rows[] = $row;
+                  }
+                  file_put_contents("dataFiles/".urlencode($file), json_encode($rows));
+              }
+              
+          };   
   ?>
