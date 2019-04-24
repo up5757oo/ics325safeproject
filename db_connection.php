@@ -591,15 +591,18 @@ function buildTeamMenu(){
                 var storypts'.$sequence.'_'.$rownum.' = Math.round( ( duration'.$sequence.' - daysoff'.$sequence.'[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity'.$sequence.'[i] / 100 ) );
                 $("input[name=\'storypoints_'.$sequence.'[]\']").eq(i).val(storypts'.$sequence.'_'.$rownum.');
                 icap'.$sequence.' += storypts'.$sequence.'_'.$rownum.';
+
             }
     
             document.getElementsByName("icap'.$sequence.'").innerHTML = icap'.$sequence.';
+            $( "icap'.$sequence.'" ).replaceWith( icap'.$sequence.' );
               var capdiff'.$sequence.' = icap'.$sequence.' - icap'.$sequence.'_old;
               var tcap = parseInt(capdiff'.$sequence.') + parseInt(totalcap_old);
+
               document.getElementsByName("totalcap")[0].innerHTML = tcap;
               console.log("icap_old: " +  icap'.$sequence.'_old);
               console.log("icap: " +  icap'.$sequence.');
-              console.log("storypoints: " + storypts'.$sequence.');
+              console.log("storypoints'.$sequence.'_'.$rownum.': " + storypts'.$sequence.'_'.$rownum.');
     
           }
     
