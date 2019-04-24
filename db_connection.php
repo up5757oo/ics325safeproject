@@ -21,9 +21,6 @@
      exit();
     };//database connect check
 
-
-
-
     //checks the timestamp is over 24 hours old for the at cache file before proceeding
     if (filemtime('dataFiles/url_cache.json') < time()-$day) {
         //places the art data into the cache file
@@ -62,6 +59,7 @@ function setArtCookie(){
                 }//end while
             }//end preference search if
         } return $artCookie;
+        $art_default_results->close();
     } //end cookie check
 };
 
@@ -83,6 +81,7 @@ function buildArtMenu($art_select){
             }
         }
         return $art;
+        $results->close();
     }
 };
 
@@ -99,6 +98,7 @@ function piSelectNow(){
         }//end while
     }//end if
     return $pi_id_select;
+    $pi_id_select_results->close();
 };
 
 //function for build PI table
@@ -122,6 +122,7 @@ function buildPi_idMenu($pi_id_select){
         }
     }
     return $pi_id_menu;
+    $result->close();
 };
 
 //function for building the Team Menu
@@ -146,6 +147,7 @@ function buildTeamMenu(){
                 }//end while
             }//end if
         return $at_menu;
+        $at_menu_result->close();
     };
 
     
@@ -164,6 +166,7 @@ function buildTeamMenu(){
                 $duration = 10;
             }
             return $duration;
+            $result5->close();
         };
 
         //Function for returning the overhead percentage
@@ -177,6 +180,7 @@ function buildTeamMenu(){
                 $overhead_percentage = $row6["value"];
             }
             return $overhead_percentage;
+            $result6->close();
         };
 
         function buildSummaryTable($header_name,$col1,$col2){
@@ -224,6 +228,7 @@ function buildTeamMenu(){
                  echo '</tr>';
              }
            }
+           $result->close();
 
            $sql2 = "SELECT DISTINCT cap.program_increment, sum(cap.total) as final_total
            FROM capacity cap, trains_and_teams art
@@ -241,6 +246,7 @@ function buildTeamMenu(){
              if($final_total > 0){
                 echo "<td style='background-color:lightgrey; font-weight:bold;'>Final Total of ".$pi_id."</td><td style='background-color:lightgrey; font-weight:bold;'>".$final_total."</td></table>";
              }
+             $result2->close();
 ;
 
            //Returns first alphabetical ART
@@ -257,6 +263,7 @@ function buildTeamMenu(){
                  }
              }
            }
+           $topArtValue->close();
         };
 
         

@@ -450,6 +450,7 @@ form for submitting data that will be prepopulated with data from the variables
 
 
   <?php
+  $db->close();
       
 ?>
 <?php include("./footer.php"); ?>
