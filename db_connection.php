@@ -390,7 +390,7 @@ function buildTeamMenu(){
                 console.log("ART Cookie: "+getCookie('artCookie'));
                 console.log("Team Cookie: " + getCookie('teamSelectCookie'));*/
                 $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-                $db->set_charset("utf8");
+                //$db->set_charset("utf8");
                 $duration = getDuration($iteration);
                 $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
                 $result = $db->query($sql);
@@ -568,7 +568,7 @@ function buildTeamMenu(){
     
           echo '</table>';
           echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-          <input type="reset" id="capacity-button-blue" name="restore'.$sequence.'" value="Restore Defaults">
+          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
     
     
           </form>
