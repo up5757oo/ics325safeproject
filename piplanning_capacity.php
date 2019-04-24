@@ -52,12 +52,12 @@ $program_increment_select = piSelectNow();
 //capturing the pi id cookie to use for the array and build the menu list
 if(isset($_COOKIE['piCookie'])){
   $program_increment = $_COOKIE['piCookie'];
-  $program_increment_menu = buildPi_idMenu($program_increment);
+  $program_increment_menu = buildPi_idMenu($program_increment, true);
 } else {
   //if a cookie is not found it uses the current PI for the select menu and adds it to the cookie
   $program_increment=$program_increment_select;
   setcookie('piCookie', $program_increment_select);
-  $program_increment_menu = buildPi_idMenu($program_increment);
+  $program_increment_menu = buildPi_idMenu($program_increment, true);
 };
 //assigning duration with a default value
 $duration = 10;

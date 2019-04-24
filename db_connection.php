@@ -102,12 +102,16 @@ function piSelectNow(){
 };
 
 //function for build PI table
-function buildPi_idMenu($pi_id_select){
+function buildPi_idMenu($pi_id_select, $include_past){
     //initializes variables
     $pi_id_menu='';
     $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
     $db->set_charset("utf8");
-    $sql = "SELECT DISTINCT PI_id FROM cadence ORDER BY start_date";
+    if($include_past){
+        $sql = "SELECT DISTINCT PI_id FROM cadence where start_date >= NOW() ORDER BY start_date";
+    } else{
+        $sql = "SELECT DISTINCT PI_id FROM cadence ORDER BY start_date";
+    }
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
 

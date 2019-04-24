@@ -27,11 +27,11 @@ $pi_id_select = piSelectNow();
 //capturing the pi id cookie to use for the array and BUILD the menu list
 if(isset($_COOKIE['piCookie'])){
   $pi_id = $_COOKIE['piCookie'];
-  $pi_id_menu = buildPi_idMenu($pi_id);
+  $pi_id_menu = buildPi_idMenu($pi_id, false);
 } else {
   $pi_id=$pi_id_select;
   setcookie("piCookie", $pi_id_select);
-  $pi_id_menu = buildPi_idMenu($pi_id);
+  $pi_id_menu = buildPi_idMenu($pi_id, false);
 };
 
 ?>
