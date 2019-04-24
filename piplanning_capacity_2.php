@@ -682,7 +682,9 @@ function getTeams(art_select){
         }
 
         document.getElementsByName("icap")[0].innerHTML = icap;
-          var capdiff = icap - icap_old;
+          //removed icap from capdiff and totaling correct
+          //var capdiff = icap - icap_old;
+          var capdiff = icap_old;
           var tcap = parseInt(capdiff) + parseInt(totalcap_old);
           document.getElementsByName("totalcap")[0].innerHTML = tcap;
       }
