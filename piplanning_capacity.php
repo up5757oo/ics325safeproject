@@ -206,7 +206,7 @@ form for submitting data that will be prepopulated with data from the variables
   console.log("Team Cookie: " + getCookie('teamSelectCookie'));
   </script>
   <?php
- 
+
   date_default_timezone_set('America/Chicago');
   echo '<div class="right-content" >
     <div class="container">
@@ -219,7 +219,7 @@ form for submitting data that will be prepopulated with data from the variables
   for($i = 0; $i < $count_iteration; $i++){
     creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
   };
-  
+
   /*//updated sql so select values matched availabe column names
   $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration , sequence
   FROM `cadence`
@@ -398,7 +398,7 @@ form for submitting data that will be prepopulated with data from the variables
       $overhead_percentage = $row6["value"];
   }
 
-  
+
   if (isset($_POST['submit0'])) {
     $iterationcapacity = 0;
     for ($x=0; $x < count($_POST['rownum']); $x++){
@@ -451,6 +451,6 @@ form for submitting data that will be prepopulated with data from the variables
 
   <?php
   $db->close();
-      
+
 ?>
 <?php include("./footer.php"); ?>

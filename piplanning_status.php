@@ -6,6 +6,14 @@
 
   include("./nav.php");
   global $db;
+      //create json file for Javascript
+      if ($result = $db->query("SELECT DISTINCT parent_name, team_name FROM trains_and_teams where type = 'AT' ORDER BY parent_name, team_name")) {
+        $rows = array();
+        while($row = $result->fetch_array()) {
+            $rows[] = $row;
+        }
+        file_put_contents('dataFiles/at_cache.json', json_encode($rows));
+    };
   ?>
   <h3> Status </h3>
 
