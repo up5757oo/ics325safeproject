@@ -373,6 +373,8 @@ function buildTeamMenu(){
             function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
                 ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
                 $default_total = 56;
+                $rownum='';
+                $valueForJS='';
                 /*console.log("PI Cookie: " + getCookie('piCookie'));
                 console.log("ART Cookie: "+getCookie('artCookie'));
                 console.log("Team Cookie: " + getCookie('teamSelectCookie'));*/
