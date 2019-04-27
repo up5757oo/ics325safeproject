@@ -1,0 +1,1437 @@
+
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles/main_style.css" type="text/css">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <!-- jQuery library -->
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="styles/custom_nav.css" type="text/css">
+        <title>SAFe@ICS325 Explorer</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="./mainStyleSheet.css">
+    </head>
+
+<body class="body_background">
+<div id="wrap">
+    <div id="nav">
+        <ul>
+            <a href="index.php">
+              <li class="horozontal-li-logo">
+              <img src ="./images/main_logo.png">
+              <br/>SAFe Explorer</li>
+            </a>
+
+            <a href="trains_list.php">
+              <li >
+              <img src="./images/trains_and_teams.png">
+              <br/>Trains</li>
+            </a>
+
+            <a href="org_list.php">
+              <li >
+                <img src="./images/org_structure.png">
+                <br/>Org</li>
+            </a>
+
+            <a href="piplanning_active_pi.php">
+              <li class="current-page">
+              <img src="./images/pi_planning.png">
+              <br/>PI & I </li>
+            </a>
+
+            <a href="training_summary.php">
+              <li >
+              <img src="./images/training.png">
+              <br/>Training</li>
+            </a>
+
+            <a href="reports_summary.php">
+              <li >
+                <img src="./images/reports.png">
+                <br/>Reports</li>
+            </a>
+
+      <a href="./login-system/index.php"><li ><img src="./images/login.png"><br/>Login</li></a>
+
+
+        <a href="help_faqs.php">
+          <li >
+            <img src="./images/help.png">
+            <br/>Help</li>
+        </a>
+
+
+
+		  <li class="horozontal-li-search" >
+			   <div>
+				    <input type="text" id="search_term" placeholder=" " title="Type in a name">
+			   </div><br/>
+		  </li>
+
+      </ul>
+      <br />
+    </div>
+
+
+    <table style="width:1250px">
+      <tr>
+        
+        <td style="width: 120px;" valign="top">
+        <div id="menu-left">
+  <a href="piplanning_active_pi.php">
+  	<div >
+  	<img src="./images/piplanning_active_pi.png">
+  	<br/>Active PI<br/></div>
+  </a>
+
+  <a href = "piplanning_cadence.php">
+  	<div >
+  	<img src="./images/piplanning_cadence.png">
+  	<br/>Cadence<br/></div>
+  </a>
+
+  <a href = "piplanning_status.php">
+    <div >
+    <img src="./images/statusIcon.png">
+    <br/>Status<br/></div>
+  </a>
+
+  <a href = "piplanning_ceremonies.php">
+    <div >
+    <img src="./images/piplanning_ceremonies.png">
+    <br/>Ceremonies<br/></div>
+  </a>
+
+  <a href="piplanning_capacity.php">
+  	<div >
+  	<img src="./images/piplanning_capacity.png">
+  	<br/>Capacity<br/></div>
+  </a>
+
+  <a href = "piplanning_summary.php">
+  	<div >
+  	<img src="./images/piplanning_summary.png">
+  	<br/>Summary<br/></div>
+  </a>
+
+  <a href = "piplanning_trend.php">
+  	<div >
+  	<img src="./images/piplanning_trend.png">
+  	<br/>Trend<br/></div>
+  </a>
+
+  <a href = "piplanning_checklist.php">
+  	<div >
+  	<img src="./images/piplanning_checklist.png">
+  	<br/>Checklist<br/></div>
+  </a>
+
+</div>
+        </td>
+        <td style="width: 1100px;" valign="top">
+        
+
+<script type="text/javascript" src="piplanning_scripts.js"></script>
+<link rel="stylesheet" type="text/css" href="styleCustom.css">
+
+
+ 
+        
+
+
+<!--Copies in Bears custom stylesheet-->
+  <link rel="stylesheet" type="text/css" href="styleCustom.css">
+<!--
+form for submitting data that will be prepopulated with data from the variables
+-->
+<div class="right-content" >
+    <div class="container">
+  <form  method="POST" id="PI_form" name="PI_form">
+    <table id="form_table" class="container">
+    <tr>
+<div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
+              <div id="capacity-calc-bignum" name="totalcap">336</div>
+              <b>Total Capacity for the Program Increment</b>
+            </div>
+          </td>
+
+</td></tr>
+
+<div style="float: left; text-align: center; font-size: 12px;">
+
+      <tr>
+        <td>Agile Release Train:</td>
+        <td>
+          <select id="art" name="art" onchange="
+          //sets art select to selected value
+          var art_select = this.value;
+          //sets the selected value as the cookie
+          document.cookie = escape('artCookie') + '=' + escape(art_select) ;
+          location.reload();
+          ">
+          <option value="">-- Select --</option>
+          <option value="ART-500" selected>ART-500</option><option value="ART-501">ART-501</option><option value="ART-502">ART-502</option><option value="ART-503">ART-503</option><option value="ART-504">ART-504</option><option value="ART-600">ART-600</option><option value="ART-601">ART-601</option><option value="ART-602">ART-602</option>        </select>
+      </td>
+    </tr>
+    <tr>
+    <td>Program Increment (PI):</td>
+    <td>
+      <select id="PI_ID" name="pi_id" onchange="
+      //sets pi_select to selected value
+      var pi_select = this.value;
+      //sets the selected value as the cookie
+      document.cookie = escape('piCookie') + '=' + escape(pi_select) ;
+      location.reload();">
+      <option value="PI-1905" selected>PI-1905</option><option value="PI-1908">PI-1908</option><option value="PI-1911">PI-1911</option><option value="PI-2002">PI-2002</option><option value="PI-2005">PI-2005</option><option value="PI-2008">PI-2008</option><option value="PI-2011">PI-2011</option><option value="PI-2102">PI-2102</option>    </select>
+  </td>
+</tr>
+<tr>
+            <td>Names of Teams:</td>
+            <td><select name="select-team" onchange="
+            //sets team_select to selected value
+            var team_select = this.value;
+            //sets the selected value as the cookie
+            document.cookie = escape('teamSelectCookie') + '=' + escape(team_select);
+            location.reload();" >
+              <option value="AT-abc1" selected>Agile Team 1000 1</option><option value="AT-abc6">Agile Team 1000 6</option>            </select>
+            </td>
+        </tr>
+<tr>
+<td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
+<td><input type="hidden" name="current-team-selected" value="AT-abc1"></td>
+</tr>
+
+</table>
+</form><br>
+
+
+<script>
+
+  //function for capturing the cookie
+  function getCookie(cookieName) {
+    var name = cookieName + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  };
+  console.log("PI Cookie: " + getCookie('piCookie'));
+  console.log("ART Cookie: "+getCookie('artCookie'));
+  console.log("Team Cookie: " + getCookie('teamSelectCookie'));
+  </script>
+  <div class="right-content" >
+    <div class="container">
+
+      <h3 style=" color: #01B0F1; font-weight: bold;">Capacity Calculations for the Agile Team</h3><table width="100%"><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">I-1905-1</td><td id="filler" rowspan="3">
+               <p style="vertical-align: top; text-align:center; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration I-1905-1 <br/>of team id AT-abc1</p>
+               <div id="capacity-calc-bignum" name="icap8">56</div>
+               </td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">10</td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">20%</td></tr><td width="50%"  style="font-weight: bold;">                
+                <!--
+                <tr>
+                <td></td>
+                <td>
+                <div style="float: right; text-align: center; font-size: 12px;">
+                  <div id="capacity-calc-bignum" name="icap8">56</div>
+                  Total Capacity for this Iteration
+                </div>
+              </td>
+            </tr>
+    
+            -->
+            <tr>
+              <td colspan="3">
+    
+            <form method="post" action="#" id="maincap8">
+            <table id="8" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+                 width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+    
+              <thead>
+    
+              <tr id="capacity-table-first-row">
+    
+                  <th id="capacity-table-td">Last Name</th>
+                  <th id="capacity-table-td">First Name</th>
+                  <th id="capacity-table-td">Role</th>
+                  <th id="capacity-table-td">% Velocity Available</th>
+                  <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
+                  <th id="capacity-table-td">Story Points</th>
+    
+              </tr>
+    
+              </thead>
+    
+              <tbody>
+    
+    
+              <tr>              <!-- Eight -->
+                          <td id='capacity-table-td' style='font-weight:500;'>Thielen</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Adam</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>PO</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_8' class='capacity-text-input' type='text' name='velocity_8[]' value='50' onchange='autoLoad8();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_8' class='capacity-text-input' type='text' name='daysoff_8[]' value='0' onchange='autoLoad8();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_8' class='capacity-text-input' type='text' name='storypoints_8[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_8[]' id='autoin3_8' value='0'/>
+                      </tr><tr> <!-- Four -->
+                          <td id='capacity-table-td' style='font-weight:500;'>Cousins</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Kirk</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>SM</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_8' class='capacity-text-input' type='text' name='velocity_8[]' value='50' onchange='autoLoad8();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_8' class='capacity-text-input' type='text' name='daysoff_8[]' value='0' onchange='autoLoad8();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_8' class='capacity-text-input' type='text' name='storypoints_8[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_8[]' id='autoin3_8' value='1'/>
+                      </tr><tr> <!-- One -->
+                          <td id='capacity-table-td' style='font-weight:500;'>Barr</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Anthony</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_8' class='capacity-text-input' type='text' name='velocity_8[]' value='100' onchange='autoLoad8();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_8' class='capacity-text-input' type='text' name='daysoff_8[]' value='0' onchange='autoLoad8();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_8' class='capacity-text-input' type='text' name='storypoints_8[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_8[]' id='autoin3_8' value='2'/>
+                      </tr><tr> <!-- Seven -->
+                          <td id='capacity-table-td' style='font-weight:500;'>Smith</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Harrison</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_8' class='capacity-text-input' type='text' name='velocity_8[]' value='100' onchange='autoLoad8();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_8' class='capacity-text-input' type='text' name='daysoff_8[]' value='0' onchange='autoLoad8();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_8' class='capacity-text-input' type='text' name='storypoints_8[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_8[]' id='autoin3_8' value='3'/>
+                      </tr><tr> <!-- Two -->
+                          <td id='capacity-table-td' style='font-weight:500;'>Beebe</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Chad</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_8' class='capacity-text-input' type='text' name='velocity_8[]' value='100' onchange='autoLoad8();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_8' class='capacity-text-input' type='text' name='daysoff_8[]' value='0' onchange='autoLoad8();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_8' class='capacity-text-input' type='text' name='storypoints_8[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_8[]' id='autoin3_8' value='4'/>
+                      </tr><tr> <!-- Three -->
+                          <td id='capacity-table-td' style='font-weight:500;'>Cooke</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Dalvin</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_8' class='capacity-text-input' type='text' name='velocity_8[]' value='100' onchange='autoLoad8();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_8' class='capacity-text-input' type='text' name='daysoff_8[]' value='0' onchange='autoLoad8();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_8' class='capacity-text-input' type='text' name='storypoints_8[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_8[]' id='autoin3_8' value='5'/>
+                      </tr><tr> <!-- Five -->
+                          <td id='capacity-table-td' style='font-weight:500;'>Diggs</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Stefon</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_8' class='capacity-text-input' type='text' name='velocity_8[]' value='100' onchange='autoLoad8();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_8' class='capacity-text-input' type='text' name='daysoff_8[]' value='0' onchange='autoLoad8();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_8' class='capacity-text-input' type='text' name='storypoints_8[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_8[]' id='autoin3_8' value='6'/>
+                      </tr><tr> <!-- Six -->
+                          <td id='capacity-table-td' style='font-weight:500;'>Elflein</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Pat</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_8' class='capacity-text-input' type='text' name='velocity_8[]' value='100' onchange='autoLoad8();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_8' class='capacity-text-input' type='text' name='daysoff_8[]' value='0' onchange='autoLoad8();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_8' class='capacity-text-input' type='text' name='storypoints_8[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_8[]' id='autoin3_8' value='7'/>
+                      </tr></tbody><tfoot></tfoot></table><input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+    
+    
+          </form>
+    
+    
+          <script type="text/javascript">
+    
+          $(document).ready(function () {
+    
+              $('#8').DataTable({
+                  paging: false,
+                  searching: false,
+                  infoCallback: false
+              });
+    
+          });
+    
+          function autoForm8() {
+            document.getElementById('maincap8').submit();
+          }
+    
+          function autoLoad8() {  //only updates one?
+            var velocity8 = $("input[name='velocity_8[]']")
+                .map(function(){return $('#autoin_8').val();}).get();
+            var daysoff8 = $("input[name='daysoff_8[]']")
+                .map(function(){return $('#autoin2_8').val();}).get();
+            var rownum8 = $("input[name='rownum_8[]']")
+                .map(function(){return $('#autoin3_8').val();}).get();
+    
+            var overhead = "20";
+            var duration8 = "10";
+            var value = "100";
+            var totalcap_old = "336";
+            var icap8_old = "56";
+            var icap8 = 0;
+    
+            for (var i in rownum8) {
+                var storypts8_8 = Math.round( ( duration8 - daysoff8[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity8[i] / 100 ) );
+                $("input[name='storypoints_8[]']").eq(i).val(storypts8_8);
+                icap8 += storypts8_8;
+
+            }
+    
+            document.getElementsByName("icap8").innerHTML = icap8;
+            $( "icap8" ).replaceWith( icap8 );
+              var capdiff8 = icap8 - icap8_old;
+              var tcap = parseInt(capdiff8) + parseInt(totalcap_old);
+
+              document.getElementsByName("totalcap")[0].innerHTML = tcap;
+              console.log("icap_old: " +  icap8_old);
+              console.log("icap: " +  icap8);
+              console.log("storypoints8_8: " + storypts8_8);
+    
+          }
+    
+      </script>
+      <!-- ----------------------------- -->
+      <table width="100%"><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">I-1905-2</td><td id="filler" rowspan="3">
+               <p style="vertical-align: top; text-align:center; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration I-1905-2 <br/>of team id AT-abc1</p>
+               <div id="capacity-calc-bignum" name="icap9">56</div>
+               </td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">10</td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">20%</td></tr><td width="50%"  style="font-weight: bold;">                
+                <!--
+                <tr>
+                <td></td>
+                <td>
+                <div style="float: right; text-align: center; font-size: 12px;">
+                  <div id="capacity-calc-bignum" name="icap9">56</div>
+                  Total Capacity for this Iteration
+                </div>
+              </td>
+            </tr>
+    
+            -->
+            <tr>
+              <td colspan="3">
+    
+            <form method="post" action="#" id="maincap9">
+            <table id="9" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+                 width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+    
+              <thead>
+    
+              <tr id="capacity-table-first-row">
+    
+                  <th id="capacity-table-td">Last Name</th>
+                  <th id="capacity-table-td">First Name</th>
+                  <th id="capacity-table-td">Role</th>
+                  <th id="capacity-table-td">% Velocity Available</th>
+                  <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
+                  <th id="capacity-table-td">Story Points</th>
+    
+              </tr>
+    
+              </thead>
+    
+              <tbody>
+    
+    
+              <tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Thielen</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Adam</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>PO</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_9' class='capacity-text-input' type='text' name='velocity_9[]' value='50' onchange='autoLoad9();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_9' class='capacity-text-input' type='text' name='daysoff_9[]' value='0' onchange='autoLoad9();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_9' class='capacity-text-input' type='text' name='storypoints_9[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_9[]' id='autoin3_9' value='0'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cousins</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Kirk</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>SM</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_9' class='capacity-text-input' type='text' name='velocity_9[]' value='50' onchange='autoLoad9();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_9' class='capacity-text-input' type='text' name='daysoff_9[]' value='0' onchange='autoLoad9();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_9' class='capacity-text-input' type='text' name='storypoints_9[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_9[]' id='autoin3_9' value='1'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Barr</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Anthony</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_9' class='capacity-text-input' type='text' name='velocity_9[]' value='100' onchange='autoLoad9();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_9' class='capacity-text-input' type='text' name='daysoff_9[]' value='0' onchange='autoLoad9();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_9' class='capacity-text-input' type='text' name='storypoints_9[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_9[]' id='autoin3_9' value='2'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Smith</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Harrison</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_9' class='capacity-text-input' type='text' name='velocity_9[]' value='100' onchange='autoLoad9();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_9' class='capacity-text-input' type='text' name='daysoff_9[]' value='0' onchange='autoLoad9();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_9' class='capacity-text-input' type='text' name='storypoints_9[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_9[]' id='autoin3_9' value='3'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Beebe</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Chad</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_9' class='capacity-text-input' type='text' name='velocity_9[]' value='100' onchange='autoLoad9();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_9' class='capacity-text-input' type='text' name='daysoff_9[]' value='0' onchange='autoLoad9();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_9' class='capacity-text-input' type='text' name='storypoints_9[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_9[]' id='autoin3_9' value='4'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cooke</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Dalvin</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_9' class='capacity-text-input' type='text' name='velocity_9[]' value='100' onchange='autoLoad9();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_9' class='capacity-text-input' type='text' name='daysoff_9[]' value='0' onchange='autoLoad9();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_9' class='capacity-text-input' type='text' name='storypoints_9[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_9[]' id='autoin3_9' value='5'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Diggs</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Stefon</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_9' class='capacity-text-input' type='text' name='velocity_9[]' value='100' onchange='autoLoad9();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_9' class='capacity-text-input' type='text' name='daysoff_9[]' value='0' onchange='autoLoad9();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_9' class='capacity-text-input' type='text' name='storypoints_9[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_9[]' id='autoin3_9' value='6'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Elflein</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Pat</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_9' class='capacity-text-input' type='text' name='velocity_9[]' value='100' onchange='autoLoad9();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_9' class='capacity-text-input' type='text' name='daysoff_9[]' value='0' onchange='autoLoad9();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_9' class='capacity-text-input' type='text' name='storypoints_9[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_9[]' id='autoin3_9' value='7'/>
+                      </tr></tbody><tfoot></tfoot></table><input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+    
+    
+          </form>
+    
+    
+          <script type="text/javascript">
+    
+          $(document).ready(function () {
+    
+              $('#9').DataTable({
+                  paging: false,
+                  searching: false,
+                  infoCallback: false
+              });
+    
+          });
+    
+          function autoForm9() {
+            document.getElementById('maincap9').submit();
+          }
+    
+          function autoLoad9() {
+            var velocity9 = $("input[name='velocity_9[]']")
+                .map(function(){return $('#autoin_9').val();}).get();
+            var daysoff9 = $("input[name='daysoff_9[]']")
+                .map(function(){return $('#autoin2_9').val();}).get();
+            var rownum9 = $("input[name='rownum_9[]']")
+                .map(function(){return $('#autoin3_9').val();}).get();
+    
+            var overhead = "20";
+            var duration9 = "10";
+            var value = "100";
+            var totalcap_old = "336";
+            var icap9_old = "56";
+            var icap9 = 0;
+    
+            for (var i in rownum9) {
+                var storypts9_8 = Math.round( ( duration9 - daysoff9[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity9[i] / 100 ) );
+                $("input[name='storypoints_9[]']").eq(i).val(storypts9_8);
+                icap9 += storypts9_8;
+
+            }
+    
+            document.getElementsByName("icap9").innerHTML = icap9;
+            $( "icap9" ).replaceWith( icap9 );
+              var capdiff9 = icap9 - icap9_old;
+              var tcap = parseInt(capdiff9) + parseInt(totalcap_old);
+
+              document.getElementsByName("totalcap")[0].innerHTML = tcap;
+              console.log("icap_old: " +  icap9_old);
+              console.log("icap: " +  icap9);
+              console.log("storypoints9_8: " + storypts9_8);
+    
+          }
+    
+      </script><table width="100%"><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">I-1905-3</td><td id="filler" rowspan="3">
+               <p style="vertical-align: top; text-align:center; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration I-1905-3 <br/>of team id AT-abc1</p>
+               <div id="capacity-calc-bignum" name="icap10">56</div>
+               </td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">10</td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">20%</td></tr><td width="50%"  style="font-weight: bold;">                
+                <!--
+                <tr>
+                <td></td>
+                <td>
+                <div style="float: right; text-align: center; font-size: 12px;">
+                  <div id="capacity-calc-bignum" name="icap10">56</div>
+                  Total Capacity for this Iteration
+                </div>
+              </td>
+            </tr>
+    
+            -->
+            <tr>
+              <td colspan="3">
+    
+            <form method="post" action="#" id="maincap10">
+            <table id="10" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+                 width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+    
+              <thead>
+    
+              <tr id="capacity-table-first-row">
+    
+                  <th id="capacity-table-td">Last Name</th>
+                  <th id="capacity-table-td">First Name</th>
+                  <th id="capacity-table-td">Role</th>
+                  <th id="capacity-table-td">% Velocity Available</th>
+                  <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
+                  <th id="capacity-table-td">Story Points</th>
+    
+              </tr>
+    
+              </thead>
+    
+              <tbody>
+    
+    
+              <tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Thielen</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Adam</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>PO</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_10' class='capacity-text-input' type='text' name='velocity_10[]' value='50' onchange='autoLoad10();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_10' class='capacity-text-input' type='text' name='daysoff_10[]' value='0' onchange='autoLoad10();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_10' class='capacity-text-input' type='text' name='storypoints_10[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_10[]' id='autoin3_10' value='0'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cousins</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Kirk</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>SM</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_10' class='capacity-text-input' type='text' name='velocity_10[]' value='50' onchange='autoLoad10();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_10' class='capacity-text-input' type='text' name='daysoff_10[]' value='0' onchange='autoLoad10();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_10' class='capacity-text-input' type='text' name='storypoints_10[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_10[]' id='autoin3_10' value='1'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Barr</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Anthony</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_10' class='capacity-text-input' type='text' name='velocity_10[]' value='100' onchange='autoLoad10();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_10' class='capacity-text-input' type='text' name='daysoff_10[]' value='0' onchange='autoLoad10();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_10' class='capacity-text-input' type='text' name='storypoints_10[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_10[]' id='autoin3_10' value='2'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Smith</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Harrison</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_10' class='capacity-text-input' type='text' name='velocity_10[]' value='100' onchange='autoLoad10();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_10' class='capacity-text-input' type='text' name='daysoff_10[]' value='0' onchange='autoLoad10();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_10' class='capacity-text-input' type='text' name='storypoints_10[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_10[]' id='autoin3_10' value='3'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Beebe</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Chad</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_10' class='capacity-text-input' type='text' name='velocity_10[]' value='100' onchange='autoLoad10();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_10' class='capacity-text-input' type='text' name='daysoff_10[]' value='0' onchange='autoLoad10();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_10' class='capacity-text-input' type='text' name='storypoints_10[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_10[]' id='autoin3_10' value='4'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cooke</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Dalvin</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_10' class='capacity-text-input' type='text' name='velocity_10[]' value='100' onchange='autoLoad10();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_10' class='capacity-text-input' type='text' name='daysoff_10[]' value='0' onchange='autoLoad10();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_10' class='capacity-text-input' type='text' name='storypoints_10[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_10[]' id='autoin3_10' value='5'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Diggs</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Stefon</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_10' class='capacity-text-input' type='text' name='velocity_10[]' value='100' onchange='autoLoad10();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_10' class='capacity-text-input' type='text' name='daysoff_10[]' value='0' onchange='autoLoad10();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_10' class='capacity-text-input' type='text' name='storypoints_10[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_10[]' id='autoin3_10' value='6'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Elflein</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Pat</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_10' class='capacity-text-input' type='text' name='velocity_10[]' value='100' onchange='autoLoad10();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_10' class='capacity-text-input' type='text' name='daysoff_10[]' value='0' onchange='autoLoad10();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_10' class='capacity-text-input' type='text' name='storypoints_10[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_10[]' id='autoin3_10' value='7'/>
+                      </tr></tbody><tfoot></tfoot></table><input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+    
+    
+          </form>
+    
+    
+          <script type="text/javascript">
+    
+          $(document).ready(function () {
+    
+              $('#10').DataTable({
+                  paging: false,
+                  searching: false,
+                  infoCallback: false
+              });
+    
+          });
+    
+          function autoForm10() {
+            document.getElementById('maincap10').submit();
+          }
+    
+          function autoLoad10() {
+            var velocity10 = $("input[name='velocity_10[]']")
+                .map(function(){return $('#autoin_10').val();}).get();
+            var daysoff10 = $("input[name='daysoff_10[]']")
+                .map(function(){return $('#autoin2_10').val();}).get();
+            var rownum10 = $("input[name='rownum_10[]']")
+                .map(function(){return $('#autoin3_10').val();}).get();
+    
+            var overhead = "20";
+            var duration10 = "10";
+            var value = "100";
+            var totalcap_old = "336";
+            var icap10_old = "56";
+            var icap10 = 0;
+    
+            for (var i in rownum10) {
+                var storypts10_8 = Math.round( ( duration10 - daysoff10[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity10[i] / 100 ) );
+                $("input[name='storypoints_10[]']").eq(i).val(storypts10_8);
+                icap10 += storypts10_8;
+
+            }
+    
+            document.getElementsByName("icap10").innerHTML = icap10;
+            $( "icap10" ).replaceWith( icap10 );
+              var capdiff10 = icap10 - icap10_old;
+              var tcap = parseInt(capdiff10) + parseInt(totalcap_old);
+
+              document.getElementsByName("totalcap")[0].innerHTML = tcap;
+              console.log("icap_old: " +  icap10_old);
+              console.log("icap: " +  icap10);
+              console.log("storypoints10_8: " + storypts10_8);
+    
+          }
+    
+      </script><table width="100%"><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">I-1905-4</td><td id="filler" rowspan="3">
+               <p style="vertical-align: top; text-align:center; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration I-1905-4 <br/>of team id AT-abc1</p>
+               <div id="capacity-calc-bignum" name="icap11">56</div>
+               </td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">10</td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">20%</td></tr><td width="50%"  style="font-weight: bold;">                
+                <!--
+                <tr>
+                <td></td>
+                <td>
+                <div style="float: right; text-align: center; font-size: 12px;">
+                  <div id="capacity-calc-bignum" name="icap11">56</div>
+                  Total Capacity for this Iteration
+                </div>
+              </td>
+            </tr>
+    
+            -->
+            <tr>
+              <td colspan="3">
+    
+            <form method="post" action="#" id="maincap11">
+            <table id="11" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+                 width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+    
+              <thead>
+    
+              <tr id="capacity-table-first-row">
+    
+                  <th id="capacity-table-td">Last Name</th>
+                  <th id="capacity-table-td">First Name</th>
+                  <th id="capacity-table-td">Role</th>
+                  <th id="capacity-table-td">% Velocity Available</th>
+                  <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
+                  <th id="capacity-table-td">Story Points</th>
+    
+              </tr>
+    
+              </thead>
+    
+              <tbody>
+    
+    
+              <tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Thielen</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Adam</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>PO</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_11' class='capacity-text-input' type='text' name='velocity_11[]' value='50' onchange='autoLoad11();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_11' class='capacity-text-input' type='text' name='daysoff_11[]' value='0' onchange='autoLoad11();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_11' class='capacity-text-input' type='text' name='storypoints_11[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_11[]' id='autoin3_11' value='0'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cousins</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Kirk</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>SM</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_11' class='capacity-text-input' type='text' name='velocity_11[]' value='50' onchange='autoLoad11();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_11' class='capacity-text-input' type='text' name='daysoff_11[]' value='0' onchange='autoLoad11();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_11' class='capacity-text-input' type='text' name='storypoints_11[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_11[]' id='autoin3_11' value='1'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Barr</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Anthony</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_11' class='capacity-text-input' type='text' name='velocity_11[]' value='100' onchange='autoLoad11();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_11' class='capacity-text-input' type='text' name='daysoff_11[]' value='0' onchange='autoLoad11();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_11' class='capacity-text-input' type='text' name='storypoints_11[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_11[]' id='autoin3_11' value='2'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Smith</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Harrison</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_11' class='capacity-text-input' type='text' name='velocity_11[]' value='100' onchange='autoLoad11();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_11' class='capacity-text-input' type='text' name='daysoff_11[]' value='0' onchange='autoLoad11();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_11' class='capacity-text-input' type='text' name='storypoints_11[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_11[]' id='autoin3_11' value='3'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Beebe</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Chad</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_11' class='capacity-text-input' type='text' name='velocity_11[]' value='100' onchange='autoLoad11();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_11' class='capacity-text-input' type='text' name='daysoff_11[]' value='0' onchange='autoLoad11();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_11' class='capacity-text-input' type='text' name='storypoints_11[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_11[]' id='autoin3_11' value='4'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cooke</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Dalvin</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_11' class='capacity-text-input' type='text' name='velocity_11[]' value='100' onchange='autoLoad11();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_11' class='capacity-text-input' type='text' name='daysoff_11[]' value='0' onchange='autoLoad11();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_11' class='capacity-text-input' type='text' name='storypoints_11[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_11[]' id='autoin3_11' value='5'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Diggs</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Stefon</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_11' class='capacity-text-input' type='text' name='velocity_11[]' value='100' onchange='autoLoad11();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_11' class='capacity-text-input' type='text' name='daysoff_11[]' value='0' onchange='autoLoad11();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_11' class='capacity-text-input' type='text' name='storypoints_11[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_11[]' id='autoin3_11' value='6'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Elflein</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Pat</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_11' class='capacity-text-input' type='text' name='velocity_11[]' value='100' onchange='autoLoad11();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_11' class='capacity-text-input' type='text' name='daysoff_11[]' value='0' onchange='autoLoad11();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_11' class='capacity-text-input' type='text' name='storypoints_11[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_11[]' id='autoin3_11' value='7'/>
+                      </tr></tbody><tfoot></tfoot></table><input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+    
+    
+          </form>
+    
+    
+          <script type="text/javascript">
+    
+          $(document).ready(function () {
+    
+              $('#11').DataTable({
+                  paging: false,
+                  searching: false,
+                  infoCallback: false
+              });
+    
+          });
+    
+          function autoForm11() {
+            document.getElementById('maincap11').submit();
+          }
+    
+          function autoLoad11() {
+            var velocity11 = $("input[name='velocity_11[]']")
+                .map(function(){return $('#autoin_11').val();}).get();
+            var daysoff11 = $("input[name='daysoff_11[]']")
+                .map(function(){return $('#autoin2_11').val();}).get();
+            var rownum11 = $("input[name='rownum_11[]']")
+                .map(function(){return $('#autoin3_11').val();}).get();
+    
+            var overhead = "20";
+            var duration11 = "10";
+            var value = "100";
+            var totalcap_old = "336";
+            var icap11_old = "56";
+            var icap11 = 0;
+    
+            for (var i in rownum11) {
+                var storypts11_8 = Math.round( ( duration11 - daysoff11[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity11[i] / 100 ) );
+                $("input[name='storypoints_11[]']").eq(i).val(storypts11_8);
+                icap11 += storypts11_8;
+
+            }
+    
+            document.getElementsByName("icap11").innerHTML = icap11;
+            $( "icap11" ).replaceWith( icap11 );
+              var capdiff11 = icap11 - icap11_old;
+              var tcap = parseInt(capdiff11) + parseInt(totalcap_old);
+
+              document.getElementsByName("totalcap")[0].innerHTML = tcap;
+              console.log("icap_old: " +  icap11_old);
+              console.log("icap: " +  icap11);
+              console.log("storypoints11_8: " + storypts11_8);
+    
+          }
+    
+      </script><table width="100%"><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">I-1905-5</td><td id="filler" rowspan="3">
+               <p style="vertical-align: top; text-align:center; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration I-1905-5 <br/>of team id AT-abc1</p>
+               <div id="capacity-calc-bignum" name="icap12">56</div>
+               </td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">10</td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">20%</td></tr><td width="50%"  style="font-weight: bold;">                
+                <!--
+                <tr>
+                <td></td>
+                <td>
+                <div style="float: right; text-align: center; font-size: 12px;">
+                  <div id="capacity-calc-bignum" name="icap12">56</div>
+                  Total Capacity for this Iteration
+                </div>
+              </td>
+            </tr>
+    
+            -->
+            <tr>
+              <td colspan="3">
+    
+            <form method="post" action="#" id="maincap12">
+            <table id="12" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+                 width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+    
+              <thead>
+    
+              <tr id="capacity-table-first-row">
+    
+                  <th id="capacity-table-td">Last Name</th>
+                  <th id="capacity-table-td">First Name</th>
+                  <th id="capacity-table-td">Role</th>
+                  <th id="capacity-table-td">% Velocity Available</th>
+                  <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
+                  <th id="capacity-table-td">Story Points</th>
+    
+              </tr>
+    
+              </thead>
+    
+              <tbody>
+    
+    
+              <tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Thielen</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Adam</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>PO</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_12' class='capacity-text-input' type='text' name='velocity_12[]' value='50' onchange='autoLoad12();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_12' class='capacity-text-input' type='text' name='daysoff_12[]' value='0' onchange='autoLoad12();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_12' class='capacity-text-input' type='text' name='storypoints_12[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_12[]' id='autoin3_12' value='0'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cousins</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Kirk</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>SM</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_12' class='capacity-text-input' type='text' name='velocity_12[]' value='50' onchange='autoLoad12();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_12' class='capacity-text-input' type='text' name='daysoff_12[]' value='0' onchange='autoLoad12();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_12' class='capacity-text-input' type='text' name='storypoints_12[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_12[]' id='autoin3_12' value='1'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Barr</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Anthony</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_12' class='capacity-text-input' type='text' name='velocity_12[]' value='100' onchange='autoLoad12();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_12' class='capacity-text-input' type='text' name='daysoff_12[]' value='0' onchange='autoLoad12();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_12' class='capacity-text-input' type='text' name='storypoints_12[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_12[]' id='autoin3_12' value='2'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Smith</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Harrison</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_12' class='capacity-text-input' type='text' name='velocity_12[]' value='100' onchange='autoLoad12();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_12' class='capacity-text-input' type='text' name='daysoff_12[]' value='0' onchange='autoLoad12();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_12' class='capacity-text-input' type='text' name='storypoints_12[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_12[]' id='autoin3_12' value='3'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Beebe</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Chad</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_12' class='capacity-text-input' type='text' name='velocity_12[]' value='100' onchange='autoLoad12();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_12' class='capacity-text-input' type='text' name='daysoff_12[]' value='0' onchange='autoLoad12();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_12' class='capacity-text-input' type='text' name='storypoints_12[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_12[]' id='autoin3_12' value='4'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cooke</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Dalvin</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_12' class='capacity-text-input' type='text' name='velocity_12[]' value='100' onchange='autoLoad12();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_12' class='capacity-text-input' type='text' name='daysoff_12[]' value='0' onchange='autoLoad12();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_12' class='capacity-text-input' type='text' name='storypoints_12[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_12[]' id='autoin3_12' value='5'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Diggs</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Stefon</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_12' class='capacity-text-input' type='text' name='velocity_12[]' value='100' onchange='autoLoad12();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_12' class='capacity-text-input' type='text' name='daysoff_12[]' value='0' onchange='autoLoad12();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_12' class='capacity-text-input' type='text' name='storypoints_12[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_12[]' id='autoin3_12' value='6'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Elflein</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Pat</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_12' class='capacity-text-input' type='text' name='velocity_12[]' value='100' onchange='autoLoad12();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_12' class='capacity-text-input' type='text' name='daysoff_12[]' value='0' onchange='autoLoad12();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_12' class='capacity-text-input' type='text' name='storypoints_12[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_12[]' id='autoin3_12' value='7'/>
+                      </tr></tbody><tfoot></tfoot></table><input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+    
+    
+          </form>
+    
+    
+          <script type="text/javascript">
+    
+          $(document).ready(function () {
+    
+              $('#12').DataTable({
+                  paging: false,
+                  searching: false,
+                  infoCallback: false
+              });
+    
+          });
+    
+          function autoForm12() {
+            document.getElementById('maincap12').submit();
+          }
+    
+          function autoLoad12() {
+            var velocity12 = $("input[name='velocity_12[]']")
+                .map(function(){return $('#autoin_12').val();}).get();
+            var daysoff12 = $("input[name='daysoff_12[]']")
+                .map(function(){return $('#autoin2_12').val();}).get();
+            var rownum12 = $("input[name='rownum_12[]']")
+                .map(function(){return $('#autoin3_12').val();}).get();
+    
+            var overhead = "20";
+            var duration12 = "10";
+            var value = "100";
+            var totalcap_old = "336";
+            var icap12_old = "56";
+            var icap12 = 0;
+    
+            for (var i in rownum12) {
+                var storypts12_8 = Math.round( ( duration12 - daysoff12[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity12[i] / 100 ) );
+                $("input[name='storypoints_12[]']").eq(i).val(storypts12_8);
+                icap12 += storypts12_8;
+
+            }
+    
+            document.getElementsByName("icap12").innerHTML = icap12;
+            $( "icap12" ).replaceWith( icap12 );
+              var capdiff12 = icap12 - icap12_old;
+              var tcap = parseInt(capdiff12) + parseInt(totalcap_old);
+
+              document.getElementsByName("totalcap")[0].innerHTML = tcap;
+              console.log("icap_old: " +  icap12_old);
+              console.log("icap: " +  icap12);
+              console.log("storypoints12_8: " + storypts12_8);
+    
+          }
+    
+      </script><table width="100%"><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">I-1905-6</td><td id="filler" rowspan="3">
+               <p style="vertical-align: top; text-align:center; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration I-1905-6 <br/>of team id AT-abc1</p>
+               <div id="capacity-calc-bignum" name="icap13">56</div>
+               </td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">5</td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">20%</td></tr><td width="50%"  style="font-weight: bold;">                
+                <!--
+                <tr>
+                <td></td>
+                <td>
+                <div style="float: right; text-align: center; font-size: 12px;">
+                  <div id="capacity-calc-bignum" name="icap13">56</div>
+                  Total Capacity for this Iteration
+                </div>
+              </td>
+            </tr>
+    
+            -->
+            <tr>
+              <td colspan="3">
+    
+            <form method="post" action="#" id="maincap13">
+            <table id="13" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+                 width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+    
+              <thead>
+    
+              <tr id="capacity-table-first-row">
+    
+                  <th id="capacity-table-td">Last Name</th>
+                  <th id="capacity-table-td">First Name</th>
+                  <th id="capacity-table-td">Role</th>
+                  <th id="capacity-table-td">% Velocity Available</th>
+                  <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
+                  <th id="capacity-table-td">Story Points</th>
+    
+              </tr>
+    
+              </thead>
+    
+              <tbody>
+    
+    
+              <tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Thielen</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Adam</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>PO</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_13' class='capacity-text-input' type='text' name='velocity_13[]' value='50' onchange='autoLoad13();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_13' class='capacity-text-input' type='text' name='daysoff_13[]' value='0' onchange='autoLoad13();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_13' class='capacity-text-input' type='text' name='storypoints_13[]' value='2' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_13[]' id='autoin3_13' value='0'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cousins</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Kirk</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>SM</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_13' class='capacity-text-input' type='text' name='velocity_13[]' value='50' onchange='autoLoad13();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_13' class='capacity-text-input' type='text' name='daysoff_13[]' value='0' onchange='autoLoad13();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_13' class='capacity-text-input' type='text' name='storypoints_13[]' value='2' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_13[]' id='autoin3_13' value='1'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Barr</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Anthony</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_13' class='capacity-text-input' type='text' name='velocity_13[]' value='100' onchange='autoLoad13();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_13' class='capacity-text-input' type='text' name='daysoff_13[]' value='0' onchange='autoLoad13();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_13' class='capacity-text-input' type='text' name='storypoints_13[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_13[]' id='autoin3_13' value='2'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Smith</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Harrison</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_13' class='capacity-text-input' type='text' name='velocity_13[]' value='100' onchange='autoLoad13();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_13' class='capacity-text-input' type='text' name='daysoff_13[]' value='0' onchange='autoLoad13();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_13' class='capacity-text-input' type='text' name='storypoints_13[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_13[]' id='autoin3_13' value='3'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Beebe</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Chad</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_13' class='capacity-text-input' type='text' name='velocity_13[]' value='100' onchange='autoLoad13();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_13' class='capacity-text-input' type='text' name='daysoff_13[]' value='0' onchange='autoLoad13();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_13' class='capacity-text-input' type='text' name='storypoints_13[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_13[]' id='autoin3_13' value='4'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cooke</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Dalvin</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_13' class='capacity-text-input' type='text' name='velocity_13[]' value='100' onchange='autoLoad13();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_13' class='capacity-text-input' type='text' name='daysoff_13[]' value='0' onchange='autoLoad13();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_13' class='capacity-text-input' type='text' name='storypoints_13[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_13[]' id='autoin3_13' value='5'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Diggs</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Stefon</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_13' class='capacity-text-input' type='text' name='velocity_13[]' value='100' onchange='autoLoad13();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_13' class='capacity-text-input' type='text' name='daysoff_13[]' value='0' onchange='autoLoad13();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_13' class='capacity-text-input' type='text' name='storypoints_13[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_13[]' id='autoin3_13' value='6'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Elflein</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Pat</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_13' class='capacity-text-input' type='text' name='velocity_13[]' value='100' onchange='autoLoad13();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_13' class='capacity-text-input' type='text' name='daysoff_13[]' value='0' onchange='autoLoad13();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_13' class='capacity-text-input' type='text' name='storypoints_13[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_13[]' id='autoin3_13' value='7'/>
+                      </tr></tbody><tfoot></tfoot></table><input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+    
+    
+          </form>
+    
+    
+          <script type="text/javascript">
+    
+          $(document).ready(function () {
+    
+              $('#13').DataTable({
+                  paging: false,
+                  searching: false,
+                  infoCallback: false
+              });
+    
+          });
+    
+          function autoForm13() {
+            document.getElementById('maincap13').submit();
+          }
+    
+          function autoLoad13() {
+            var velocity13 = $("input[name='velocity_13[]']")
+                .map(function(){return $('#autoin_13').val();}).get();
+            var daysoff13 = $("input[name='daysoff_13[]']")
+                .map(function(){return $('#autoin2_13').val();}).get();
+            var rownum13 = $("input[name='rownum_13[]']")
+                .map(function(){return $('#autoin3_13').val();}).get();
+    
+            var overhead = "20";
+            var duration13 = "5";
+            var value = "100";
+            var totalcap_old = "336";
+            var icap13_old = "56";
+            var icap13 = 0;
+    
+            for (var i in rownum13) {
+                var storypts13_8 = Math.round( ( duration13 - daysoff13[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity13[i] / 100 ) );
+                $("input[name='storypoints_13[]']").eq(i).val(storypts13_8);
+                icap13 += storypts13_8;
+
+            }
+    
+            document.getElementsByName("icap13").innerHTML = icap13;
+            $( "icap13" ).replaceWith( icap13 );
+              var capdiff13 = icap13 - icap13_old;
+              var tcap = parseInt(capdiff13) + parseInt(totalcap_old);
+
+              document.getElementsByName("totalcap")[0].innerHTML = tcap;
+              console.log("icap_old: " +  icap13_old);
+              console.log("icap: " +  icap13);
+              console.log("storypoints13_8: " + storypts13_8);
+    
+          }
+    
+      </script><table width="100%"><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">I-1905-IP</td><td id="filler" rowspan="3">
+               <p style="vertical-align: top; text-align:center; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration I-1905-IP <br/>of team id AT-abc1</p>
+               <div id="capacity-calc-bignum" name="icap14">56</div>
+               </td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">10</td></tr><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
+               &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">20%</td></tr><td width="50%"  style="font-weight: bold;">                
+                <!--
+                <tr>
+                <td></td>
+                <td>
+                <div style="float: right; text-align: center; font-size: 12px;">
+                  <div id="capacity-calc-bignum" name="icap14">56</div>
+                  Total Capacity for this Iteration
+                </div>
+              </td>
+            </tr>
+    
+            -->
+            <tr>
+              <td colspan="3">
+    
+            <form method="post" action="#" id="maincap14">
+            <table id="14" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
+                 width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
+    
+              <thead>
+    
+              <tr id="capacity-table-first-row">
+    
+                  <th id="capacity-table-td">Last Name</th>
+                  <th id="capacity-table-td">First Name</th>
+                  <th id="capacity-table-td">Role</th>
+                  <th id="capacity-table-td">% Velocity Available</th>
+                  <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
+                  <th id="capacity-table-td">Story Points</th>
+    
+              </tr>
+    
+              </thead>
+    
+              <tbody>
+    
+    
+              <tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Thielen</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Adam</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>PO</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_14' class='capacity-text-input' type='text' name='velocity_14[]' value='50' onchange='autoLoad14();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_14' class='capacity-text-input' type='text' name='daysoff_14[]' value='0' onchange='autoLoad14();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_14' class='capacity-text-input' type='text' name='storypoints_14[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_14[]' id='autoin3_14' value='0'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cousins</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Kirk</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>SM</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_14' class='capacity-text-input' type='text' name='velocity_14[]' value='50' onchange='autoLoad14();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_14' class='capacity-text-input' type='text' name='daysoff_14[]' value='0' onchange='autoLoad14();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_14' class='capacity-text-input' type='text' name='storypoints_14[]' value='4' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_14[]' id='autoin3_14' value='1'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Barr</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Anthony</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_14' class='capacity-text-input' type='text' name='velocity_14[]' value='100' onchange='autoLoad14();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_14' class='capacity-text-input' type='text' name='daysoff_14[]' value='0' onchange='autoLoad14();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_14' class='capacity-text-input' type='text' name='storypoints_14[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_14[]' id='autoin3_14' value='2'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Smith</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Harrison</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_14' class='capacity-text-input' type='text' name='velocity_14[]' value='100' onchange='autoLoad14();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_14' class='capacity-text-input' type='text' name='daysoff_14[]' value='0' onchange='autoLoad14();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_14' class='capacity-text-input' type='text' name='storypoints_14[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_14[]' id='autoin3_14' value='3'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Beebe</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Chad</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_14' class='capacity-text-input' type='text' name='velocity_14[]' value='100' onchange='autoLoad14();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_14' class='capacity-text-input' type='text' name='daysoff_14[]' value='0' onchange='autoLoad14();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_14' class='capacity-text-input' type='text' name='storypoints_14[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_14[]' id='autoin3_14' value='4'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Cooke</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Dalvin</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_14' class='capacity-text-input' type='text' name='velocity_14[]' value='100' onchange='autoLoad14();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_14' class='capacity-text-input' type='text' name='daysoff_14[]' value='0' onchange='autoLoad14();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_14' class='capacity-text-input' type='text' name='storypoints_14[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_14[]' id='autoin3_14' value='5'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Diggs</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Stefon</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_14' class='capacity-text-input' type='text' name='velocity_14[]' value='100' onchange='autoLoad14();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_14' class='capacity-text-input' type='text' name='daysoff_14[]' value='0' onchange='autoLoad14();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_14' class='capacity-text-input' type='text' name='storypoints_14[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_14[]' id='autoin3_14' value='6'/>
+                      </tr><tr>
+                          <td id='capacity-table-td' style='font-weight:500;'>Elflein</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>Pat</td>
+                          <td id='capacity-table-td' style='font-weight:500;'>DEVELOPER</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_14' class='capacity-text-input' type='text' name='velocity_14[]' value='100' onchange='autoLoad14();' /> %</td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_14' class='capacity-text-input' type='text' name='daysoff_14[]' value='0' onchange='autoLoad14();' /></td>
+                          <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_14' class='capacity-text-input' type='text' name='storypoints_14[]' value='8' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                          <input type='hidden' name='rownum_14[]' id='autoin3_14' value='7'/>
+                      </tr></tbody><tfoot></tfoot></table><input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+    
+    
+          </form>
+    
+    
+          <script type="text/javascript">
+    
+          $(document).ready(function () {
+    
+              $('#14').DataTable({
+                  paging: false,
+                  searching: false,
+                  infoCallback: false
+              });
+    
+          });
+    
+          function autoForm14() {
+            document.getElementById('maincap14').submit();
+          }
+    
+          function autoLoad14() {
+            var velocity14 = $("input[name='velocity_14[]']")
+                .map(function(){return $('#autoin_14').val();}).get();
+            var daysoff14 = $("input[name='daysoff_14[]']")
+                .map(function(){return $('#autoin2_14').val();}).get();
+            var rownum14 = $("input[name='rownum_14[]']")
+                .map(function(){return $('#autoin3_14').val();}).get();
+    
+            var overhead = "20";
+            var duration14 = "10";
+            var value = "100";
+            var totalcap_old = "336";
+            var icap14_old = "56";
+            var icap14 = 0;
+    
+            for (var i in rownum14) {
+                var storypts14_8 = Math.round( ( duration14 - daysoff14[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity14[i] / 100 ) );
+                $("input[name='storypoints_14[]']").eq(i).val(storypts14_8);
+                icap14 += storypts14_8;
+
+            }
+    
+            document.getElementsByName("icap14").innerHTML = icap14;
+            $( "icap14" ).replaceWith( icap14 );
+              var capdiff14 = icap14 - icap14_old;
+              var tcap = parseInt(capdiff14) + parseInt(totalcap_old);
+
+              document.getElementsByName("totalcap")[0].innerHTML = tcap;
+              console.log("icap_old: " +  icap14_old);
+              console.log("icap: " +  icap14);
+              console.log("storypoints14_8: " + storypts14_8);
+    
+          }
+    
+      </script>      <div id="capacity-footnote">
+        Note 1: Closed Iterations will NOT be shown.  The capacity cannot be changed for such iterations.  Show only the active iterations.<br/>
+        Note 2: This page can be reached in two ways:
+        <ul>
+          <li>Capacity > Calculate</li>
+          <li>Capacity > Summary > By clicking on one of the numbers</li>
+        </ul>
+      </div>
+
+      </td>
+      </tr>
+      </table>
+
+    </div>
+    </div>
+
+
+  </div>
+
+</td>
+</tr>
+</table>
+
+<!-- If we want to add any footer to the web pages, update the footer.-->
+
+<div id="foot"></div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+
+</body>
+
+</html>
