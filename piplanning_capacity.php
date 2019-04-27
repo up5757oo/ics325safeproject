@@ -226,20 +226,19 @@ form for submitting data that will be prepopulated with data from the variables
 
 
   if (isset($_POST['submit0']) && isset($_COOKIE['totalcapCookie'])) {
-    $PI_total = $_COOKIE['totalcapCookie'];
-
+    $pi_capacity = $_COOKIE['totalcapCookie'];
     $count_sequence = count($sequenceArray);
     $PI_array = array();
-
-    echo 'TOTAL '.$PI_total;
+    echo '<script>document.getElementsByName("totalcap")[0].innerHTML = '.$pi_capacity.';</script>';
 
     for($s=0; $s < $count_sequence; $s++ ){
-      $duration = getDuration($iterationArray[$s]);
-      $iteration_val = $_COOKIE['icap'.$sequenceArray[$s]];
-      array_push($PI_array, $iteration_val);
-      echo 'Iteration Value: '.$iteration_val;
-
-  }
+      $iterationcapacity = $_COOKIE['icap'.$sequenceArray[$s]];
+      echo '<div id="capacity-calc-summary" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationArray[$s].' value submitted '.$iterationcapacity.'</div>';
+      $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
+      $result_iter = $db->query($sqliter);
+    }
+  $sqlup = "UPDATE `capacity` SET total='$pi_capacity' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
+  $result_up = $db->query($sqlup);
   }
 /*
     $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
