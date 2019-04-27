@@ -373,6 +373,8 @@ function buildTeamMenu(){
             function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
                 ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
                 $default_total = 56;
+                $rownum='';
+                $valueForJS='';
                 /*console.log("PI Cookie: " + getCookie('piCookie'));
                 console.log("ART Cookie: "+getCookie('artCookie'));
                 console.log("Team Cookie: " + getCookie('teamSelectCookie'));*/
@@ -409,7 +411,7 @@ function buildTeamMenu(){
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$iteration.'</td>';
                echo '<td id="filler" rowspan="3">
-               <p style="vertical-align: top; text-align:center; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration '.$iteration.' <br/>of team id '.$selected_team.'</p>
+               <p style="vertical-align: top; text-align:center; font-weight: bold; line-height: 130%; font-size: 18px;">Total Capacity for Iteration '.$iteration.' <br/>of team id '.$selected_team.'</p>
                <div id="capacity-calc-bignum" name="icap'.$sequence.'">'.$icapacity.'</div>
                </td></tr>';
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
@@ -566,11 +568,11 @@ function buildTeamMenu(){
     
           function autoLoad'.$sequence.'() {
             var velocity'.$sequence.' = $("input[name=\'velocity_'.$sequence.'[]\']")
-                .map(function(){return $(\'#autoin_'.$sequence.'\').val();}).get();
+                .map(function(){return $(this).val();}).get();
             var daysoff'.$sequence.' = $("input[name=\'daysoff_'.$sequence.'[]\']")
-                .map(function(){return $(\'#autoin2_'.$sequence.'\').val();}).get();
+                .map(function(){return $(this).val();}).get();
             var rownum'.$sequence.' = $("input[name=\'rownum_'.$sequence.'[]\']")
-                .map(function(){return $(\'#autoin3_'.$sequence.'\').val();}).get();
+                .map(function(){return $(this).val();}).get();
     
             var overhead = "'.$overhead_percentage.'";
             var duration'.$sequence.' = "'.$duration.'";
