@@ -10,10 +10,6 @@
  */
 
  global $db;
- //$db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
- //$db->set_charset("utf8");
- $hour = 3600;
- $day = (24*$hour);
 
  //checks sql connection was successful, returns error is connection fails
  if ($db->connect_errno) {
@@ -333,7 +329,7 @@ function buildTeamMenu(){
     function getTeamID($team){
         $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
         $db->set_charset("utf8");
-  $team_id= '';
+        $team_id= '';
         $sql = "SELECT DISTINCT team_id FROM trains_and_teams where team_name = '".$team."' ORDER BY parent_name LIMIT 1;";
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
@@ -375,11 +371,8 @@ function buildTeamMenu(){
                 $default_total = 56;
                 $rownum='';
                 $valueForJS='';
-                /*console.log("PI Cookie: " + getCookie('piCookie'));
-                console.log("ART Cookie: "+getCookie('artCookie'));
-                console.log("Team Cookie: " + getCookie('teamSelectCookie'));*/
                 $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-                //$db->set_charset("utf8");
+                $db->set_charset("utf8");
                 $duration = getDuration($iteration);
                 $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
                 $result = $db->query($sql);
