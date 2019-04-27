@@ -105,7 +105,7 @@ form for submitting data that will be prepopulated with data from the variables
     <table id="form_table" class="container">
     <tr>
 <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
-              <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
+              <div id="capacity-calc-bignum" name="totalcap" id="tcap"><?php echo $totalcapacity ?></div>
               <b>Total Capacity for the Program Increment</b>
             </div>
           </td>
@@ -220,18 +220,22 @@ form for submitting data that will be prepopulated with data from the variables
     creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
   };
 
-  if (isset($_POST['submit0'])) {
-    $iterationcapacity = 0;
+  if (isset($_POST['submit0']) && isset($_COOKIE['totalcapCookie'])) {
+    $PI_total = $_COOKIE['totalcapCookie'];
+    
     $count_sequence = count($sequenceArray);
     $PI_array = array();
-    $PI_total = getElementId('tcap'.$sequenceArray[$s]);
-    echo '<script>console.log('.$PI_total.')</script>';
+    
+    echo 'TOTAL '.$PI_total;
+
     for($s=0; $s < $count_sequence; $s++ ){
       $duration = getDuration($iterationArray[$s]);
-      $iteration_val = getElementById('icap'.$sequenceArray[$s]);
+      $iteration_val = $_COOKIE['icap'.$sequenceArray[$s]];
       array_push($PI_array, $iteration_val);
-      echo '<script>console.log('.$iteration_val.')</script>';
+      echo 'Iteration Value: '.$iteration_val;
   
+  }
+  }
 /*
     $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
     $result_iter = $db->query($sqliter);
@@ -253,9 +257,6 @@ form for submitting data that will be prepopulated with data from the variables
       $velocity[$_POST[$row_name][$x]] = $_POST[$velocity_name][$x];
     }
     */
-  }
-  }
-
 
 ?>
       <div id="capacity-footnote">

@@ -400,12 +400,12 @@ function buildTeamMenu(){
                 }
                 echo'<table width="100%">';
 
-    
+              
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$iteration.'</td>';
                echo '<td id="filler" rowspan="3">
                <p style="vertical-align: top; text-align:center; font-weight: bold; line-height: 130%; font-size: 18px;">Total Capacity for Iteration '.$iteration.' <br/>of team id '.$selected_team.'</p>
-               <div id="capacity-calc-bignum" name="icap'.$sequence.'">'.$icapacity.'</div>
+               <div id="capacity-calc-bignum" name="icap'.$sequence.'" id="icap'.$sequence.'">'.$icapacity.'</div>
                </td></tr>';
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$duration.'</td></tr>';
@@ -582,11 +582,13 @@ function buildTeamMenu(){
             }
     
             document.getElementsByName("icap'.$sequence.'").innerHTML = icap'.$sequence.';
+            document.cookie = escape("icap'.$sequence.'") + "=" + escape(icap'.$sequence.');
             $( "icap'.$sequence.'" ).replaceWith( icap'.$sequence.' );
               var capdiff'.$sequence.' = icap'.$sequence.' - icap'.$sequence.'_old;
               var tcap = parseInt(capdiff'.$sequence.') + parseInt(totalcap_old);
 
               document.getElementsByName("totalcap")[0].innerHTML = tcap;
+              document.cookie = escape("totalcapCookie") + "=" + escape(tcap);
               console.log("icap_old: " +  icap'.$sequence.'_old);
               console.log("icap: " +  icap'.$sequence.');
               console.log("storypoints'.$sequence.'_'.$rownum.': " + storypts'.$sequence.'_'.$rownum.');
