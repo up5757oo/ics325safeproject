@@ -418,25 +418,15 @@ function buildTeamMenu(){
                &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$duration.'</td></tr>';
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$overhead_percentage.'%</td></tr>';
-                //echo "&nbsp;".$program_increment."<br/>";
+               
+         //adding the calculated capacity for this table into a cookie  
+          setcookie("icap".$sequence, $icapacity);
 
                 echo '<td width="50%"  style="font-weight: bold;">';
 
 
                  ?>
 
-                <!--
-                <tr>
-                <td></td>
-                <td>
-                <div style="float: right; text-align: center; font-size: 12px;">
-                  <div id="capacity-calc-bignum" name="icap<?php echo $sequence ?>"><?php echo $icapacity ?></div>
-                  Total Capacity for this Iteration
-                </div>
-              </td>
-            </tr>
-
-            -->
             <tr>
               <td colspan="3">
 
@@ -495,8 +485,11 @@ function buildTeamMenu(){
                     }
                     if (isset($teamcapacity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
                       $storypts = $teamcapacity[$rownum];
+                      echo 'document.cookie = escape("icap'.$sequence.'") + "=" + escape(icap'.$sequence.');';
+                      
                     }else{
                       $storypts = round(($duration-0)*((100-$overhead_percentage)/100)*($row2["value"]/100));
+
                     }
                     $valueForJS = $row2["value"];
                     if (isset($daysoff[$rownum]) && !isset($_POST['restore'.$sequence])  && isset($_POST['submit0'])){
@@ -548,12 +541,9 @@ function buildTeamMenu(){
                 <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
                 <input type="button" onclick="nextIteration()" id="capacity-button-blue" class="next1" value="Show Next Iteration">
 
-
-          </form>
-
-          </form>
-
-          <script type="text/javascript">
+              </form>';
+           
+          echo '<script type="text/javascript">
 
           $(document).ready(function () {
 
@@ -567,6 +557,7 @@ function buildTeamMenu(){
 
           function autoForm'.$sequence.'() {
             document.getElementById(\'maincap'.$sequence.'\').submit();
+            
           }
 
           function autoLoad'.$sequence.'() {
@@ -591,7 +582,7 @@ function buildTeamMenu(){
 
             }
 
-            document.getElementsByName("icap'.$sequence.'").innerHTML = icap'.$sequence.';
+            document.getElementsByName("icap'.$sequence.'")[0].innerHTML = icap'.$sequence.';
             document.cookie = escape("icap'.$sequence.'") + "=" + escape(icap'.$sequence.');
             $( "icap'.$sequence.'" ).replaceWith( icap'.$sequence.' );
               var capdiff'.$sequence.' = icap'.$sequence.' - icap'.$sequence.'_old;

@@ -223,23 +223,46 @@ form for submitting data that will be prepopulated with data from the variables
         creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
       }
     }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if (isset($_POST['submit0']) && isset($_COOKIE['totalcapCookie'])) {
-    $PI_total = $_COOKIE['totalcapCookie'];
+    //checks for existing capacity entry for the FI 
+    $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
+    $result = $db->query($sql);
+    if ($result->num_rows > 0) {
+      $row = $result->fetch_assoc();
+      }else{
+        //if capacity entry is not found then it builds an insert statement that initializes the iteration values at 0
+        $result_id = $db->query("SELECT max(c.id) + 1 FROM capacity c LIMIT 1;");
+        if ($result_id->num_rows > 0) {
+          $sql_sequence = $result_id->fetch_assoc();
+      };
 
+      $result_team = $db->query("SELECT team_name FROM trains_and_teams where team_id='".$selected_team."' LIMIT 1;");
+        if ($result_team->num_rows > 0) {
+          $team_name = $result_team->fetch_assoc();
+      }else{
+        $team_name = $selected_team;
+      }
+      ;
+      $sqlinsert = "INSERT INTO (id, team_id,team_name,program_increment,iteration_1,iteration_2,iteration_3,iteration_4,iteration_5,iteration_6,iteration_P,total) 
+      VALUES (".$sql_sequence.", '".$selected_team."', '".$team_name."','".$program_increment."',0,0,0,0,0,0,0,0);";
+      $result_insert = $db->query($sqlinsert);
+      };
+//starts values that will update the capacity table with the iteration values
+    $pi_capacity = $_COOKIE['totalcapCookie'];
     $count_sequence = count($sequenceArray);
     $PI_array = array();
-
-    echo 'TOTAL '.$PI_total;
+    echo '<script>document.getElementsByName("totalcap")[0].innerHTML = '.$pi_capacity.';</script>';
 
     for($s=0; $s < $count_sequence; $s++ ){
-      $duration = getDuration($iterationArray[$s]);
-      $iteration_val = $_COOKIE['icap'.$sequenceArray[$s]];
-      array_push($PI_array, $iteration_val);
-      echo 'Iteration Value: '.$iteration_val;
-
-  }
+      $iterationcapacity = $_COOKIE['icap'.$sequenceArray[$s]];
+      echo '<div id="capacity-calc-summary" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationArray[$s].' value submitted '.$iterationcapacity.'</div>';
+      $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
+      $result_iter = $db->query($sqliter);
+    }
+  $sqlup = "UPDATE `capacity` SET total='$pi_capacity' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
+  $result_up = $db->query($sqlup);
   }
 /*
     $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
