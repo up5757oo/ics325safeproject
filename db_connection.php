@@ -3,6 +3,8 @@
 <script type="text/javascript" src="piplanning_scripts.js"></script>
 <link rel="stylesheet" type="text/css" href="styleCustom.css">
 
+
+
 <?php
 /**
 *   Database connection PHP Page
@@ -440,7 +442,7 @@ function buildTeamMenu(){
             <tr>
               <td colspan="3">
     
-            <form method="post" action="#" id="maincap<?php echo $sequence; ?>">
+            <form method="post" action="#" class="form1" id="maincap<?php echo $sequence; ?>">
             <table id="<?php echo $sequence; ?>" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
                  width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
     
@@ -461,9 +463,8 @@ function buildTeamMenu(){
     
               <tbody>
     
-    
               <?php
-    
+   
               $sql = "SELECT last_name, first_name, role FROM `membership`
                       JOIN `employees` on (membership.polarion_id = employees.number)
                       JOIN `trains_and_teams` on (membership.team_name = trains_and_teams.team_name)
@@ -512,7 +513,8 @@ function buildTeamMenu(){
                     }
     
                       echo
-                      "<tr>
+                      "
+                      <tr>
                           <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
                           <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
                           <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
@@ -534,6 +536,7 @@ function buildTeamMenu(){
               }
     
               $result->close();
+            
     
     
               echo '</tbody>';
@@ -544,14 +547,12 @@ function buildTeamMenu(){
     
           echo '</table>';
           echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+          <input type="reset" id="capacity-button-blue"  name="restore" value="Restore Defaults">
     
-    
-          </form>
-    
+          </form>   
     
           <script type="text/javascript">
-    
+
           $(document).ready(function () {
     
               $(\'#'.$sequence.'\').DataTable({
@@ -599,11 +600,16 @@ function buildTeamMenu(){
               console.log("storypoints'.$sequence.'_'.$rownum.': " + storypts'.$sequence.'_'.$rownum.');
     
           }
+
+
+  
     
       </script>';
       
           ///////////////////////////Funtion End/////////////////////////////////////////////////////////
-            };
+           
+            
+        };
             ?>
 
  

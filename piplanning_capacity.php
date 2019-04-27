@@ -1,3 +1,4 @@
+
 <?php
 
   $nav_selected = "PIPLANNING";
@@ -175,7 +176,7 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
         </tr>
 <tr>
-<td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
+<td><input type="submit" id="submit" name="submit" class="button" value="Generate" onclick="<?php generateStuff() ?>"></td>
 <td><input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>"></td>
 </tr>
 
@@ -214,11 +215,17 @@ form for submitting data that will be prepopulated with data from the variables
       <h3 style=" color: #01B0F1; font-weight: bold;">Capacity Calculations for the Agile Team</h3>';
 
 
-
-  //Loop for displaying the series of Employee table & iteration calculation placeholder
-  for($i = 0; $i < $count_iteration; $i++){
-    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
-  };
+        function generateStuff()
+        {
+          for($i = 0; $i < $count_iteration; $i++){
+            creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+        }
+        if($_SERVER['REQUEST_METHOD']=='POST')
+        {
+          generateStuff();
+        } 
+      }
+    
 
   /*//updated sql so select values matched availabe column names
   $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration , sequence
