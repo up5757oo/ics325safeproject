@@ -226,6 +226,7 @@ form for submitting data that will be prepopulated with data from the variables
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if (isset($_POST['submit0']) && isset($_COOKIE['totalcapCookie'])) {
+   
     //checks for existing capacity entry for the FI 
     $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
     $result = $db->query($sql);
@@ -246,7 +247,11 @@ form for submitting data that will be prepopulated with data from the variables
       }
       ;
       $sqlinsert = "INSERT INTO (id, team_id,team_name,program_increment,iteration_1,iteration_2,iteration_3,iteration_4,iteration_5,iteration_6,iteration_P,total) 
-      VALUES (".$sql_sequence.", '".$selected_team."', '".$team_name."','".$program_increment."',0,0,0,0,0,0,0,0);";
+      VALUES (".$sql_sequence.", 
+      '".$selected_team."', 
+      '".$team_name."',
+      '".$program_increment."'
+      ,0,0,0,0,0,0,0,0);";
       $result_insert = $db->query($sqlinsert);
       };
 //starts values that will update the capacity table with the iteration values
@@ -256,13 +261,15 @@ form for submitting data that will be prepopulated with data from the variables
     echo '<script>document.getElementsByName("totalcap")[0].innerHTML = '.$pi_capacity.';</script>';
 
     for($s=0; $s < $count_sequence; $s++ ){
+      if(isset($_COOKIE['icap'.$sequenceArray[$s]])){
       $iterationcapacity = $_COOKIE['icap'.$sequenceArray[$s]];
       echo '<div id="capacity-calc-summary" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationArray[$s].' value submitted '.$iterationcapacity.'</div>';
       $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
       $result_iter = $db->query($sqliter);
     }
-  $sqlup = "UPDATE `capacity` SET total='$pi_capacity' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
-  $result_up = $db->query($sqlup);
+    $sqlup = "UPDATE `capacity` SET total='$pi_capacity' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
+    $result_up = $db->query($sqlup);
+}
   }
 
 ?>
