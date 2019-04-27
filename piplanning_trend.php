@@ -27,11 +27,11 @@ $pi_id_select = piSelectNow();
 //capturing the pi id cookie to use for the array and BUILD the menu list
 if(isset($_COOKIE['piCookie'])){
   $pi_id = $_COOKIE['piCookie'];
-  $pi_id_menu = buildPi_idMenu($pi_id);
+  $pi_id_menu = buildPi_idMenu($pi_id, false);
 } else {
   $pi_id=$pi_id_select;
   setcookie("piCookie", $pi_id_select);
-  $pi_id_menu = buildPi_idMenu($pi_id);
+  $pi_id_menu = buildPi_idMenu($pi_id, false);
 };
 
 ?>
@@ -74,7 +74,7 @@ if(isset($_COOKIE['piCookie'])){
   include("./footer.php");
 
   function buildARTChart($pi_id){
-    $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+    $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
     $db->set_charset("utf8");
     $sql = "SELECT DISTINCT cap.program_increment, art.parent_name, sum(cap.total) as total
     FROM capacity cap, trains_and_teams art
@@ -141,7 +141,7 @@ if(isset($_COOKIE['piCookie'])){
 
 //Function for building Team Chart
 function buildTeamChart($pi_id, $parent_name){
-    $db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE);
+    $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
     $db->set_charset("utf8");
     $sql = "SELECT DISTINCT cap.program_increment, art.team_name, sum(cap.total) as total
     FROM capacity cap, trains_and_teams art
