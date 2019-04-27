@@ -411,7 +411,7 @@ function buildTeamMenu(){
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$iteration.'</td>';
                echo '<td id="filler" rowspan="3">
-               <p style="vertical-align: top; text-align:center; font-weight: bold; color: line-height: 130%; font-size: 18px;">Total Capacity for Iteration '.$iteration.' <br/>of team id '.$selected_team.'</p>
+               <p style="vertical-align: top; text-align:center; font-weight: bold; line-height: 130%; font-size: 18px;">Total Capacity for Iteration '.$iteration.' <br/>of team id '.$selected_team.'</p>
                <div id="capacity-calc-bignum" name="icap'.$sequence.'">'.$icapacity.'</div>
                </td></tr>';
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
