@@ -264,27 +264,6 @@ form for submitting data that will be prepopulated with data from the variables
   $sqlup = "UPDATE `capacity` SET total='$pi_capacity' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
   $result_up = $db->query($sqlup);
   }
-/*
-    $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
-    $result_iter = $db->query($sqliter);
-    $sqlinc = "SELECT (iteration_1 + iteration_2 + iteration_3 + iteration_4 + iteration_5 + iteration_6) as new_total FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
-    $result_inc = $db->query($sqlinc);
-    if ($result_inc->num_rows > 0) {
-        $rowinc = $result_inc->fetch_assoc();
-        $pi_capacity = $rowinc["new_total"];
-      }
-    $sqlup = "UPDATE `capacity` SET total='$pi_capacity' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
-    $result_up = $db->query($sqlup);
-
-    // keep velocity and days off value changes
-    $iterationcapacity = 0;
-    for ($x=0; $x < count($_POST[$row_name]); $x++){
-      $teamcapacity[$_POST[$row_name][$x]] = round(($duration-$_POST[$daysoff_name][$x])*((100-$overhead_percentage)/100)*($_POST[$velocity_name][$x]/100));
-      $iterationcapacity += $teamcapacity[$_POST[$row_name][$x]];
-      $daysoff[$_POST[$row_name][$x]] = $_POST[$daysoff_name][$x];
-      $velocity[$_POST[$row_name][$x]] = $_POST[$velocity_name][$x];
-    }
-    */
 
 ?>
       <div id="capacity-footnote">
