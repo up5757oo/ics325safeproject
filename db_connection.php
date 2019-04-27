@@ -521,6 +521,7 @@ function buildTeamMenu(){
                           <input type='hidden' name='rownum_".$sequence."[]' id='autoin3_".$sequence."' value='".$rownum."'/>
                       </tr>";
                       $rownum++;
+                      echo $storypts ; // get each sequence's story points into 
                     
                   }
               } else {
