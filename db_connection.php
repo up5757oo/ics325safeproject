@@ -568,11 +568,11 @@ function buildTeamMenu(){
     
           function autoLoad'.$sequence.'() {
             var velocity'.$sequence.' = $("input[name=\'velocity_'.$sequence.'[]\']")
-                .map(function(){return $(\'#autoin_'.$sequence.'\').val();}).get();
+                .map(function(){return $(this).val();}).get();
             var daysoff'.$sequence.' = $("input[name=\'daysoff_'.$sequence.'[]\']")
-                .map(function(){return $(\'#autoin2_'.$sequence.'\').val();}).get();
+                .map(function(){return $(this).val();}).get();
             var rownum'.$sequence.' = $("input[name=\'rownum_'.$sequence.'[]\']")
-                .map(function(){return $(\'#autoin3_'.$sequence.'\').val();}).get();
+                .map(function(){return $(this).val();}).get();
     
             var overhead = "'.$overhead_percentage.'";
             var duration'.$sequence.' = "'.$duration.'";

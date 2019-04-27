@@ -757,7 +757,8 @@ form for submitting data that will be prepopulated with data from the variables
             <tr>
               <td colspan="3">
     <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-            <form method="post" action="#" id="maincap11">
+    <h2>Table 11</h2>
+       <form method="post" action="#" id="maincap11">
             <table id="11" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
                  width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
     
@@ -880,10 +881,15 @@ form for submitting data that will be prepopulated with data from the variables
             var totalcap_old = "336";
             var icap11_old = "56";
             var icap11 = 0;
+
+            
     
             for (var i in rownum11) {
-                var storypts11_8 = Math.round( ( duration11 - daysoff_11[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity_11[i] / 100 ) );
+                var storypts11_8 = Math.round( ( duration11 - daysoff11[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity11[i] / 100 ) );
                 $("input[name='storypoints_11[]']").eq(i).val(storypts11_8);
+                console.log("rownum: " + rownum11[i]);
+                console.log("duration: " + daysoff11[i]);
+                console.log("velocity: " + velocity11[i] );
                 icap11 += storypts11_8;
 
             }
@@ -894,15 +900,19 @@ form for submitting data that will be prepopulated with data from the variables
               var tcap = parseInt(capdiff11) + parseInt(totalcap_old);
 
               document.getElementsByName("totalcap")[0].innerHTML = tcap;
-              console.log("icap_old: " +  icap11_old);
-              console.log("icap: " +  icap11);
-              console.log("rownum: " + rownum11);
+              console.log("rownum: " + $("input[name='rownum_11[]']")
+                .map(function(){return $(this).val();}).get());
+            console.log("days off: " + $("input[name='daysoff_11[]']")
+                .map(function(){return $(this).val();}).get());
+            console.log("velocity: " + $("input[name='velocity_11[]']")
+                .map(function(){return $(this).val();}).get());
+              
     
           }
     
       </script>
       <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-      <h2>Table 11</h2>
+
       <table width="100%"><tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">I-1905-5</td><td id="filler" rowspan="3">
                <p style="vertical-align: top; text-align:center; font-weight: 130%; font-size: 18px;">Total Capacity for Iteration I-1905-5 <br/>of team id AT-abc1</p>
