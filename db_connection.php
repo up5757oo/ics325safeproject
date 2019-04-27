@@ -3,6 +3,8 @@
 <script type="text/javascript" src="piplanning_scripts.js"></script>
 <link rel="stylesheet" type="text/css" href="styleCustom.css">
 
+
+
 <?php
 /**
 *   Database connection PHP Page
@@ -10,10 +12,6 @@
  */
 
  global $db;
- //$db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
- //$db->set_charset("utf8");
- $hour = 3600;
- $day = (24*$hour);
 
  //checks sql connection was successful, returns error is connection fails
  if ($db->connect_errno) {
@@ -63,6 +61,10 @@ function setArtCookie(){
         $art_default_results->close();
     } //end cookie check
 };
+  //Show Next TableFunction
+//function nextIteration($storypts) {
+  //document.getElementsByClassName("next1");
+//};
 
 function buildArtMenu($art_select){
     //initializes the art variable
@@ -143,7 +145,7 @@ function buildTeamMenu(){
         } else{
             //if a cookie is not available it will is the setArtCookie function to find the default Art value and set the cookie
             $artCookie = setArtCookie();
-        } 
+        }
         $at_query = "SELECT DISTINCT team_name FROM trains_and_teams where type = 'AT' and parent_name='".$artCookie."' order by team_name";
             $at_menu_results = mysqli_query($db, $at_query);
             if ($at_menu_results->num_rows > 0) {
@@ -155,7 +157,7 @@ function buildTeamMenu(){
         $at_menu_result->close();
     };
 
-    
+
         //function for returning the duration
         function getDuration($iteration){
             $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
@@ -271,7 +273,6 @@ function buildTeamMenu(){
            $topArtValue->close();
         };
 
-        //function builds each jiteration table
         function buildTeamTable($pi_id, $parent_name){
             $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
             $db->set_charset("utf8");
@@ -375,18 +376,15 @@ function buildTeamMenu(){
                 $default_total = 56;
                 $rownum='';
                 $valueForJS='';
-                /*console.log("PI Cookie: " + getCookie('piCookie'));
-                console.log("ART Cookie: "+getCookie('artCookie'));
-                console.log("Team Cookie: " + getCookie('teamSelectCookie'));*/
                 $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-                //$db->set_charset("utf8");
+                $db->set_charset("utf8");
                 $duration = getDuration($iteration);
                 $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
                 $result = $db->query($sql);
-    
+
                 if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
-    
+
                     if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
                       $icapacity = array_sum($teamcapacity);
                       $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
@@ -394,7 +392,7 @@ function buildTeamMenu(){
                       $icapacity = $row["iteration_".substr($iteration, -1)];
                       $totalcapacity = $row["total"];
                     }
-    
+
                 } else {
                   if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
                     $icapacity = array_sum($teamcapacity);
@@ -404,26 +402,27 @@ function buildTeamMenu(){
                     $totalcapacity = $default_total*6;
                   }
                 }
-                echo'<table width="100%">';
 
-    
+               echo'<table width="100%">';
+
+
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;Iteration (I): &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$iteration.'</td>';
                echo '<td id="filler" rowspan="3">
                <p style="vertical-align: top; text-align:center; font-weight: bold; line-height: 130%; font-size: 18px;">Total Capacity for Iteration '.$iteration.' <br/>of team id '.$selected_team.'</p>
-               <div id="capacity-calc-bignum" name="icap'.$sequence.'">'.$icapacity.'</div>
+               <div id="capacity-calc-bignum" name="icap'.$sequence.'" id="icap'.$sequence.'">'.$icapacity.'</div>
                </td></tr>';
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;No. of Days in Iteration: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$duration.'</td></tr>';
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
                &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$overhead_percentage.'%</td></tr>';
                 //echo "&nbsp;".$program_increment."<br/>";
-    
+
                 echo '<td width="50%"  style="font-weight: bold;">';
-    
-    
+
+
                  ?>
-                
+
                 <!--
                 <tr>
                 <td></td>
@@ -434,49 +433,48 @@ function buildTeamMenu(){
                 </div>
               </td>
             </tr>
-    
+
             -->
             <tr>
               <td colspan="3">
-    
-            <form method="post" action="#" id="maincap<?php echo $sequence; ?>">
+
+            <form method="post" action="#" class="form1" id="maincap<?php echo $sequence; ?>">
             <table id="<?php echo $sequence; ?>" cellpadding="2px" cellspacing="0" border="0" class="capacity-table"
                  width="100%" style="width: 100%; clear: both; font-size: 15px; margin: 8px 0 15px 0">
-    
+
               <thead>
-    
+
               <tr id="capacity-table-first-row">
-    
+
                   <th id="capacity-table-td">Last Name</th>
                   <th id="capacity-table-td">First Name</th>
                   <th id="capacity-table-td">Role</th>
                   <th id="capacity-table-td">% Velocity Available</th>
                   <th id="capacity-table-td">Days Off <br/><p style="font-size: 9px;">(Vacation / Holidays / Sick Days)</p></th>
                   <th id="capacity-table-td">Story Points</th>
-    
+
               </tr>
-    
+
               </thead>
-    
+
               <tbody>
-    
-    
+
               <?php
-    
+
               $sql = "SELECT last_name, first_name, role FROM `membership`
                       JOIN `employees` on (membership.polarion_id = employees.number)
                       JOIN `trains_and_teams` on (membership.team_name = trains_and_teams.team_name)
                       WHERE trains_and_teams.team_id = '".$selected_team."';";
-    
+
               $result = $db->query($sql);
-    
-    
+
+
               if ($result->num_rows > 0) {
-    
+
                   // output data of each
                   $rownum = 0;
                   while ($row = $result->fetch_assoc()) {
-    
+
                     if ($row["role"] == "SM") {
                       $velocityType = "SCRUM_MASTER_ALLOCATION";
                     } else if ($row["role"] == "PO") {
@@ -484,14 +482,14 @@ function buildTeamMenu(){
                     } else  {
                       $velocityType = "AGILE_TEAM_MEMBER_ALLOCATION";
                     }
-    
+
                     $sql2 = "SELECT * FROM `preferences` WHERE name='".$velocityType."';";
                     $result2 = $db->query($sql2);
-    
+
                     if ($result2->num_rows > 0) {
-    
+
                         $row2 = $result2->fetch_assoc();
-    
+
                     }
                     if (isset($teamcapacity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
                       $storypts = $teamcapacity[$rownum];
@@ -509,9 +507,10 @@ function buildTeamMenu(){
                     } else {
                       $vel = $row2["value"];
                     }
-    
+
                       echo
-                      "<tr>
+                      "
+                      <tr>
                           <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
                           <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
                           <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
@@ -521,48 +520,53 @@ function buildTeamMenu(){
                           <input type='hidden' name='rownum_".$sequence."[]' id='autoin3_".$sequence."' value='".$rownum."'/>
                       </tr>";
                       $rownum++;
-                      echo $storypts ; // get each sequence's story points into 
-                    
+
+                      //echo "vel is: " .$vel . ", days off: " . $doff .".";
+                      // submit the values to correlating tables to TEST
+
                   }
               } else {
                 echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
                   print "NO TEAM MEMBERS ASSIGNED TO TEAM \"".$selected_team."\"";
                   echo "</td></tr>";
               }
-    
+
               $result->close();
-    
-    
+
+
+
               echo '</tbody>';
-    
+
               echo '<tfoot>';
-    
+
               echo '</tfoot>';
-    
+
           echo '</table>';
           echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
-    
-    
+                <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+                <input type="button" onclick="nextIteration()" id="capacity-button-blue" class="next1" value="Show Next Iteration">
+
+
           </form>
-    
-    
+
+          </form>
+
           <script type="text/javascript">
-    
+
           $(document).ready(function () {
-    
+
               $(\'#'.$sequence.'\').DataTable({
                   paging: false,
                   searching: false,
                   infoCallback: false
               });
-    
+
           });
-    
+
           function autoForm'.$sequence.'() {
             document.getElementById(\'maincap'.$sequence.'\').submit();
           }
-    
+
           function autoLoad'.$sequence.'() {
             var velocity'.$sequence.' = $("input[name=\'velocity_'.$sequence.'[]\']")
                 .map(function(){return $(this).val();}).get();
@@ -570,40 +574,42 @@ function buildTeamMenu(){
                 .map(function(){return $(this).val();}).get();
             var rownum'.$sequence.' = $("input[name=\'rownum_'.$sequence.'[]\']")
                 .map(function(){return $(this).val();}).get();
-    
+
             var overhead = "'.$overhead_percentage.'";
             var duration'.$sequence.' = "'.$duration.'";
             var value = "'.$valueForJS.'";
             var totalcap_old = "'.$totalcapacity.'";
             var icap'.$sequence.'_old = "'.$icapacity.'";
             var icap'.$sequence.' = 0;
-    
+
             for (var i in rownum'.$sequence.') {
                 var storypts'.$sequence.'_'.$rownum.' = Math.round( ( duration'.$sequence.' - daysoff'.$sequence.'[i] ) * ( ( 100-overhead ) / 100 ) * ( velocity'.$sequence.'[i] / 100 ) );
                 $("input[name=\'storypoints_'.$sequence.'[]\']").eq(i).val(storypts'.$sequence.'_'.$rownum.');
                 icap'.$sequence.' += storypts'.$sequence.'_'.$rownum.';
 
             }
-    
-            document.getElementsByName("icap'.$sequence.'")[0].innerHTML = icap'.$sequence.';
+
+            document.getElementsByName("icap'.$sequence.'").innerHTML = icap'.$sequence.';
+            document.cookie = escape("icap'.$sequence.'") + "=" + escape(icap'.$sequence.');
             $( "icap'.$sequence.'" ).replaceWith( icap'.$sequence.' );
               var capdiff'.$sequence.' = icap'.$sequence.' - icap'.$sequence.'_old;
               var tcap = parseInt(capdiff'.$sequence.') + parseInt(totalcap_old);
 
               document.getElementsByName("totalcap")[0].innerHTML = tcap;
+              document.cookie = escape("totalcapCookie") + "=" + escape(tcap);
               console.log("icap_old: " +  icap'.$sequence.'_old);
               console.log("icap: " +  icap'.$sequence.');
               console.log("storypoints'.$sequence.'_'.$rownum.': " + storypts'.$sequence.'_'.$rownum.');
-    
+
           }
-    
+
+
+
+
       </script>';
-      
+
           ///////////////////////////Funtion End/////////////////////////////////////////////////////////
-            };
+
+
+        };
             ?>
-
- 
-        
-
-
