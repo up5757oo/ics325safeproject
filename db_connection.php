@@ -63,6 +63,10 @@ function setArtCookie(){
         $art_default_results->close();
     } //end cookie check
 };
+  //Show Next TableFunction
+//function nextIteration($storypts) {
+  //document.getElementsByClassName("next1");
+//};
 
 function buildArtMenu($art_select){
     //initializes the art variable
@@ -405,7 +409,8 @@ function buildTeamMenu(){
                     $totalcapacity = $default_total*6;
                   }
                 }
-                echo'<table width="100%">';
+
+               echo'<table width="100%">';
 
     
                echo '<tr><td width="25%" style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">
@@ -545,6 +550,7 @@ function buildTeamMenu(){
           echo '</table>';
           echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
                 <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+                <input type="submit" id="capacity-button-blue" class="next1" value="Show Next Iteration">
     
     
           </form>
@@ -594,9 +600,9 @@ function buildTeamMenu(){
               var tcap = parseInt(capdiff'.$sequence.') + parseInt(totalcap_old);
 
               document.getElementsByName("totalcap")[0].innerHTML = tcap;
-              console.log("icap_old: " +  icap'.$sequence.'_old);
-              console.log("icap: " +  icap'.$sequence.');
-              console.log("storypoints'.$sequence.'_'.$rownum.': " + storypts'.$sequence.'_'.$rownum.');
+              ("icap_old: " +  icap'.$sequence.'_old);
+              ("icap: " +  icap'.$sequence.');
+              ("storypoints'.$sequence.'_'.$rownum.': " + storypts'.$sequence.'_'.$rownum.');
     
           }
     
