@@ -1,3 +1,4 @@
+
 <?php
 
   $nav_selected = "PIPLANNING";
@@ -41,7 +42,7 @@ $default_total = 56;
     $selected_team  = $_COOKIE['teamSelectCookie'];
   };
 
-  //finds the team id for the team name for the selected team script
+//finds the team id for the team name for the selected team script
 
 //Function to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
@@ -175,7 +176,7 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
         </tr>
 <tr>
-<td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
+<td><input type="submit" id="submit" name="submit" class="button" value="Generate" onclick="generateStuff()"></td>
 <td><input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>"></td>
 </tr>
 
@@ -201,9 +202,9 @@ form for submitting data that will be prepopulated with data from the variables
     }
     return "";
   };
-  console.log("PI Cookie: " + getCookie('piCookie'));
-  console.log("ART Cookie: "+getCookie('artCookie'));
-  console.log("Team Cookie: " + getCookie('teamSelectCookie'));
+    ("PI Cookie: " + getCookie('piCookie'));
+    ("ART Cookie: "+getCookie('artCookie'));
+    ("Team Cookie: " + getCookie('teamSelectCookie'));
   </script>
   <?php
 
@@ -215,17 +216,21 @@ form for submitting data that will be prepopulated with data from the variables
 
 
 
-  //Loop for displaying the series of Employee table & iteration calculation placeholder
-  for($i = 0; $i < $count_iteration; $i++){
-    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
-  };
+
+    if( isset( $_REQUEST['submit'] ))
+    {
+      for($i = 0; $i < $count_iteration; $i++){
+        creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+      }
+    }
+
 
   if (isset($_POST['submit0']) && isset($_COOKIE['totalcapCookie'])) {
     $PI_total = $_COOKIE['totalcapCookie'];
-    
+
     $count_sequence = count($sequenceArray);
     $PI_array = array();
-    
+
     echo 'TOTAL '.$PI_total;
 
     for($s=0; $s < $count_sequence; $s++ ){
@@ -233,7 +238,7 @@ form for submitting data that will be prepopulated with data from the variables
       $iteration_val = $_COOKIE['icap'.$sequenceArray[$s]];
       array_push($PI_array, $iteration_val);
       echo 'Iteration Value: '.$iteration_val;
-  
+
   }
   }
 /*
