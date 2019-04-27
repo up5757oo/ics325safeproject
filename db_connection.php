@@ -271,7 +271,7 @@ function buildTeamMenu(){
            $topArtValue->close();
         };
 
-        
+        //function builds each jiteration table
         function buildTeamTable($pi_id, $parent_name){
             $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
             $db->set_charset("utf8");
@@ -333,7 +333,7 @@ function buildTeamMenu(){
     function getTeamID($team){
         $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
         $db->set_charset("utf8");
-  $team_id= '';
+        $team_id= '';
         $sql = "SELECT DISTINCT team_id FROM trains_and_teams where team_name = '".$team."' ORDER BY parent_name LIMIT 1;";
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
@@ -370,8 +370,8 @@ function buildTeamMenu(){
     }
     ;
 
+            ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
             function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
-                ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
                 $default_total = 56;
                 $rownum='';
                 $valueForJS='';
@@ -391,7 +391,6 @@ function buildTeamMenu(){
                       $icapacity = array_sum($teamcapacity);
                       $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
                     }else{
-                      //this is where the problem is<-Fixed by adding column iteration_P to the capacity table
                       $icapacity = $row["iteration_".substr($iteration, -1)];
                       $totalcapacity = $row["total"];
                     }
@@ -522,9 +521,6 @@ function buildTeamMenu(){
                           <input type='hidden' name='rownum_".$sequence."[]' id='autoin3_".$sequence."' value='".$rownum."'/>
                       </tr>";
                       $rownum++;
-    
-                      //echo "vel is: " .$vel . ", days off: " . $doff .".";
-                      // submit the values to correlating tables to TEST
                     
                   }
               } else {
