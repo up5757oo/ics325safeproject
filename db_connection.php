@@ -544,7 +544,7 @@ function buildTeamMenu(){
     
           echo '</table>';
           echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-          <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+                <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
     
     
           </form>

@@ -41,7 +41,7 @@ $default_total = 56;
     $selected_team  = $_COOKIE['teamSelectCookie'];
   };
 
-  //finds the team id for the team name for the selected team script
+//finds the team id for the team name for the selected team script
 
 //Function to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
@@ -201,9 +201,9 @@ form for submitting data that will be prepopulated with data from the variables
     }
     return "";
   };
-  console.log("PI Cookie: " + getCookie('piCookie'));
-  console.log("ART Cookie: "+getCookie('artCookie'));
-  console.log("Team Cookie: " + getCookie('teamSelectCookie'));
+    ("PI Cookie: " + getCookie('piCookie'));
+    ("ART Cookie: "+getCookie('artCookie'));
+    ("Team Cookie: " + getCookie('teamSelectCookie'));
   </script>
   <?php
 
@@ -261,7 +261,7 @@ form for submitting data that will be prepopulated with data from the variables
   }*/
 
 
-  //echo '<script>console.log('.$sequence.');</script>';
+  //echo '<script>('.$sequence.');</script>';
   //checks if there is a current team selected. If not it uses the artCookie to find the $selected_team
   //if ($_REQUEST['generate_button']) {
       //$selected_team = $_POST['current-team-selected'];
@@ -270,8 +270,8 @@ form for submitting data that will be prepopulated with data from the variables
 /*
   if (isset($_POST['showNext'])) {
     $sequence++;
-    echo '<script>console.log("Show Next: " + "'.$sequence.'");</script>';
-    echo '<script>console.log("Program Increment: " + "'.$program_increment.'");</script>';
+    echo '<script>("Show Next: " + "'.$sequence.'");</script>';
+    echo '<script>("Program Increment: " + "'.$program_increment.'");</script>';
 
     $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration
             FROM `cadence`
@@ -298,7 +298,7 @@ form for submitting data that will be prepopulated with data from the variables
     }
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  echo '<script>console.log("Program Increment: " + "'.$iteration.'");</script>';
+  echo '<script>("Program Increment: " + "'.$iteration.'");</script>';
     $sql = "SELECT * FROM `capacity` where team_id='".$selected_team."' AND program_increment='".$program_increment."';";
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
