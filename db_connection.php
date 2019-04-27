@@ -588,7 +588,7 @@ function buildTeamMenu(){
 
             }
     
-            document.getElementsByName("icap'.$sequence.'").innerHTML = icap'.$sequence.';
+            document.getElementsByName("icap'.$sequence.'")[0].innerHTML = icap'.$sequence.';
             $( "icap'.$sequence.'" ).replaceWith( icap'.$sequence.' );
               var capdiff'.$sequence.' = icap'.$sequence.' - icap'.$sequence.'_old;
               var tcap = parseInt(capdiff'.$sequence.') + parseInt(totalcap_old);
