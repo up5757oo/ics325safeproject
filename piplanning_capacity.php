@@ -223,14 +223,16 @@ form for submitting data that will be prepopulated with data from the variables
         creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
       }
     }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if (isset($_POST['submit0']) && isset($_COOKIE['totalcapCookie'])) {
+    //checks for existing capacity entry for the FI 
     $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
       $row = $result->fetch_assoc();
       }else{
+        //if capacity entry is not found then it builds an insert statement that initializes the iteration values at 0
         $result_id = $db->query("SELECT max(c.id) + 1 FROM capacity c LIMIT 1;");
         if ($result_id->num_rows > 0) {
           $sql_sequence = $result_id->fetch_assoc();
@@ -247,7 +249,7 @@ form for submitting data that will be prepopulated with data from the variables
       VALUES (".$sql_sequence.", '".$selected_team."', '".$team_name."','".$program_increment."',0,0,0,0,0,0,0,0);";
       $result_insert = $db->query($sqlinsert);
       };
-
+//starts values that will update the capacity table with the iteration values
     $pi_capacity = $_COOKIE['totalcapCookie'];
     $count_sequence = count($sequenceArray);
     $PI_array = array();
