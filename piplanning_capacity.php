@@ -261,11 +261,11 @@ form for submitting data that will be prepopulated with data from the variables
     $count_sequence = count($sequenceArray);
     $PI_array = array();
     echo '<script>document.getElementsByName("totalcap")[0].innerHTML = '.$pi_capacity.';</script>';
-
+    echo '<table width="100%">';
     for($s=0; $s < $count_sequence; $s++ ){
       if(isset($_COOKIE['icap'.$sequenceArray[$s]])){
       $iterationcapacity = $_COOKIE['icap'.$sequenceArray[$s]];
-      echo '<div id="capacity-calc-summary" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationArray[$s].' value submitted '.$iterationcapacity.'</div>';
+      echo '<tr><td><h2>'.$iterationArray[$s].' value submitted for '.$team_name.'</h2></td><td><div id="capacity-calc-bignum" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationcapacity.'</div></td></tr>';
       $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
       $result_iter = $db->query($sqliter);
     }
@@ -273,7 +273,7 @@ form for submitting data that will be prepopulated with data from the variables
     $result_up = $db->query($sqlup);
 }
   }
-
+echo '</table>';
 ?>
       <div id="capacity-footnote">
         Note 1: Closed Iterations will NOT be shown.  The capacity cannot be changed for such iterations.  Show only the active iterations.<br/>
