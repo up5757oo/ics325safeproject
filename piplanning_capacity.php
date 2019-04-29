@@ -217,7 +217,7 @@ form for submitting data that will be prepopulated with data from the variables
 
 
 
-    if( isset( $_REQUEST['submit'] ))
+    if( isset( $_POST['submit'] ))
     {
       for($i = 0; $i < $count_iteration; $i++){
         creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
@@ -234,20 +234,22 @@ form for submitting data that will be prepopulated with data from the variables
       $row = $result->fetch_assoc();
       }else{
         //if capacity entry is not found then it builds an insert statement that initializes the iteration values at 0
-        $result_id = $db->query("SELECT max(c.id) + 1 FROM capacity c LIMIT 1;");
+        $result_id = $db->query("SELECT max(c.id) +1 as next_int FROM capacity c LIMIT 1;");
         if ($result_id->num_rows > 0) {
-          $sql_sequence = $result_id->fetch_assoc();
+          $num = $result_id->fetch_assoc();
+          $sql_sequence = implode("",$num);
       };
 
       $result_team = $db->query("SELECT team_name FROM trains_and_teams where team_id='".$selected_team."' LIMIT 1;");
         if ($result_team->num_rows > 0) {
-          $team_name = $result_team->fetch_assoc();
+          $name = $result_team->fetch_assoc();
+          $team_name =  implode("",$name);
       }else{
         $team_name = $selected_team;
       }
       ;
       $sqlinsert = "INSERT INTO (id, team_id,team_name,program_increment,iteration_1,iteration_2,iteration_3,iteration_4,iteration_5,iteration_6,iteration_P,total) 
-      VALUES (".$sql_sequence.", 
+      VALUES ('".$sql_sequence."', 
       '".$selected_team."', 
       '".$team_name."',
       '".$program_increment."'
