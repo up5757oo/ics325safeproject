@@ -265,7 +265,7 @@ form for submitting data that will be prepopulated with data from the variables
     for($s=0; $s < $count_sequence; $s++ ){
       if(isset($_COOKIE['icap'.$sequenceArray[$s]])){
       $iterationcapacity = $_COOKIE['icap'.$sequenceArray[$s]];
-      echo '<tr><td><h2>'.$iterationArray[$s].' value submitted for '.$team_name.'</h2></td><td><div id="capacity-calc-bignum" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationcapacity.'</div></td></tr>';
+      echo '<tr><td><h2>'.$iterationArray[$s].' value submitted for <br/>'.$team_name.' ('.$selected_team.')</h2></td><td><div id="capacity-calc-bignum" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationcapacity.'</div></td></tr>';
       $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
       $result_iter = $db->query($sqliter);
     }
