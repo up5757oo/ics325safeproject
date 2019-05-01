@@ -42,7 +42,7 @@ function setArtCookie(){
         $art_default_results = mysqli_query($db, $art_default_query);
         if ($art_default_results->num_rows > 0) {
             while($art_default = $art_default_results->fetch_assoc()) {
-                setcookie("artCookie", $art_default["value"]);
+                setcookie("artCookie", $art_default["value"], time()-3600);
                 $artCookie = $art_default["value"];
             }//end while
         }//end preference search if
@@ -53,7 +53,7 @@ function setArtCookie(){
             //starts loop to check the results and update the cookie if results are returned
             if ($art_default_results->num_rows > 0) {
                 while($art_default = $art_default_results->fetch_assoc()) {
-                    setcookie("artCookie", $art_default["parent_name"]);
+                    setcookie("artCookie", $art_default["parent_name"], time()-3600);
                     $artCookie = $art_default["parent_name"];
                 }//end while
             }//end preference search if
@@ -266,7 +266,7 @@ function buildTeamMenu(){
            if ($topArtValue->num_rows > 0) {
              while($row = $topArtValue->fetch_assoc()) {
                  foreach($row as $key=>$value) {
-                    setcookie("artCookie", $row["parent_name"]);
+                    setcookie("artCookie", $row["parent_name"], time()-3600);
                  }
              }
            }
@@ -373,18 +373,44 @@ function buildTeamMenu(){
 
             ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
             function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
-                $default_total = 56;
+                
                 $rownum='';
                 $valueForJS='';
                 $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
                 $db->set_charset("utf8");
                 $duration = getDuration($iteration);
-                $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
-                $result = $db->query($sql);
+                $sql_member = "SELECT last_name, first_name, role FROM `membership`
+                JOIN `employees` on (membership.polarion_id = employees.number)
+                JOIN `trains_and_teams` on (membership.team_name = trains_and_teams.team_name)
+                WHERE trains_and_teams.team_id = '".$selected_team."';";
+         
+        $result_member = $db->query($sql_member);
+        $sql_alt_member = "SELECT last_name, first_name, role FROM `membership`
+                JOIN `employees` on (membership.polarion_id = employees.number)
+                WHERE membership.team_name = '".$selected_team."';";
+                $result_alt = $db->query($sql_alt_member);
+        //adds the number of rows found for team names into a variable to calculate the number of employees 
+        if ($result_member->num_rows > 0) {
+          $member_count = $result_member->num_rows;
+        } elseif ($result_member->num_rows > 0) {
+          $member_count = $result_member->num_rows;
+        } else {
+          $member_count = 0;
+        }
+        //checks the iteration number before calculating the default total
+        if(substr($iteration, -1)==='P'){
+                  $default_total = 0;
+                }else{
+                  $default_total = (($duration * .8) * ($member_count));
+                }
 
+                $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
+
+                $result = $db->query($sql);
+  
                 if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
-
+  
                     if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
                       $icapacity = array_sum($teamcapacity);
                       $totalcapacity = $row["total"] + ($icapacity - $row["iteration_".substr($iteration, -1)]);
@@ -392,14 +418,14 @@ function buildTeamMenu(){
                       $icapacity = $row["iteration_".substr($iteration, -1)];
                       $totalcapacity = $row["total"];
                     }
-
+  
                 } else {
                   if (isset($teamcapacity)  && !isset($_POST['restore'.$sequence])  && !isset($_POST['submit0'])){
                     $icapacity = array_sum($teamcapacity);
                     $totalcapacity = ($default_total*6) + ($icapacity - $default_total);
                   }else{
                     $icapacity = $default_total;
-                    $totalcapacity = $default_total*6;
+                    $totalcapacity = $default_total*5.5;
                   }
                 }
 
@@ -418,12 +444,9 @@ function buildTeamMenu(){
                &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$overhead_percentage.'%</td></tr>';
                
          //adding the calculated capacity for this table into a cookie  
-          setcookie("icap".$sequence, $icapacity);
-
-                echo '<td width="50%"  style="font-weight: bold;">';
-
-
-                 ?>
+         setcookie("icap".$sequence, $icapacity, time()-3600);
+         echo '<td width="50%"  style="font-weight: bold;">';
+         ?>
 
             <tr>
               <td colspan="3">
@@ -450,21 +473,22 @@ function buildTeamMenu(){
               <tbody>
 
               <?php
-
               $sql = "SELECT last_name, first_name, role FROM `membership`
                       JOIN `employees` on (membership.polarion_id = employees.number)
                       JOIN `trains_and_teams` on (membership.team_name = trains_and_teams.team_name)
                       WHERE trains_and_teams.team_id = '".$selected_team."';";
-
-              $result = $db->query($sql);
-
-
+               
+               $result = $db->query($sql);
+              
+              $sql_alt = "SELECT last_name, first_name, role FROM `membership`
+                      JOIN `employees` on (membership.polarion_id = employees.number)
+                      WHERE membership.team_name = '".$selected_team."';";
+                      
+              $result_alt = $db->query($sql_alt);
               if ($result->num_rows > 0) {
-
-                  // output data of each
-                  $rownum = 0;
+                // output data of each
+                $rownum = 0;
                   while ($row = $result->fetch_assoc()) {
-
                     if ($row["role"] == "SM") {
                       $velocityType = "SCRUM_MASTER_ALLOCATION";
                     } else if ($row["role"] == "PO") {
@@ -475,19 +499,17 @@ function buildTeamMenu(){
 
                     $sql2 = "SELECT * FROM `preferences` WHERE name='".$velocityType."';";
                     $result2 = $db->query($sql2);
-
                     if ($result2->num_rows > 0) {
-
-                        $row2 = $result2->fetch_assoc();
-
+                      $row2 = $result2->fetch_assoc();
                     }
-                    if (isset($teamcapacity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
+                    if (substr($iteration, -1)==='P')
+                    {
+                      $storypts = 0;
+                    }elseif(isset($teamcapacity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
                       $storypts = $teamcapacity[$rownum];
                       echo 'document.cookie = escape("icap'.$sequence.'") + "=" + escape(icap'.$sequence.');';
-                      
                     }else{
                       $storypts = round(($duration-0)*((100-$overhead_percentage)/100)*($row2["value"]/100));
-
                     }
                     $valueForJS = $row2["value"];
                     if (isset($daysoff[$rownum]) && !isset($_POST['restore'.$sequence])  && isset($_POST['submit0'])){
@@ -501,9 +523,9 @@ function buildTeamMenu(){
                       $vel = $row2["value"];
                     }
 
-                      echo
-                      "
-                      <tr>
+                    echo
+                    "
+                    <tr>
                           <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
                           <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
                           <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
@@ -513,11 +535,60 @@ function buildTeamMenu(){
                           <input type='hidden' name='rownum_".$sequence."[]' id='autoin3_".$sequence."' value='".$rownum."'/>
                       </tr>";
                       $rownum++;
-
-                      //echo "vel is: " .$vel . ", days off: " . $doff .".";
-                      // submit the values to correlating tables to TEST
+                    }
+              } elseif($result_alt->num_rows > 0) {
+                // output data of each
+                $rownum = 0;
+                while ($row = $result->fetch_assoc()) {
+                  if ($row["role"] == "SM") {
+                    $velocityType = "SCRUM_MASTER_ALLOCATION";
+                  } else if ($row["role"] == "PO") {
+                    $velocityType = "PRODUCT_OWNER_ALLOCATION";
+                  } else  {
+                    $velocityType = "AGILE_TEAM_MEMBER_ALLOCATION";
+                  }
+                  $sql2 = "SELECT * FROM `preferences` WHERE name='".$velocityType."';";
+                  $result2 = $db->query($sql2);
+                  if ($result2->num_rows > 0) {
+                    $row2 = $result2->fetch_assoc();
+                  }
+                  if (isset($teamcapacity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
+                    $storypts = $teamcapacity[$rownum];
+                    echo 'document.cookie = escape("icap'.$sequence.'") + "=" + escape(icap'.$sequence.');';
+                    
+                  }else{
+                    $storypts = round(($duration-0)*((100-$overhead_percentage)/100)*($row2["value"]/100));
 
                   }
+                  $valueForJS = $row2["value"];
+                  if (isset($daysoff[$rownum]) && !isset($_POST['restore'.$sequence])  && isset($_POST['submit0'])){
+                    $doff = $daysoff[$rownum];
+                  } else {
+                    $doff = 0;
+                  }
+                  if (isset($velocity[$rownum]) && !isset($_POST['restore'.$sequence]) && isset($_POST['submit0'])){
+                    $vel = $velocity[$rownum];
+                  } else {
+                    $vel = $row2["value"];
+                  }
+
+                    echo
+                    "
+                    <tr>
+                        <td id='capacity-table-td' style='font-weight:500;'>" . $row["last_name"] . "</td>
+                        <td id='capacity-table-td' style='font-weight:500;'>" . $row["first_name"] . "</td>
+                        <td id='capacity-table-td' style='font-weight:500;'>" . $row["role"] . "</td>
+                        <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin_".$sequence."' class='capacity-text-input' type='text' name='velocity_".$sequence."[]' value='" . $vel . "' onchange='autoLoad".$sequence."();' /> %</td>
+                        <td id='capacity-table-td' style='font-weight:500; text-align: center;'><input id='autoin2_".$sequence."' class='capacity-text-input' type='text' name='daysoff_".$sequence."[]' value='".$doff."' onchange='autoLoad".$sequence."();' /></td>
+                        <td id='capacity-table-td' style='font-weight:500; text-align: center;  background: #e9e9e9;'><input id='story_".$sequence."' class='capacity-text-input' type='text' name='storypoints_".$sequence."[]' value='".$storypts."' readonly='readonly' style='border: 0;  background: #e9e9e9;' />&nbsp;pts</td>
+                        <input type='hidden' name='rownum_".$sequence."[]' id='autoin3_".$sequence."' value='".$rownum."'/>
+                    </tr>";
+                    $rownum++;
+
+                    //echo "vel is: " .$vel . ", days off: " . $doff .".";
+                    // submit the values to correlating tables to TEST
+                }
+
               } else {
                 echo "<tr><td colspan='6' id='capacity-table-td'  style='text-align: center; font-weight: bold; padding: 20px 0 20px 0'>";
                   print "NO TEAM MEMBERS ASSIGNED TO TEAM \"".$selected_team."\"";
@@ -526,23 +597,17 @@ function buildTeamMenu(){
 
               $result->close();
 
-
-
               echo '</tbody>';
-
               echo '<tfoot>';
-
               echo '</tfoot>';
 
-          echo '</table>';
-          echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
-                <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
-                <input type="button" onclick="nextIteration()" id="capacity-button-blue" class="next1" value="Show Next Iteration">
-
+              echo '</table>';
+              echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
+              <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
+              <input type="button" onclick="nextIteration()" id="capacity-button-blue" class="next1" value="Show Next Iteration">
               </form>';
-           
-          echo '<script type="text/javascript">
 
+          echo '<script type="text/javascript">
           $(document).ready(function () {
 
               $(\'#'.$sequence.'\').DataTable({
