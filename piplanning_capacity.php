@@ -239,6 +239,11 @@ form for submitting data that will be prepopulated with data from the variables
           $row = $result_id->fetch_assoc();
           $sql_sequence = $row["next_int"];
       }
+      $result_name = $db->query("SELECT DISTINCT team_id, team_name FROM trains_and_teams where team_id = '".$selected_team."' Limit 1;");
+        if ($result_name->num_rows > 0) {
+          $row2 = $result_name->fetch_assoc();
+          $team_name = $row2["team_name"];
+      }
       $sqlinsert = "INSERT INTO capacity (id, team_id,team_name,program_increment,iteration_1,iteration_2,iteration_3,iteration_4,iteration_5,iteration_6,iteration_P,total) 
       VALUES ('".$sql_sequence."', 
       '".$selected_team."', 
@@ -256,7 +261,7 @@ form for submitting data that will be prepopulated with data from the variables
     for($s=0; $s < $count_sequence; $s++ ){
       if(isset($_COOKIE['icap'.$sequenceArray[$s]])){
       $iterationcapacity = $_COOKIE['icap'.$sequenceArray[$s]];
-      echo '<tr><td><h2>'.$iterationArray[$s].' value submitted for <br/>'.$team_name.' ('.$selected_team.')</h2></td><td><div id="capacity-calc-bignum" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationcapacity.'</div></td></tr>';
+      echo '<tr><td><h2>'.$iterationArray[$s].' value updated for '.$selected_team.'</h2></td><td><div id="capacity-calc-bignum" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationcapacity.'</div></td></tr>';
       $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
       $result_iter = $db->query($sqliter);
     }
