@@ -444,7 +444,7 @@ function buildTeamMenu(){
                &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$overhead_percentage.'%</td></tr>';
                
          //adding the calculated capacity for this table into a cookie  
-         setcookie("icap".$sequence, $icapacity, time()-3600);
+         setcookie("icap".$sequence, $icapacity);
          echo '<td width="50%"  style="font-weight: bold;">';
          ?>
 
