@@ -93,7 +93,7 @@ function piSelectNow(){
     $pi_id_select = "";
     $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
     $db->set_charset("utf8");
-    $pi_id_now_query = "SELECT PI_id FROM cadence where DATE(NOW()) between start_date and end_date + 2";
+    $pi_id_now_query = "SELECT PI_id FROM cadence where DATE(NOW()) between start_date and end_date";
     $pi_id_select_results = mysqli_query($db, $pi_id_now_query);
     if ($pi_id_select_results->num_rows > 0) {
         while($pi_id_now = $pi_id_select_results->fetch_assoc()) {
@@ -372,8 +372,23 @@ function buildTeamMenu(){
     ;
 
             ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
-            function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
-                
+            function creatTables($program_increment, $selected_team, $overhead_percentage){
+              $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+              $db->set_charset("utf8");
+
+              $sequenceArray = array();
+              $iterationArray = array();
+              if ($result = $db->query("SELECT sequence, iteration_id as iteration, start_date, end_date, duration FROM `cadence` WHERE PI_id ='".$program_increment."';")) {
+                $rows = array();
+                while($row = $result->fetch_array()) {
+                  $sequenceArray[]=$row["sequence"];
+                  $iterationArray[]=$row["iteration"];
+                }
+              };
+              $count_sequence = count($sequenceArray);
+              for($i = 0; $i < $count_sequence; $i++){
+                $iteration = $iterationArray[$i];
+                $sequence = $sequenceArray[$i];
                 $rownum='';
                 $valueForJS='';
                 $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
@@ -401,7 +416,8 @@ function buildTeamMenu(){
         if(substr($iteration, -1)==='P'){
                   $default_total = 0;
                 }else{
-                  $default_total = (($duration * .8) * ($member_count));
+                  //creates a general total for the default number
+                  $default_total = (($duration * .8) * ($member_count - 1));
                 }
 
                 $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
@@ -444,7 +460,7 @@ function buildTeamMenu(){
                &nbsp;&nbsp;Overhead Percentage: &nbsp;</td><td style="vertical-align: top; font-weight: bold; color: #01B0F1; line-height: 130%; font-size: 18px;">'.$overhead_percentage.'%</td></tr>';
                
          //adding the calculated capacity for this table into a cookie  
-         setcookie("icap".$sequence, $icapacity, time()-3600);
+         setcookie("icap".$sequence, $icapacity);
          echo '<td width="50%"  style="font-weight: bold;">';
          ?>
 
@@ -604,8 +620,7 @@ function buildTeamMenu(){
               echo '</table>';
               echo '<input type="submit" id="capacity-button-blue" name="submit0" value="Submit">
               <input type="reset" id="capacity-button-blue" name="restore" value="Restore Defaults">
-              <input type="button" onclick="nextIteration()" id="capacity-button-blue" class="next1" value="Show Next Iteration">
-              </form>';
+             </form>';
 
           echo '<script type="text/javascript">
           $(document).ready(function () {
@@ -663,6 +678,7 @@ function buildTeamMenu(){
 
 
       </script>';
+        }
 
           ///////////////////////////Funtion End/////////////////////////////////////////////////////////
 
