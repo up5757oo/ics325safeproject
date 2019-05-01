@@ -52,16 +52,31 @@ $art = buildArtMenu($art_select);
 $program_increment_select = piSelectNow();
 
 //capturing the pi id cookie to use for the array and build the menu list
-if(isset($_COOKIE['piCookie'])){
-  $program_increment = $_COOKIE['piCookie'];
-  $program_increment_menu = buildPi_idMenu($program_increment, true);
-} else {
-  
-  //if a cookie is not found it uses the current PI for the select menu and adds it to the cookie
+if(!isset($_COOKIE['piCookie'])){
   $program_increment=$program_increment_select;
   setcookie('piCookie', $program_increment_select, time()-3600);
   $program_increment_menu = buildPi_idMenu($program_increment, true);
+}elseif(isset($_COOKIE['piCookie']) && ($_COOKIE['piCookie'] != $program_increment_select)){
+  $sql = "SELECT * FROM
+  (SELECT PI_id, MIN(start_date) as start_date, MAX(end_date) as end_date FROM cadence 
+  WHERE start_date <=  NOW()  OR end_date >=  NOW() GROUP BY PI_id ) as PI
+  WHERE PI.start_date <=  NOW() 
+  AND PI.PI_id ='".$_COOKIE['piCookie']."';";
+$result = $db->query($sql);
+if ($result->num_rows > 0) {
+  $program_increment=$program_increment_select;
+  setcookie('piCookie', $program_increment_select, time()-3600);
+  $program_increment_menu = buildPi_idMenu($program_increment, true);
+} else {
+  $program_increment = $_COOKIE['piCookie'];
+  $program_increment_menu = buildPi_idMenu($program_increment, true);
+}
+} else {
+  $program_increment = $_COOKIE['piCookie'];
+  $program_increment_menu = buildPi_idMenu($program_increment, true);
 };
+
+
 //assigning duration with a default value
 $duration = 10;
 //initializes the totalcapacity variable
@@ -237,10 +252,27 @@ form for submitting data that will be prepopulated with data from the variables
       <h3 style=" color: #01B0F1; font-weight: bold;">Capacity Calculations for the Agile Team</h3>';
 
     if( isset( $_POST['submit'] ) )
-    {
-      for($i = 0; $i < $count_sequence; $i++){
-        creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+    {//checks if the program increment is valid before generating the tables
+      $pi_now=piSelectNow();
+      if(!isset($_COOKIE['piCookie'])){
+        $program_increment=piSelectNow();
+      }elseif(isset($_COOKIE['piCookie']) && ($_COOKIE['piCookie'] != $pi_now)){
+        $sql = "SELECT * FROM
+        (SELECT PI_id, MIN(start_date) as start_date, MAX(end_date) as end_date FROM cadence 
+        WHERE start_date <=  NOW()  OR end_date >=  NOW() GROUP BY PI_id ) as PI
+        WHERE PI.start_date <=  NOW() 
+        AND PI.PI_id ='".$_COOKIE['piCookie']."';";
+      $result = $db->query($sql);
+      if ($result->num_rows > 0) {
+        $program_increment=piSelectNow();
+      } else {
+        $program_increment = $_COOKIE['piCookie'];
       }
+      } else {
+        $program_increment = $_COOKIE['piCookie'];
+      };
+        creatTables($program_increment, $selected_team, $overhead_percentage);
+      
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

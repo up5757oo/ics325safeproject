@@ -93,7 +93,7 @@ function piSelectNow(){
     $pi_id_select = "";
     $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
     $db->set_charset("utf8");
-    $pi_id_now_query = "SELECT PI_id FROM cadence where DATE(NOW()) between start_date and end_date + 2";
+    $pi_id_now_query = "SELECT PI_id FROM cadence where DATE(NOW()) between start_date and end_date";
     $pi_id_select_results = mysqli_query($db, $pi_id_now_query);
     if ($pi_id_select_results->num_rows > 0) {
         while($pi_id_now = $pi_id_select_results->fetch_assoc()) {
@@ -372,8 +372,23 @@ function buildTeamMenu(){
     ;
 
             ///////////////////////////Funtion Start/////////////////////////////////////////////////////////
-            function creatTables($program_increment, $selected_team, $iteration, $sequence, $overhead_percentage){
-                
+            function creatTables($program_increment, $selected_team, $overhead_percentage){
+              $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+              $db->set_charset("utf8");
+
+              $sequenceArray = array();
+              $iterationArray = array();
+              if ($result = $db->query("SELECT sequence, iteration_id as iteration, start_date, end_date, duration FROM `cadence` WHERE PI_id ='".$program_increment."';")) {
+                $rows = array();
+                while($row = $result->fetch_array()) {
+                  $sequenceArray[]=$row["sequence"];
+                  $iterationArray[]=$row["iteration"];
+                }
+              };
+              $count_sequence = count($sequenceArray);
+              for($i = 0; $i < $count_sequence; $i++){
+                $iteration = $iterationArray[$i];
+                $sequence = $sequenceArray[$i];
                 $rownum='';
                 $valueForJS='';
                 $db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
@@ -663,6 +678,7 @@ function buildTeamMenu(){
 
 
       </script>';
+        }
 
           ///////////////////////////Funtion End/////////////////////////////////////////////////////////
 
