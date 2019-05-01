@@ -52,16 +52,31 @@ $art = buildArtMenu($art_select);
 $program_increment_select = piSelectNow();
 
 //capturing the pi id cookie to use for the array and build the menu list
-if(isset($_COOKIE['piCookie'])){
-  $program_increment = $_COOKIE['piCookie'];
-  $program_increment_menu = buildPi_idMenu($program_increment, true);
-} else {
-  
-  //if a cookie is not found it uses the current PI for the select menu and adds it to the cookie
+if(!isset($_COOKIE['piCookie'])){
   $program_increment=$program_increment_select;
   setcookie('piCookie', $program_increment_select, time()-3600);
   $program_increment_menu = buildPi_idMenu($program_increment, true);
+}elseif(isset($_COOKIE['piCookie']) && ($_COOKIE['piCookie'] != $program_increment_select)){
+  $sql = "SELECT * FROM
+  (SELECT PI_id, MIN(start_date) as start_date, MAX(end_date) as end_date FROM cadence 
+  WHERE start_date <=  NOW()  OR end_date >=  NOW() GROUP BY PI_id ) as PI
+  WHERE PI.start_date <=  NOW() 
+  AND PI.PI_id ='".$_COOKIE['piCookie']."';";
+$result = $db->query($sql);
+if ($result->num_rows > 0) {
+  $program_increment=$program_increment_select;
+  setcookie('piCookie', $program_increment_select, time()-3600);
+  $program_increment_menu = buildPi_idMenu($program_increment, true);
+} else {
+  $program_increment = $_COOKIE['piCookie'];
+  $program_increment_menu = buildPi_idMenu($program_increment, true);
+}
+} else {
+  $program_increment = $_COOKIE['piCookie'];
+  $program_increment_menu = buildPi_idMenu($program_increment, true);
 };
+
+
 //assigning duration with a default value
 $duration = 10;
 //initializes the totalcapacity variable
@@ -77,6 +92,25 @@ if ($result->num_rows > 0) {
 } else {
 
   if (!isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+          //figures out if there how many team members then uses the value to calculate the total capacity for displat
+          $sql_member = "SELECT last_name, first_name, role FROM `membership`
+          JOIN `employees` on (membership.polarion_id = employees.number)
+          JOIN `trains_and_teams` on (membership.team_name = trains_and_teams.team_name)
+          WHERE trains_and_teams.team_id = '".$selected_team."';";
+          $result_member = $db->query($sql_member);
+          $sql_alt_member = "SELECT last_name, first_name, role FROM `membership`
+          JOIN `employees` on (membership.polarion_id = employees.number)
+          WHERE membership.team_name = '".$selected_team."';";
+          $result_alt = $db->query($sql_alt_member);
+
+    if ($result_member->num_rows > 0) {
+      $member_count = $result_member->num_rows;
+    } elseif ($result_member->num_rows > 0) {
+      $member_count = $result_member->num_rows;
+    } else {
+      $member_count = 0;
+    }
+    $default_total = (($duration * .8) * ($member_count - 1));
     $totalcapacity = ($default_total*6);
   }else{
     $totalcapacity = $default_total*6;
@@ -88,14 +122,14 @@ $overhead_percentage = getOverheadPercentage();
   //Creates an array of the active sequences and iterations to use for loops that will build the tables and Javascripts for each iteration
   $sequenceArray = array();
   $iterationArray = array();
-  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$program_increment."';")) {
+  if ($result = $db->query("SELECT sequence, iteration_id as iteration, start_date, end_date, duration FROM `cadence` WHERE PI_id ='".$program_increment."';")) {
     $rows = array();
     while($row = $result->fetch_array()) {
       $sequenceArray[]=$row["sequence"];
       $iterationArray[]=$row["iteration"];
     }
   };
-  $count_iteration = count($iterationArray);
+  $count_sequence = count($sequenceArray);
 
 ?>
 
@@ -218,10 +252,27 @@ form for submitting data that will be prepopulated with data from the variables
       <h3 style=" color: #01B0F1; font-weight: bold;">Capacity Calculations for the Agile Team</h3>';
 
     if( isset( $_POST['submit'] ) )
-    {
-      for($i = 0; $i < $count_iteration; $i++){
-        creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+    {//checks if the program increment is valid before generating the tables
+      $pi_now=piSelectNow();
+      if(!isset($_COOKIE['piCookie'])){
+        $program_increment=piSelectNow();
+      }elseif(isset($_COOKIE['piCookie']) && ($_COOKIE['piCookie'] != $pi_now)){
+        $sql = "SELECT * FROM
+        (SELECT PI_id, MIN(start_date) as start_date, MAX(end_date) as end_date FROM cadence 
+        WHERE start_date <=  NOW()  OR end_date >=  NOW() GROUP BY PI_id ) as PI
+        WHERE PI.start_date <=  NOW() 
+        AND PI.PI_id ='".$_COOKIE['piCookie']."';";
+      $result = $db->query($sql);
+      if ($result->num_rows > 0) {
+        $program_increment=piSelectNow();
+      } else {
+        $program_increment = $_COOKIE['piCookie'];
       }
+      } else {
+        $program_increment = $_COOKIE['piCookie'];
+      };
+        creatTables($program_increment, $selected_team, $overhead_percentage);
+      
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -261,7 +312,6 @@ form for submitting data that will be prepopulated with data from the variables
     for($s=0; $s < $count_sequence; $s++ ){
       if(isset($_COOKIE['icap'.$sequenceArray[$s]])){
       $iterationcapacity = $_COOKIE['icap'.$sequenceArray[$s]];
-      echo '<tr><td><h2>'.$iterationArray[$s].' value updated for '.$selected_team.'</h2></td><td><div id="capacity-calc-bignum" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationcapacity.'</div></td></tr>';
       $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
       $result_iter = $db->query($sqliter);
     }
