@@ -1,3 +1,4 @@
+
 <?php
 
   $nav_selected = "PIPLANNING";
@@ -36,15 +37,16 @@ $default_total = 56;
   //sets the default team name
   $team = getDefaultTeamName($art_select);
   $selected_team = getTeamID($team);
-  setcookie('teamSelectCookie', $selected_team );
+  setcookie('teamSelectCookie', $selected_team, time()-3600 );
   } else {
     $selected_team  = $_COOKIE['teamSelectCookie'];
   };
 
-  //finds the team id for the team name for the selected team script
+//finds the team id for the team name for the selected team script
 
 //Function to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
+
 
 //uses the pi Select Now function to identify the PI ID within the current date and adds it to the pi id select variable for the default
 $program_increment_select = piSelectNow();
@@ -54,9 +56,10 @@ if(isset($_COOKIE['piCookie'])){
   $program_increment = $_COOKIE['piCookie'];
   $program_increment_menu = buildPi_idMenu($program_increment, true);
 } else {
+  
   //if a cookie is not found it uses the current PI for the select menu and adds it to the cookie
   $program_increment=$program_increment_select;
-  setcookie('piCookie', $program_increment_select);
+  setcookie('piCookie', $program_increment_select, time()-3600);
   $program_increment_menu = buildPi_idMenu($program_increment, true);
 };
 //assigning duration with a default value
@@ -105,7 +108,7 @@ form for submitting data that will be prepopulated with data from the variables
     <table id="form_table" class="container">
     <tr>
 <div style="float: right; margin-right: 10px; text-align: center; font-size: 12px;">
-              <div id="capacity-calc-bignum" name="totalcap"><?php echo $totalcapacity ?></div>
+              <div id="capacity-calc-bignum" name="totalcap" id="tcap"><?php echo $totalcapacity ?></div>
               <b>Total Capacity for the Program Increment</b>
             </div>
           </td>
@@ -164,6 +167,7 @@ form for submitting data that will be prepopulated with data from the variables
                   while ($row = $result->fetch_assoc()) {
                     if ( trim($selected_team) == trim($row["team_id"]) ) {
                       echo '<option value="'.$row["team_id"].'" selected>'.$row["team_name"].'</option>';
+                      $team_name = $row["team_name"];
                     }else{
                       echo '<option value="'.$row["team_id"].'">'.$row["team_name"].'</option>';
                     }
@@ -175,7 +179,7 @@ form for submitting data that will be prepopulated with data from the variables
             </td>
         </tr>
 <tr>
-<td><input type="submit" id="php_button" name="generate_button" class="button" value="Generate"></td>
+<td><input type="submit" id="submit" name="submit" class="button" value="Generate" onclick="generateStuff()"></td>
 <td><input type="hidden" name="current-team-selected" value="<?php echo $selected_team; ?>"></td>
 </tr>
 
@@ -201,9 +205,9 @@ form for submitting data that will be prepopulated with data from the variables
     }
     return "";
   };
-  console.log("PI Cookie: " + getCookie('piCookie'));
-  console.log("ART Cookie: "+getCookie('artCookie'));
-  console.log("Team Cookie: " + getCookie('teamSelectCookie'));
+    ("PI Cookie: " + getCookie('piCookie'));
+    ("ART Cookie: "+getCookie('artCookie'));
+    ("Team Cookie: " + getCookie('teamSelectCookie'));
   </script>
   <?php
 
@@ -213,224 +217,59 @@ form for submitting data that will be prepopulated with data from the variables
 
       <h3 style=" color: #01B0F1; font-weight: bold;">Capacity Calculations for the Agile Team</h3>';
 
+    if( isset( $_POST['submit'] ) )
+    {
+      for($i = 0; $i < $count_iteration; $i++){
+        creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
+      }
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-  //Loop for displaying the series of Employee table & iteration calculation placeholder
-  for($i = 0; $i < $count_iteration; $i++){
-    creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
-  };
-
-  /*//updated sql so select values matched availabe column names
-  $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration , sequence
-  FROM `cadence`
-  WHERE PI_id in (SELECT  PI_id
-  FROM `cadence`
-  WHERE start_date <= DATE(NOW())
-  AND end_date >= DATE(NOW())
-  order by sequence);";
-  $result = $db->query($sql);
-  if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $program_increment = $row["program_increment"];
-    $iteration = $row["iteration"];
-    $sequence = $row["sequence"];
-    $result->close();
-  } else {
-    echo "No Available Iterations available for Today's date";
-    $result->close();
-
-    $sql = "SELECT *
-        FROM
-        (	SELECT MIN(start_date) as start_date, MAX(end_date) as end_date
-          FROM cadence
-          WHERE start_date <= DATE(NOW())
-          OR end_date >= end_date >= DATE(NOW())
-          GROUP BY program_increment
-        ) as PI
-        WHERE PI.start_date <= DATE(NOW())
-        AND PI.end_date >= DATE(NOW());";
+  if (isset($_POST['submit0']) && isset($_COOKIE['totalcapCookie'])) {
+   
+    //checks for existing capacity entry for the FI 
+    $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."'";
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
       $row = $result->fetch_assoc();
-      $start_date = $row["start_date"];
-      $end_date = $row["end_date"];
-    } else {
-      //echo "In-between Program Increments";
-    }
-    $result->close();
-  }*/
-
-
-  //echo '<script>console.log('.$sequence.');</script>';
-  //checks if there is a current team selected. If not it uses the artCookie to find the $selected_team
-  //if ($_REQUEST['generate_button']) {
-      //$selected_team = $_POST['current-team-selected'];
-
- // } ;
-/*
-  if (isset($_POST['showNext'])) {
-    $sequence++;
-    echo '<script>console.log("Show Next: " + "'.$sequence.'");</script>';
-    echo '<script>console.log("Program Increment: " + "'.$program_increment.'");</script>';
-
-    $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration
-            FROM `cadence`
-            WHERE sequence='".$sequence."';";
-    $result = $db->query($sql);
-    if ($result->num_rows > 0) {
-      $row = $result->fetch_assoc();
-      $program_increment = $row["program_increment"];
-      $iteration = $row["iteration"];
-      $sequence = $row["sequence"];
-      $result->close();
-    } else {
-      $sql = "SELECT sequence, PI_id as program_increment, iteration_id as iteration
-              FROM `cadence`
-              WHERE PI_id='".$program_increment."'
-              ORDER BY sequence limit 1;";
-      $result = $db->query($sql);
-      if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $program_increment = $row["program_increment"];
-        $iteration = $row["iteration"];
-        $sequence = $row["sequence"];
-        $result->close();
-    }
-  }
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  echo '<script>console.log("Program Increment: " + "'.$iteration.'");</script>';
-    $sql = "SELECT * FROM `capacity` where team_id='".$selected_team."' AND program_increment='".$program_increment."';";
-    $result = $db->query($sql);
-    if ($result->num_rows > 0) {
-      $default_data = false;
-      $default_total = ($row["iteration_1"] + $row["iteration_2"] + $row["iteration_3"] + $row["iteration_4"]+ $row["iteration_5"] + $row["iteration_6"] + $row["iteration_P"]);
-    } else {
-      $default_data = true;
-
-      $sql = "SELECT * FROM `membership` where team_name = (select team_name from trains_and_teams where team_id = '".$selected_team."' and art_name = '".$art_name."' LIMIT 1) ;";
-      $result = $db->query($sql);
-      if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-
-          if ($row["role"] == "SM") {
-            $velType = "SCRUM_MASTER_ALLOCATION";
-          } else if ($row["role"] == "PO") {
-            $velType = "PRODUCT_OWNER_ALLOCATION";
-          } else  {
-            $velType = "AGILE_TEAM_MEMBER_ALLOCATION";
-          }
-
-          $sql2 = "SELECT * FROM `preferences` WHERE name='".$velType."';";
-          $result2 = $db->query($sql2);
-
-          if ($result2->num_rows > 0) {
-
-              $row2 = $result2->fetch_assoc();
-              $default_total += $row2["value"];
-
-          }
-        }
+      }else{
+        //if capacity entry is not found then it builds an insert statement that initializes the iteration values at 0
+        $result_id = $db->query("SELECT max(c.id) +1 as next_int FROM capacity c LIMIT 1;");
+        if ($result_id->num_rows > 0) {
+          $row = $result_id->fetch_assoc();
+          $sql_sequence = $row["next_int"];
       }
-    }
-  }
-  if (isset($_POST['select-team'])) {
-    $selected_team = $_POST['select-team'];
-    //$default_total = 56;
-    $sql = "SELECT * FROM `capacity` where team_id='".$selected_team."' AND program_increment='".$program_increment."';";
-    $result = $db->query($sql);
-    if ($result->num_rows > 0) {
-    } else {
-      $default_data = true;
-      //$default_total = ($defaul_total * 5) + 28;
-      if(isset($_COOKIE['artCookie'])){
-        $art_name=$_COOKIE['artCookie'];
-      } else {
-        $art_name = setArtCookie();
+      $result_name = $db->query("SELECT DISTINCT team_id, team_name FROM trains_and_teams where team_id = '".$selected_team."' Limit 1;");
+        if ($result_name->num_rows > 0) {
+          $row2 = $result_name->fetch_assoc();
+          $team_name = $row2["team_name"];
       }
-
-      $sql = "SELECT * FROM `membership` where team_name = (select team_name from trains_and_teams where team_id = '".$selected_team."' and art_name = '".$art_name."' LIMIT 1);";
-      $result = $db->query($sql);
-      if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-
-          if ($row["role"] == "SM") {
-            $velType = "SCRUM_MASTER_ALLOCATION";
-          } else if ($row["role"] == "PO") {
-            $velType = "PRODUCT_OWNER_ALLOCATION";
-          } else  {
-            $velType = "AGILE_TEAM_MEMBER_ALLOCATION";
-          }
-
-          $sql2 = "SELECT * FROM `preferences` WHERE name='".$velType."';";
-          $result2 = $db->query($sql2);
-
-          if ($result2->num_rows > 0) {
-
-              $row2 = $result2->fetch_assoc();
-              $default_total += $row2["value"];
-
-          }
-        }
-      }
+      $sqlinsert = "INSERT INTO capacity (id, team_id,team_name,program_increment,iteration_1,iteration_2,iteration_3,iteration_4,iteration_5,iteration_6,iteration_P,total) 
+      VALUES ('".$sql_sequence."', 
+      '".$selected_team."', 
+      '".$team_name."',
+      '".$program_increment."'
+      ,0,0,0,0,0,0,0,0);";
+      $result_insert = $db->query($sqlinsert);
+      };
+//starts values that will update the capacity table with the iteration values
+    $pi_capacity = $_COOKIE['totalcapCookie'];
+    $count_sequence = count($sequenceArray);
+    $PI_array = array();
+    echo '<script>document.getElementsByName("totalcap")[0].innerHTML = '.$pi_capacity.';</script>';
+    echo '<table width="100%">';
+    for($s=0; $s < $count_sequence; $s++ ){
+      if(isset($_COOKIE['icap'.$sequenceArray[$s]])){
+      $iterationcapacity = $_COOKIE['icap'.$sequenceArray[$s]];
+      echo '<tr><td><h2>'.$iterationArray[$s].' value updated for '.$selected_team.'</h2></td><td><div id="capacity-calc-bignum" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationcapacity.'</div></td></tr>';
+      $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
+      $result_iter = $db->query($sqliter);
     }
-  }
-  if (!isset($_POST['select-team']) && !isset($_POST['current-team-selected'])) {
-    $sql = "SELECT team_id FROM `capacity` where program_increment='".$program_increment."' LIMIT 1;";
-    $result = $db->query($sql);
-
-    if ($result->num_rows > 0) {
-
-        $row = $result->fetch_assoc();
-        $selected_team = $row["team_id"];
-    }
-  }
-
-  $sql5 = "SELECT * FROM `cadence` WHERE PI_id='".$program_increment."';";
-  $result5 = $db->query($sql5);
-  if ($result5->num_rows > 0) {
-      $row5 = $result5->fetch_assoc();
-      $duration = $row5["duration"];
-  }
-  $sql6 = "SELECT * FROM `preferences` WHERE name='OVERHEAD_PERCENTAGE';";
-  $result6 = $db->query($sql6);
-  if ($result6->num_rows > 0) {
-      $row6 = $result6->fetch_assoc();
-      $overhead_percentage = $row6["value"];
-  }
-
-
-  if (isset($_POST['submit0'])) {
-    $iterationcapacity = 0;
-    for ($x=0; $x < count($_POST['rownum']); $x++){
-      $teamcapacity[$_POST['rownum'][$x]] = round(($duration-$_POST['daysoff'][$x])*((100-$overhead_percentage)/100)*($_POST['velocity'][$x]/100));
-      $iterationcapacity += $teamcapacity[$_POST['rownum'][$x]];
-      $daysoff[$_POST['rownum'][$x]] = $_POST['daysoff'][$x];
-      $velocity[$_POST['rownum'][$x]] = $_POST['velocity'][$x];
-    }
-    $sqliter = "UPDATE `capacity` SET iteration_".substr($iteration, -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
-    $result_iter = $db->query($sqliter);
-    $sqlinc = "SELECT (iteration_1 + iteration_2 + iteration_3 + iteration_4 + iteration_5 + iteration_6) as new_total FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
-    $result_inc = $db->query($sqlinc);
-    if ($result_inc->num_rows > 0) {
-        $rowinc = $result_inc->fetch_assoc();
-        $pi_capacity = $rowinc["new_total"];
-      }
     $sqlup = "UPDATE `capacity` SET total='$pi_capacity' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
     $result_up = $db->query($sqlup);
-
-    // keep velocity and days off value changes
-    $iterationcapacity = 0;
-    for ($x=0; $x < count($_POST['rownum']); $x++){
-      $teamcapacity[$_POST['rownum'][$x]] = round(($duration-$_POST['daysoff'][$x])*((100-$overhead_percentage)/100)*($_POST['velocity'][$x]/100));
-      $iterationcapacity += $teamcapacity[$_POST['rownum'][$x]];
-      $daysoff[$_POST['rownum'][$x]] = $_POST['daysoff'][$x];
-      $velocity[$_POST['rownum'][$x]] = $_POST['velocity'][$x];
-    }
+}
   }
-
-*/
-
-
+echo '</table>';
 ?>
       <div id="capacity-footnote">
         Note 1: Closed Iterations will NOT be shown.  The capacity cannot be changed for such iterations.  Show only the active iterations.<br/>
@@ -445,8 +284,6 @@ form for submitting data that will be prepopulated with data from the variables
       </tr>
       </table>
 
-    </div>
-    </div>
 
 
   <?php
