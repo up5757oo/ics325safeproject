@@ -248,7 +248,7 @@ form for submitting data that will be prepopulated with data from the variables
         $team_name = $selected_team;
       }
       ;
-      $sqlinsert = "INSERT INTO (id, team_id,team_name,program_increment,iteration_1,iteration_2,iteration_3,iteration_4,iteration_5,iteration_6,iteration_P,total) 
+      $sqlinsert = "INSERT INTO capacity (id, team_id,team_name,program_increment,iteration_1,iteration_2,iteration_3,iteration_4,iteration_5,iteration_6,iteration_P,total) 
       VALUES ('".$sql_sequence."', 
       '".$selected_team."', 
       '".$team_name."',
@@ -288,8 +288,6 @@ echo '</table>';
       </tr>
       </table>
 
-    </div>
-    </div>
 
 
   <?php
