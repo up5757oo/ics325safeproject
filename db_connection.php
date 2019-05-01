@@ -401,7 +401,8 @@ function buildTeamMenu(){
         if(substr($iteration, -1)==='P'){
                   $default_total = 0;
                 }else{
-                  $default_total = (($duration * .8) * ($member_count));
+                  //creates a general total for the default number
+                  $default_total = (($duration * .8) * ($member_count - 1));
                 }
 
                 $sql = "SELECT * FROM `capacity` WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";

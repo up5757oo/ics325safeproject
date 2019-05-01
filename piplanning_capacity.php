@@ -77,6 +77,25 @@ if ($result->num_rows > 0) {
 } else {
 
   if (!isset($teamcapacity)  && !isset($_POST['restore'])  && !isset($_POST['submit0'])){
+          //figures out if there how many team members then uses the value to calculate the total capacity for displat
+          $sql_member = "SELECT last_name, first_name, role FROM `membership`
+          JOIN `employees` on (membership.polarion_id = employees.number)
+          JOIN `trains_and_teams` on (membership.team_name = trains_and_teams.team_name)
+          WHERE trains_and_teams.team_id = '".$selected_team."';";
+          $result_member = $db->query($sql_member);
+          $sql_alt_member = "SELECT last_name, first_name, role FROM `membership`
+          JOIN `employees` on (membership.polarion_id = employees.number)
+          WHERE membership.team_name = '".$selected_team."';";
+          $result_alt = $db->query($sql_alt_member);
+
+    if ($result_member->num_rows > 0) {
+      $member_count = $result_member->num_rows;
+    } elseif ($result_member->num_rows > 0) {
+      $member_count = $result_member->num_rows;
+    } else {
+      $member_count = 0;
+    }
+    $default_total = (($duration * .8) * ($member_count - 1));
     $totalcapacity = ($default_total*6);
   }else{
     $totalcapacity = $default_total*6;
