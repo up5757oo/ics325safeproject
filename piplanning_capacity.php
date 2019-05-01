@@ -107,14 +107,14 @@ $overhead_percentage = getOverheadPercentage();
   //Creates an array of the active sequences and iterations to use for loops that will build the tables and Javascripts for each iteration
   $sequenceArray = array();
   $iterationArray = array();
-  if ($result = $db->query("SELECT sequence, iteration_id as iteration FROM `cadence` WHERE PI_id ='".$program_increment."';")) {
+  if ($result = $db->query("SELECT sequence, iteration_id as iteration, start_date, end_date, duration FROM `cadence` WHERE PI_id ='".$program_increment."';")) {
     $rows = array();
     while($row = $result->fetch_array()) {
       $sequenceArray[]=$row["sequence"];
       $iterationArray[]=$row["iteration"];
     }
   };
-  $count_iteration = count($iterationArray);
+  $count_sequence = count($sequenceArray);
 
 ?>
 
@@ -238,7 +238,7 @@ form for submitting data that will be prepopulated with data from the variables
 
     if( isset( $_POST['submit'] ) )
     {
-      for($i = 0; $i < $count_iteration; $i++){
+      for($i = 0; $i < $count_sequence; $i++){
         creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
       }
     }
