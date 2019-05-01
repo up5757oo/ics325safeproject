@@ -37,7 +37,7 @@ $default_total = 56;
   //sets the default team name
   $team = getDefaultTeamName($art_select);
   $selected_team = getTeamID($team);
-  setcookie('teamSelectCookie', $selected_team );
+  setcookie('teamSelectCookie', $selected_team, time()-3600 );
   } else {
     $selected_team  = $_COOKIE['teamSelectCookie'];
   };
@@ -47,6 +47,7 @@ $default_total = 56;
 //Function to build ART select menu. Updates selected default with the Cookie value
 $art = buildArtMenu($art_select);
 
+
 //uses the pi Select Now function to identify the PI ID within the current date and adds it to the pi id select variable for the default
 $program_increment_select = piSelectNow();
 
@@ -55,9 +56,10 @@ if(isset($_COOKIE['piCookie'])){
   $program_increment = $_COOKIE['piCookie'];
   $program_increment_menu = buildPi_idMenu($program_increment, true);
 } else {
+  
   //if a cookie is not found it uses the current PI for the select menu and adds it to the cookie
   $program_increment=$program_increment_select;
-  setcookie('piCookie', $program_increment_select);
+  setcookie('piCookie', $program_increment_select, time()-3600);
   $program_increment_menu = buildPi_idMenu($program_increment, true);
 };
 //assigning duration with a default value
@@ -165,6 +167,7 @@ form for submitting data that will be prepopulated with data from the variables
                   while ($row = $result->fetch_assoc()) {
                     if ( trim($selected_team) == trim($row["team_id"]) ) {
                       echo '<option value="'.$row["team_id"].'" selected>'.$row["team_name"].'</option>';
+                      $team_name = $row["team_name"];
                     }else{
                       echo '<option value="'.$row["team_id"].'">'.$row["team_name"].'</option>';
                     }
@@ -214,10 +217,7 @@ form for submitting data that will be prepopulated with data from the variables
 
       <h3 style=" color: #01B0F1; font-weight: bold;">Capacity Calculations for the Agile Team</h3>';
 
-
-
-
-    if( isset( $_REQUEST['submit'] ))
+    if( isset( $_POST['submit'] ) )
     {
       for($i = 0; $i < $count_iteration; $i++){
         creatTables($program_increment, $selected_team, $iterationArray[$i], $sequenceArray[$i], $overhead_percentage);
@@ -234,20 +234,18 @@ form for submitting data that will be prepopulated with data from the variables
       $row = $result->fetch_assoc();
       }else{
         //if capacity entry is not found then it builds an insert statement that initializes the iteration values at 0
-        $result_id = $db->query("SELECT max(c.id) + 1 FROM capacity c LIMIT 1;");
+        $result_id = $db->query("SELECT max(c.id) +1 as next_int FROM capacity c LIMIT 1;");
         if ($result_id->num_rows > 0) {
-          $sql_sequence = $result_id->fetch_assoc();
-      };
-
-      $result_team = $db->query("SELECT team_name FROM trains_and_teams where team_id='".$selected_team."' LIMIT 1;");
-        if ($result_team->num_rows > 0) {
-          $team_name = $result_team->fetch_assoc();
-      }else{
-        $team_name = $selected_team;
+          $row = $result_id->fetch_assoc();
+          $sql_sequence = $row["next_int"];
       }
-      ;
-      $sqlinsert = "INSERT INTO (id, team_id,team_name,program_increment,iteration_1,iteration_2,iteration_3,iteration_4,iteration_5,iteration_6,iteration_P,total) 
-      VALUES (".$sql_sequence.", 
+      $result_name = $db->query("SELECT DISTINCT team_id, team_name FROM trains_and_teams where team_id = '".$selected_team."' Limit 1;");
+        if ($result_name->num_rows > 0) {
+          $row2 = $result_name->fetch_assoc();
+          $team_name = $row2["team_name"];
+      }
+      $sqlinsert = "INSERT INTO capacity (id, team_id,team_name,program_increment,iteration_1,iteration_2,iteration_3,iteration_4,iteration_5,iteration_6,iteration_P,total) 
+      VALUES ('".$sql_sequence."', 
       '".$selected_team."', 
       '".$team_name."',
       '".$program_increment."'
@@ -259,11 +257,11 @@ form for submitting data that will be prepopulated with data from the variables
     $count_sequence = count($sequenceArray);
     $PI_array = array();
     echo '<script>document.getElementsByName("totalcap")[0].innerHTML = '.$pi_capacity.';</script>';
-
+    echo '<table width="100%">';
     for($s=0; $s < $count_sequence; $s++ ){
       if(isset($_COOKIE['icap'.$sequenceArray[$s]])){
       $iterationcapacity = $_COOKIE['icap'.$sequenceArray[$s]];
-      echo '<div id="capacity-calc-summary" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationArray[$s].' value submitted '.$iterationcapacity.'</div>';
+      echo '<tr><td><h2>'.$iterationArray[$s].' value updated for '.$selected_team.'</h2></td><td><div id="capacity-calc-bignum" name="icap'.$sequenceArray[$s].'" id="icap'.$sequenceArray[$s].'">'.$iterationcapacity.'</div></td></tr>';
       $sqliter = "UPDATE `capacity` SET iteration_".substr($iterationArray[$s], -1)."='".$iterationcapacity."' WHERE program_increment='".$program_increment."' AND team_id='".$selected_team."';";
       $result_iter = $db->query($sqliter);
     }
@@ -271,7 +269,7 @@ form for submitting data that will be prepopulated with data from the variables
     $result_up = $db->query($sqlup);
 }
   }
-
+echo '</table>';
 ?>
       <div id="capacity-footnote">
         Note 1: Closed Iterations will NOT be shown.  The capacity cannot be changed for such iterations.  Show only the active iterations.<br/>
@@ -286,8 +284,6 @@ form for submitting data that will be prepopulated with data from the variables
       </tr>
       </table>
 
-    </div>
-    </div>
 
 
   <?php
